@@ -39,8 +39,7 @@
 
 	<div id="toTop"></div><!-- Back to top button -->
 
-	@include('client.layout.partials.js')
-
+	@stack('js')
 </body>
 
 <!-- Mirrored from www.ansonika.com/allaia/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Mar 2025 05:24:02 GMT -->
