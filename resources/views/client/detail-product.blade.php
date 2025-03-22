@@ -10,17 +10,17 @@
                 <div class="all">
                     <div class="slider">
                         <div class="owl-carousel owl-theme main">
-                            <div style="background-image: url(img/products/shoes/1.jpg);" class="item-box">
+                            <div style="background-image:url(client/img/products/shoes/1.jpg);" class="item-box">
                             </div>
-                            <div style="background-image: url(img/products/shoes/2.jpg);" class="item-box">
+                            <div style="background-image:url(client/img/products/shoes/2.jpg);" class="item-box">
                             </div>
-                            <div style="background-image: url(img/products/shoes/3.jpg);" class="item-box">
+                            <div style="background-image:url(client/img/products/shoes/3.jpg);" class="item-box">
                             </div>
-                            <div style="background-image: url(img/products/shoes/4.jpg);" class="item-box">
+                            <div style="background-image:url(client/img/products/shoes/4.jpg);" class="item-box">
                             </div>
-                            <div style="background-image: url(img/products/shoes/5.jpg);" class="item-box">
+                            <div style="background-image:url(client/img/products/shoes/5.jpg);" class="item-box">
                             </div>
-                            <div style="background-image: url(img/products/shoes/6.jpg);" class="item-box">
+                            <div style="background-image:url(client/img/products/shoes/6.jpg);" class="item-box">
                             </div>
                         </div>
                         <div class="left nonl"><i class="ti-angle-left"></i></div>
@@ -28,13 +28,13 @@
                     </div>
                     <div class="slider-two">
                         <div class="owl-carousel owl-theme thumbs">
-                            <div style="background-image: url(img/products/shoes/1.jpg);" class="item active">
+                            <div style="background-image:url(client/img/products/shoes/1.jpg);" class="item active">
                             </div>
-                            <div style="background-image: url(img/products/shoes/2.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/3.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/4.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/5.jpg);" class="item"></div>
-                            <div style="background-image: url(img/products/shoes/6.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/2.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/3.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/4.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/5.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/6.jpg);" class="item"></div>
                         </div>
                         <div class="left-t nonl-t"></div>
                         <div class="right-t"></div>
@@ -300,8 +300,8 @@
                     <span class="ribbon new">New</span>
                     <figure>
                         <a href="product-detail-1.html">
-                            <img class="owl-lazy" src="img/products/product_placeholder_square_medium.jpg"
-                                data-src="img/products/shoes/4.jpg" alt="">
+                            <img class="owl-lazy" src="client/img/products/product_placeholder_square_medium.jpg"
+                                data-src="client/img/products/shoes/4.jpg" alt="">
                         </a>
                     </figure>
                     <div class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
@@ -333,8 +333,8 @@
                     <span class="ribbon new">New</span>
                     <figure>
                         <a href="product-detail-1.html">
-                            <img class="owl-lazy" src="img/products/product_placeholder_square_medium.jpg"
-                                data-src="img/products/shoes/5.jpg" alt="">
+                            <img class="owl-lazy" src="client/img/products/product_placeholder_square_medium.jpg"
+                                data-src="client/img/products/shoes/5.jpg" alt="">
                         </a>
                     </figure>
                     <div class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
@@ -366,8 +366,8 @@
                     <span class="ribbon hot">Hot</span>
                     <figure>
                         <a href="product-detail-1.html">
-                            <img class="owl-lazy" src="img/products/product_placeholder_square_medium.jpg"
-                                data-src="img/products/shoes/8.jpg" alt="">
+                            <img class="owl-lazy" src="client/img/products/product_placeholder_square_medium.jpg"
+                                data-src="client/img/products/shoes/8.jpg" alt="">
                         </a>
                     </figure>
                     <div class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
@@ -399,8 +399,8 @@
                     <span class="ribbon off">-30%</span>
                     <figure>
                         <a href="product-detail-1.html">
-                            <img class="owl-lazy" src="img/products/product_placeholder_square_medium.jpg"
-                                data-src="img/products/shoes/2.jpg" alt="">
+                            <img class="owl-lazy" src="client/img/products/product_placeholder_square_medium.jpg"
+                                data-src="client/img/products/shoes/2.jpg" alt="">
                         </a>
                     </figure>
                     <div class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
@@ -433,8 +433,8 @@
                     <span class="ribbon off">-50%</span>
                     <figure>
                         <a href="product-detail-1.html">
-                            <img class="owl-lazy" src="img/products/product_placeholder_square_medium.jpg"
-                                data-src="img/products/shoes/3.jpg" alt="">
+                            <img class="owl-lazy" src="client/img/products/product_placeholder_square_medium.jpg"
+                                data-src="client/img/products/shoes/3.jpg" alt="">
                         </a>
                     </figure>
                     <div class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
@@ -505,22 +505,19 @@
 </main>
     <!--Css-->
     @push('css')
-            <!-- Favicons-->
+      <!-- Favicons-->
         <link rel="shortcut icon" href="client/img/favicon.ico" type="image/x-icon">
         <link rel="apple-touch-icon" type="image/x-icon" href="client/img/apple-touch-icon-57x57-precomposed.png">
         <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="client/img/apple-touch-icon-72x72-precomposed.png">
-        <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
-            href="client/img/apple-touch-icon-114x114-precomposed.png">
-        <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
-            href="client/img/apple-touch-icon-144x144-precomposed.png">
-
+        <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="client/img/apple-touch-icon-114x114-precomposed.png">
+        <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="client/img/apple-touch-icon-144x144-precomposed.png">
+        
         <!-- GOOGLE WEB FONT -->
         <link rel="dns-prefetch" href="https://fonts.gstatic.com/">
         <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
-        <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap"
-            as="fetch" crossorigin="anonymous">
+        <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap" as="fetch" crossorigin="anonymous">
         <script>
-            !function (e, n, t) { "use strict"; var o = "https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap", r = "__3perf_googleFonts_c2536"; function c(e) { (n.head || n.body).appendChild(e) } function a() { var e = n.createElement("link"); e.href = o, e.rel = "stylesheet", c(e) } function f(e) { if (!n.getElementById(r)) { var t = n.createElement("style"); t.id = r, c(t) } n.getElementById(r).innerHTML = e } e.FontFace && e.FontFace.prototype.hasOwnProperty("display") ? (t[r] && f(t[r]), fetch(o).then(function (e) { return e.text() }).then(function (e) { return e.replace(/@font-face {/g, "@font-face{font-display:swap;") }).then(function (e) { return t[r] = e }).then(f).catch(a)) : a() }(window, document, localStorage);
+        !function(e,n,t){"use strict";var o="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap",r="__3perf_googleFonts_c2536";function c(e){(n.head||n.body).appendChild(e)}function a(){var e=n.createElement("link");e.href=o,e.rel="stylesheet",c(e)}function f(e){if(!n.getElementById(r)){var t=n.createElement("style");t.id=r,c(t)}n.getElementById(r).innerHTML=e}e.FontFace&&e.FontFace.prototype.hasOwnProperty("display")?(t[r]&&f(t[r]),fetch(o).then(function(e){return e.text()}).then(function(e){return e.replace(/@font-face {/g,"@font-face{font-display:swap;")}).then(function(e){return t[r]=e}).then(f).catch(a)):a()}(window,document,localStorage);
         </script>
 
         <!-- BASE CSS -->
@@ -537,11 +534,11 @@
     <!--JS-->
     @push('js')
         <!-- COMMON SCRIPTS -->
-        <script src="js/common_scripts.min.js"></script>
-        <script src="js/main.js"></script>
+        <script src="client/js/common_scripts.min.js"></script>
+        <script src="client/js/main.js"></script>
 
         <!-- SPECIFIC SCRIPTS -->
-        <script src="js/carousel_with_thumbs.js"></script>
+        <script src="client/js/carousel_with_thumbs.js"></script>
         @endpush
     <!--ENd JS-->
 @endsection

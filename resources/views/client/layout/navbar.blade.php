@@ -100,7 +100,7 @@
                                         <div class="col-lg-3 d-xl-block d-lg-block d-md-none d-sm-none d-none">
                                             <div class="banner_menu">
                                                 <a href="#0">
-                                                    <img src="data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="client/img/banner_menu.jpg" width="400" height="550" alt="" class="img-fluid lazy">
+                                                    <img src="data:client/image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="client/img/banner_menu.jpg" width="400" height="550" alt="" class="img-fluid lazy">
                                                 </a>
                                             </div>
                                         </div>
