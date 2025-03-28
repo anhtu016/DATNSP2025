@@ -8,8 +8,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
+    @stack('admin_css')
+    {{-- @include('admin.layout.partials.css') --}}
 </head>
-    @include('admin.layout.partials.css')
 <body>
 
     <!-- Begin page -->
@@ -65,9 +66,9 @@
 
 
     <!--js-->
-    @include('admin.layout.partials.js')
+    @stack('admin_js')
+    {{-- @include('admin.layout.partials.js') --}}
     <!--end js-->
-
 </body>
 
 </html>

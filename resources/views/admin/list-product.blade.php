@@ -357,4 +357,54 @@
     </div>
     <!-- End Page-content -->
 </div>
+
+  <!-- css-->
+  @push('admin_css')
+        <!-- App favicon -->
+        <link rel="shortcut icon" href="admin/assets/images/favicon.ico">
+
+        <!-- nouisliderribute css -->
+        <link rel="stylesheet" href="admin/assets/libs/nouislider/nouislider.min.css">
+    
+        <!-- gridjs css -->
+        <link rel="stylesheet" href="admin/assets/libs/gridjs/theme/mermaid.min.css">
+    
+        <!-- Layout config Js -->
+        <script src="admin/assets/js/layout.js"></script>
+        <!-- Bootstrap Css -->
+        <link href="admin/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="admin/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="admin/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- custom Css-->
+        <link href="admin/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+    
+  @endpush
+  <!--end css-->
+
+  <!-- js-->
+  @push('admin_js')
+        <!-- JAVASCRIPT -->
+    <script src="admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="admin/assets/libs/simplebar/simplebar.min.js"></script>
+    <script src="admin/assets/libs/node-waves/waves.min.js"></script>
+    <script src="admin/assets/libs/feather-icons/feather.min.js"></script>
+    <script src="admin/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+    <script src="admin/assets/js/plugins.js"></script>
+
+    <!-- nouisliderribute js -->
+    <script src="admin/assets/libs/nouislider/nouislider.min.js"></script>
+    <script src="admin/assets/libs/wnumb/wNumb.min.js"></script>
+
+    <!-- gridjs js -->
+    <script src="admin/assets/libs/gridjs/gridjs.umd.js"></script>
+    <script src="https://unpkg.com/gridjs/plugins/selection/dist/selection.umd.js"></script>
+    <!-- ecommerce product list -->
+    <script src="admin/assets/js/pages/ecommerce-product-list.init.js"></script>
+
+    <!-- App js -->
+    <script src="admin/assets/js/app.js"></script>
+  @endpush
+  <!--end js-->
 @endsection
