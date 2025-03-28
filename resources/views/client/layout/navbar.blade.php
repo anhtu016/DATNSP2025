@@ -47,7 +47,7 @@
                         </div>
                     </a>
                     <!-- Mobile menu button -->
-                    <div class="main-menu">
+                    <div class="main-menu">           
                         <div id="header_menu">
                             <a href="index.html"><img src="client/img/logo_black.svg" alt="" width="100" height="35"></a>
                             <a href="#" class="open_close" id="close_in"><i class="ti-close"></i></a>
@@ -112,18 +112,29 @@
                             <li class="submenu">
                                 <a href="javascript:void(0);" class="show-submenu">Extra Pages</a>
                                 <ul>
-                                    <li><a href="header-2.html">Header Style 2</a></li>
-                                    <li><a href="header-3.html">Header Style 3</a></li>
-                                    <li><a href="header-4.html">Header Style 4</a></li>
-                                    <li><a href="header-5.html">Header Style 5</a></li>
-                                    <li><a href="404.html">404 Page</a></li>
-                                    <li><a href="sign-in-modal.html">Sign In Modal</a></li>
-                                    <li><a href="contacts.html">Contact Us</a></li>
-                                    <li><a href="about.html">About 1</a></li>
-                                    <li><a href="about-2.html">About 2</a></li>
-                                    <li><a href="modal-advertise.html">Modal Advertise</a></li>
-                                    <li><a href="modal-newsletter.html">Modal Newsletter</a></li>
-                                    <li><a href="gallery.html">Gallery Page</a></li>
+                                    @foreach ($categories as $category)
+                                        <li>
+                                            <a href="{{ $category->slug }}">{{ $category->name }}</a>
+                                            @if ($category->children->isNotEmpty())
+                                                <ul>
+                                                    @foreach ($category->children as $child)
+                                                        <li>
+                                                            <a href="{{ $child->slug }}">{{ $child->name }}</a>
+                                                            @if ($child->children->isNotEmpty())
+                                                                <ul>
+                                                                    @foreach ($child->children as $grandchild)
+                                                                        <li>
+                                                                            <a href="{{ $grandchild->slug }}">{{ $grandchild->name }}</a>
+                                                                        </li>
+                                                                    @endforeach
+                                                                </ul>
+                                                            @endif
+                                                        </li>
+                                                    @endforeach
+                                                </ul>
+                                            @endif
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </li>
                             <li>

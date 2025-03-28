@@ -312,4 +312,57 @@
         <!-- container-fluid -->
     </div>
     <!-- End Page-content -->
+
+      <!-- css-->
+      @push('admin_css')
+         <!-- App favicon -->
+        <link rel="shortcut icon" href="admin/assets/images/favicon.ico">
+
+        <!-- jsvectormap css -->
+        <link href="admin/assets/libs/jsvectormap/css/jsvectormap.min.css" rel="stylesheet" type="text/css" />
+
+        <!--Swiper slider css-->
+        <link href="admin/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css" />
+
+        <!-- Layout config Js -->
+        <script src="admin/assets/js/layout.js"></script>
+        <!-- Bootstrap Css -->
+        <link href="admin/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+        <!-- Icons Css -->
+        <link href="admin/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+        <!-- App Css-->
+        <link href="admin/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+        <!-- custom Css-->
+        <link href="admin/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+
+      @endpush
+      <!--end css-->
+  
+      <!-- js-->
+      @push('admin_js')
+         <!-- JAVASCRIPT -->
+        <script src="admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <script src="admin/assets/libs/simplebar/simplebar.min.js"></script>
+        <script src="admin/assets/libs/node-waves/waves.min.js"></script>
+        <script src="admin/assets/libs/feather-icons/feather.min.js"></script>
+        <script src="admin/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
+        <script src="admin/assets/js/plugins.js"></script>
+
+        <!-- apexcharts -->
+        <script src="admin/assets/libs/apexcharts/apexcharts.min.js"></script>
+
+        <!-- Vector map-->
+        <script src="admin/assets/libs/jsvectormap/js/jsvectormap.min.js"></script>
+        <script src="admin/assets/libs/jsvectormap/maps/world-merc.js"></script>
+
+        <!--Swiper slider js-->
+        <script src="admin/assets/libs/swiper/swiper-bundle.min.js"></script>
+
+        <!-- Dashboard init -->
+        <script src="admin/assets/js/pages/dashboard-ecommerce.init.js"></script>
+
+        <!-- App js -->
+        <script src="admin/assets/js/app.js"></script>
+      @endpush
+      <!--end js-->
 @endsection

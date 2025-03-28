@@ -3,7 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-
+use Kalnoy\Nestedset\NestedSet;
 return new class extends Migration
 {
     /**
@@ -15,10 +15,9 @@ return new class extends Migration
             $table->id();
             $table->string('name',200);
             $table->string('slug',200)->unique();
-            $table->unsignedBigInteger('parent_id')->default(null);
+            NestedSet::columns($table);
             $table->text('description');
             $table->timestamps();
-            $table->foreign('parent_id')->references('id')->on('categories');
             $table->softDeletes();
         });
     }

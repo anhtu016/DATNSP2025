@@ -1,7 +1,8 @@
 <?php
 
+use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\MenuController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('client.detail-product');
-});
+// Route::get('/',[CategoryController::class,'index']);
+Route::get('/', function(){return view('admin.index');});
+Route::get('list-category',[CategoryController::class,'list_category']);
+// routes/web.php
