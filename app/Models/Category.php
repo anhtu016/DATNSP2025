@@ -9,6 +9,11 @@ class Category extends Model
 {
     use HasFactory;
     use NodeTrait;
-    protected $table ='categories';
+    protected $fillable = [
+        'id',
+        'name', 
+        'slug',
+        'description',
+    ];
 
 }
