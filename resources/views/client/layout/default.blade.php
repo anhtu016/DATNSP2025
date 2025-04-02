@@ -12,8 +12,8 @@
 	<meta name="author" content="Ansonika">
 	<title>Allaia | Bootstrap eCommerce Template - ThemeForest</title>
 
+	@include('client.layout.partials.css')
 	@stack('css')
-
 </head>
 
 <body>
@@ -38,7 +38,7 @@
 	<!-- page -->
 
 	<div id="toTop"></div><!-- Back to top button -->
-
+	@include('client.layout.partials.js')
 	@stack('js')
 </body>
 

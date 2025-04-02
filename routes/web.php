@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -14,7 +18,7 @@ use App\Http\Controllers\MenuController;
 |
 */
 
-// Route::get('/',[CategoryController::class,'index']);
-Route::get('/', function(){return view('admin.index');});
-Route::get('list-category',[CategoryController::class,'list_category']);
-// routes/web.php
+Route::get('/', [ProductController::class, 'index']);
+Route::group(['prefix' => 'admin'], function () {
+        Route::resource('attributes', AttributeController::class);
+});
