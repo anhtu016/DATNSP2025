@@ -1,9 +1,13 @@
 <?php
 
+use App\Http\Controllers\AdminProductController;
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CategoryController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoriesController;
+use App\Http\Controllers\ProductController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -40,3 +44,8 @@ Route::put('admin-update-categories/{id}',[App\Http\Controllers\CategoriesContro
 
 
 // routes/web.php
+
+Route::get('/', [ProductController::class, 'index']);
+Route::group(['prefix' => 'admin'], function () {
+        Route::resource('attributes', AttributeController::class);
+});

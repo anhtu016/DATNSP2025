@@ -84,8 +84,8 @@
                             </select>
                         </div>
                     </li>
-                    <li><img src="data:client/image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw=="
-                            data-src="client/img/cards_all.svg" alt="" width="198" height="30" class="lazy"></li>
+                    <li><img src="data:{{asset('client/image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')}}"
+                            data-src="{{asset('client/img/cards_all.svg')}}" alt="" width="198" height="30" class="lazy"></li>
                 </ul>
             </div>
             <div class="col-lg-6">

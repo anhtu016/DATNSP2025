@@ -16,4 +16,10 @@ class Category extends Model
         'description',
     ];
 
+// =======
+//     protected $table ='categories';
+//     public function product(){
+//         return $this->belongsToMany(Product::class);
+//     }
+// >>>>>>> main
 }

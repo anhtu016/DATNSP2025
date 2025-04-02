@@ -35,7 +35,7 @@
             <div class="row small-gutters">
                 <div class="col-xl-3 col-lg-3 d-lg-flex align-items-center">
                     <div id="logo">
-                        <a href="index.html"><img src="client/img/logo_black.svg" alt="" width="100" height="35"></a>
+                        <a href="index.html"><img src="{{asset('client/img/logo_black.svg')}}" alt="" width="100" height="35"></a>
                     </div>
                 </div>
                 <nav class="col-xl-6 col-lg-7">
@@ -49,7 +49,7 @@
                     <!-- Mobile menu button -->
                     <div class="main-menu">           
                         <div id="header_menu">
-                            <a href="index.html"><img src="client/img/logo_black.svg" alt="" width="100" height="35"></a>
+                            <a href="index.html"><img src="{{asset('client/img/logo_black.svg')}}" alt="" width="100" height="35"></a>
                             <a href="#" class="open_close" id="close_in"><i class="ti-close"></i></a>
                         </div>
                         <ul>
@@ -100,7 +100,7 @@
                                         <div class="col-lg-3 d-xl-block d-lg-block d-md-none d-sm-none d-none">
                                             <div class="banner_menu">
                                                 <a href="#0">
-                                                    <img src="data:client/image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==" data-src="client/img/banner_menu.jpg" width="400" height="550" alt="" class="img-fluid lazy">
+                                                    <img src="data:{{asset('client/image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==')}}" data-src="{{asset('client/img/banner_menu.jpg')}}" width="400" height="550" alt="" class="img-fluid lazy">
                                                 </a>
                                             </div>
                                         </div>
@@ -156,14 +156,14 @@
                                     <ul>
                                         <li>
                                             <a href="product-detail-1.html">
-                                                <figure><img src="client/img/products/product_placeholder_square_small.jpg" data-src="client/img/products/shoes/thumb/1.jpg" alt="" width="50" height="50" class="lazy"></figure>
+                                                <figure><img src="{{asset('client/img/products/product_placeholder_square_small.jpg')}}" data-src="{{asset('client/img/products/shoes/thumb/1.jpg')}}" alt="" width="50" height="50" class="lazy"></figure>
                                                 <strong><span>1x Armor Air x Fear</span>$90.00</strong>
                                             </a>
                                             <a href="#0" class="action"><i class="ti-trash"></i></a>
                                         </li>
                                         <li>
                                             <a href="product-detail-1.html">
-                                                <figure><img src="client/img/products/product_placeholder_square_small.jpg" data-src="client/img/products/shoes/thumb/2.jpg" alt="" width="50" height="50" class="lazy"></figure>
+                                                <figure><img src="{{asset('client/img/products/product_placeholder_square_small.jpg')}}" data-src="{{asset('client/img/products/shoes/thumb/2.jpg')}}" alt="" width="50" height="50" class="lazy"></figure>
                                                 <strong><span>1x Armor Okwahn II</span>$110.00</strong>
                                             </a>
                                             <a href="https://ansonika.com/allaia/0" class="action"><i class="ti-trash"></i></a>
