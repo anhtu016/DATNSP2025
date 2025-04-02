@@ -9,8 +9,17 @@ class Category extends Model
 {
     use HasFactory;
     use NodeTrait;
-    protected $table ='categories';
-    public function product(){
-        return $this->belongsToMany(Product::class);
-    }
+    protected $fillable = [
+        'id',
+        'name', 
+        'slug',
+        'description',
+    ];
+
+// =======
+//     protected $table ='categories';
+//     public function product(){
+//         return $this->belongsToMany(Product::class);
+//     }
+// >>>>>>> main
 }
