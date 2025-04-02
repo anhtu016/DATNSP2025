@@ -404,43 +404,27 @@
 
  <!--Css-->
     @push('css')
-        <!-- Favicons-->
-        <link rel="shortcut icon" href="client/img/favicon.ico" type="image/x-icon">
-        <link rel="apple-touch-icon" type="image/x-icon" href="client/img/apple-touch-icon-57x57-precomposed.png">
-        <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="client/img/apple-touch-icon-72x72-precomposed.png">
-        <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="client/img/apple-touch-icon-114x114-precomposed.png">
-        <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="client/img/apple-touch-icon-144x144-precomposed.png">
         
-        <!-- GOOGLE WEB FONT -->
-        <link rel="dns-prefetch" href="https://fonts.gstatic.com/">
-        <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin="anonymous">
-        <link rel="preload" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap" as="fetch" crossorigin="anonymous">
         <script>
         !function(e,n,t){"use strict";var o="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900&amp;display=swap",r="__3perf_googleFonts_c2536";function c(e){(n.head||n.body).appendChild(e)}function a(){var e=n.createElement("link");e.href=o,e.rel="stylesheet",c(e)}function f(e){if(!n.getElementById(r)){var t=n.createElement("style");t.id=r,c(t)}n.getElementById(r).innerHTML=e}e.FontFace&&e.FontFace.prototype.hasOwnProperty("display")?(t[r]&&f(t[r]),fetch(o).then(function(e){return e.text()}).then(function(e){return e.replace(/@font-face {/g,"@font-face{font-display:swap;")}).then(function(e){return t[r]=e}).then(f).catch(a)):a()}(window,document,localStorage);
         </script>
     
-        <!-- BASE CSS -->
-        <link rel="preload" href="client/css/bootstrap.min.css" as="style">
-        <link rel="stylesheet" href="client/css/bootstrap.min.css">
-        <link href="client/css/style.css" rel="stylesheet">
+       
     
         <!-- SPECIFIC CSS -->
-        <link href="client/css/listing.css" rel="stylesheet">
+        <link href="{{asset('client/css/listing.css')}}" rel="stylesheet">
     
-        <!-- YOUR CUSTOM CSS -->
-        <link href="client/css/custom.css" rel="stylesheet">
+        <
     @endpush
  <!--ENd Css-->
 
  <!--JS-->
     @push('js')
-        <!-- COMMON SCRIPTS -->
-        <script src="client/js/common_scripts.min.js"></script>
-        <script src="client/js/main.js"></script>
+       
 
         <!-- SPECIFIC SCRIPTS -->
-        <script src="client/js/sticky_sidebar.min.js"></script>
-        <script src="client/js/specific_listing.js"></script>
+        <script src="{{asset('client/js/sticky_sidebar.min.js')}}"></script>
+        <script src="{{asset('client/js/specific_listing.js')}}"></script>
             
     @endpush
  <!--ENd JS-->

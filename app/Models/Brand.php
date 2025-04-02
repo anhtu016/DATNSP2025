@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Kalnoy\Nestedset\NodeTrait;
-class Category extends Model
+
+class Brand extends Model
 {
     use HasFactory;
-    use NodeTrait;
-    protected $table ='categories';
+    protected $table = 'brands';
     public function product(){
-        return $this->belongsToMany(Product::class);
+        return $this->hasMany(Product::class);
     }
 }

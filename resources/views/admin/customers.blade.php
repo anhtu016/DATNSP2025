@@ -306,21 +306,21 @@
   <!-- css-->
   @push('admin_css')
     <!-- App favicon -->
-    <link rel="shortcut icon" href="admin/assets/images/favicon.ico">
+    <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
 
     <!-- Sweet Alert css-->
-    <link href="admin/assets/libs/sweetalert2/sweetalert2.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('admin/assets/libs/sweetalert2/sweetalert2.min.css')}}" rel="stylesheet" type="text/css" />
 
     <!-- Layout config Js -->
-    <script src="admin/assets/js/layout.js"></script>
+    <script src="{{asset('admin/assets/js/layout.js')}}"></script>
     <!-- Bootstrap Css -->
-    <link href="admin/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('admin/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- Icons Css -->
-    <link href="admin/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('admin/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- App Css-->
-    <link href="admin/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('admin/assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
     <!-- custom Css-->
-    <link href="admin/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+    <link href="{{asset('admin/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
 
   @endpush
   <!--end css-->
@@ -328,25 +328,25 @@
   <!-- js-->
   @push('admin_js')
     <!-- JAVASCRIPT -->
-    <script src="admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-    <script src="admin/assets/libs/simplebar/simplebar.min.js"></script>
-    <script src="admin/assets/libs/node-waves/waves.min.js"></script>
-    <script src="admin/assets/libs/feather-icons/feather.min.js"></script>
-    <script src="admin/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
-    <script src="admin/assets/js/plugins.js"></script>
+    <script src="{{asset('admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+    <script src="{{asset('admin/assets/libs/simplebar/simplebar.min.js')}}"></script>
+    <script src="{{asset('admin/assets/libs/node-waves/waves.min.js')}}"></script>
+    <script src="{{asset('admin/assets/libs/feather-icons/feather.min.js')}}"></script>
+    <script src="{{asset('admin/assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
+    <script src="{{asset('admin/assets/js/plugins.js')}}"></script>
 
     <!-- list.js min js -->
-    <script src="admin/assets/libs/list.js/list.min.js"></script>
-    <script src="admin/assets/libs/list.pagination.js/list.pagination.min.js"></script>
+    <script src="{{asset('admin/assets/libs/list.js/list.min.js')}}"></script>
+    <script src="{{asset('admin/assets/libs/list.pagination.js/list.pagination.min.js')}}"></script>
 
     <!--ecommerce-customer init js -->
-    <script src="admin/assets/js/pages/ecommerce-customer-list.init.js"></script>
+    <script src="{{asset('admin/assets/js/pages/ecommerce-customer-list.init.js')}}"></script>
 
     <!-- Sweet Alerts js -->
-    <script src="admin/assets/libs/sweetalert2/sweetalert2.min.js"></script>
+    <script src="{{asset('admin/assets/libs/sweetalert2/sweetalert2.min.js')}}"></script>
 
     <!-- App js -->
-    <script src="admin/assets/js/app.js"></script>
+    <script src="{{asset('admin/assets/js/app.js')}}"></script>
   @endpush
   <!--end js-->
 @endsection

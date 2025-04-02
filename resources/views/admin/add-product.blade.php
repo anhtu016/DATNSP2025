@@ -402,18 +402,18 @@
      <link rel="shortcut icon" href="assets/images/favicon.ico">
 
      <!-- Plugins css -->
-     <link href="admin/assets/libs/dropzone/dropzone.css" rel="stylesheet" type="text/css" />
+     <link href="{{asset('admin/assets/libs/dropzone/dropzone.css')}}" rel="stylesheet" type="text/css" />
  
      <!-- Layout config Js -->
-     <script src="admin/assets/js/layout.js"></script>
+     <script src="{{asset('admin/assets/js/layout.js')}}"></script>
      <!-- Bootstrap Css -->
-     <link href="admin/assets/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+     <link href="{{asset('admin/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
      <!-- Icons Css -->
-     <link href="admin/assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+     <link href="{{asset('admin/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
      <!-- App Css-->
-     <link href="admin/assets/css/app.min.css" rel="stylesheet" type="text/css" />
+     <link href="{{asset('admin/assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
      <!-- custom Css-->
-     <link href="admin/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+     <link href="{{asset('admin/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
  
     @endpush
     <!--end css-->
@@ -421,23 +421,23 @@
     <!-- js-->
     @push('admin_js')
         <!-- JAVASCRIPT -->
-        <script src="admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js"></script>
-        <script src="admin/assets/libs/simplebar/simplebar.min.js"></script>
-        <script src="admin/assets/libs/node-waves/waves.min.js"></script>
-        <script src="admin/assets/libs/feather-icons/feather.min.js"></script>
-        <script src="admin/assets/js/pages/plugins/lord-icon-2.1.0.js"></script>
-        <script src="admin/assets/js/plugins.js"></script>
+        <script src="{{asset('admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
+        <script src="{{asset('admin/assets/libs/simplebar/simplebar.min.js')}}"></script>
+        <script src="{{asset('admin/assets/libs/node-waves/waves.min.js')}}"></script>
+        <script src="{{asset('admin/assets/libs/feather-icons/feather.min.js')}}"></script>
+        <script src="{{asset('admin/assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
+        <script src="{{asset('admin/assets/js/plugins.js')}}"></script>
 
         <!-- ckeditor -->
-        <script src="admin/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js"></script>
+        <script src="{{asset('admin/assets/libs/@ckeditor/ckeditor5-build-classic/build/ckeditor.js')}}"></script>
 
         <!-- dropzone js -->
-        <script src="admin/assets/libs/dropzone/dropzone-min.js"></script>
+        <script src="{{asset('admin/assets/libs/dropzone/dropzone-min.js')}}"></script>
 
-        <script src="admin/assets/js/pages/ecommerce-product-create.init.js"></script>
+        <script src="{{asset('admin/assets/js/pages/ecommerce-product-create.init.js')}}"></script>
 
         <!-- App js -->
-        <script src="admin/assets/js/app.js"></script>
+        <script src="{{asset('admin/assets/js/app.js')}}"></script>
     @endpush
     <!--end js-->
 
