@@ -11,7 +11,9 @@
 	<meta name="description" content="Allaia Bootstrap eCommerce Template - ThemeForest">
 	<meta name="author" content="Ansonika">
 	<title>Allaia | Bootstrap eCommerce Template - ThemeForest</title>
-
+	<link href="{{ asset('client/css/bootstrap.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('client/css/style.css') }}" rel="stylesheet">
+    <link href="{{ asset('client/css/responsive.css') }}" rel="stylesheet">
 	@include('client.layout.partials.css')
 	@stack('css')
 </head>
