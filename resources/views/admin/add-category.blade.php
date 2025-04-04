@@ -1,5 +1,6 @@
 @extends('admin.layout.default')
 @section('content')
+
 <ul>
       @foreach ($categories as $category)
           <li>
