@@ -106,69 +106,7 @@
             <span>Products</span>
             <p>Cum doctus civibus efficiantur in imperdiet deterruisset</p>
         </div>
-        <div class="row small-gutters">
 
-            <!-- List product Top selling-->
-            @foreach ($data as $product)
-              
-            <div class="col-6 col-md-4 col-xl-3">
-                <div class="grid_item">
-                    <figure>
-                        @if (percentageDiscount($product->price,$product->sell_price) != 0)
-                            <span class="ribbon off">
-                                    -{{percentageDiscount($product->price,$product->sell_price)}}%
-                            </span>
-                        @endif
-                        <a href="product-detail-1.html">
-                            <img class="img-fluid lazy" src="client/img/products/product_placeholder_square_medium.jpg"
-                                data-src="client/img/products/shoes/1.jpg" alt="" width="400" height="400">
-                            <img class="img-fluid lazy" src="client/img/products/product_placeholder_square_medium.jpg"
-                                data-src="client/img/products/shoes/1_b.jpg" alt="" width="400" height="400">
-                        </a>
-                        {{-- <div data-countdown="2019/05/15" class="countdown"></div> --}}
-                    </figure>
-                    <div class="rating">
-                        @if (round($product->productReview->avg('rating')) > 0)
-                            @for ($i = 0; $i < round($product->productReview->avg('rating')); $i++)
-                            <i class="icon-star voted"></i>
-                            @if ($i == 5)
-                                @break
-                            @endif               
-                            @endfor
-                        @else        
-                            <i class="icon-star voted"></i>   <i class="icon-star"></i> <i class="icon-star"></i> <i class="icon-star"></i> <i class="icon-star"></i>           
-                        @endif
-                    </div>
-                    <a href="product-detail-1.html">
-                        <h3>{{$product->name}}</h3>
-                    </a>
-                    <div class="price_box">
-                        @if ($product->sell_price > 0)
-                            <span class="new_price">{{$product->sell_price}} VNĐ</span>
-                            <span class="old_price">{{$product->price}} VNĐ</span>
-                        @elseif ($product->sell_price == 0)    
-                            <span class="new_price">{{$product->price}} VNĐ</span>
-                        
-                        @endif
-                        
-                    </div>
-                    <ul>
-                        <li><a href="#0" class="tooltip-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                                title="Add to favorites"><i class="ti-heart"></i><span>Add to
-                                    favorites</span></a></li>
-                        {{-- <li><a href="#0" class="tooltip-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                                title="Add to compare"><i class="ti-control-shuffle"></i><span>Add to
-                                    compare</span></a></li> --}}
-                        <li><a href="#0" class="tooltip-1" data-bs-toggle="tooltip" data-bs-placement="left"
-                                title="Add to cart"><i class="ti-shopping-cart"></i><span>Add to cart</span></a>
-                        </li>
-                    </ul>
-                </div>
-                <!-- /grid_item -->
-            </div>
-            @endforeach
-            <!-- List product Top selling-->
-        </div>
         <!-- /row -->
     </div>
     <!-- /container -->
