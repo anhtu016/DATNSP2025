@@ -71,11 +71,18 @@ Route::get('admin-edit-categories/{id}',[App\Http\Controllers\CategoriesControll
 Route::put('admin-update-categories/{id}',[App\Http\Controllers\CategoriesController::class,'update'])
 ->name('update');
 
+Route::get('trash-categories',[App\Http\Controllers\CategoriesController::class,'trash'])
+->name('trash');
 
+Route::get('admin-reset-categories/{id}',[App\Http\Controllers\CategoriesController::class,'reset'])
+->name('reset');
+
+Route::delete('admin-forceDel-categories/{id}',[App\Http\Controllers\CategoriesController::class,'forceDelete'])
+->name('forceDelete');
 
 // routes/web.php
 
 Route::get('/', [ProductController::class, 'index']);
 Route::group(['prefix' => 'admin'], function () {
-        Route::resource('attributes', AttributeController::class);
+    Route::resource('attributes', AttributeController::class);
 });

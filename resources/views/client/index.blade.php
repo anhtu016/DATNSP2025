@@ -9,13 +9,13 @@
                         <div class="row justify-content-center justify-content-md-end">
                             <div class="col-lg-6 static">
                                 <div class="slide-text text-end white">
-                                    <h2 class="owl-slide-animated owl-slide-title">Attack Air<br>Max 720 Sage
-                                        Low</h2>
+                                    <h2 class="owl-slide-animated owl-slide-title">Attack Air<br>Tối đa 720
+                                        Thấp</h2>
                                     <p class="owl-slide-animated owl-slide-subtitle">
-                                        Limited items available at this price
+                                        Số lượng mặt hàng có hạn với mức giá này
                                     </p>
                                     <div class="owl-slide-animated owl-slide-cta"><a class="btn_1"
-                                            href="listing-grid-1-full.html" role="button">Shop Now</a></div>
+                                            href="listing-grid-1-full.html" role="button">Mua Ngay</a></div>
                                 </div>
                             </div>
                         </div>
