@@ -12,5 +12,8 @@ class HomeController extends Controller
         return view('client.index', compact('user')); // Truyền dữ liệu sang view
         
     }
+    public function index1(){
+        return view('admin.index');
+    }
 }
 

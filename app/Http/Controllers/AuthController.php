@@ -15,7 +15,16 @@ class AuthController extends Controller
     // đăng nhập
     public function login(Request $request)
     {
+        // Kiểm tra đăng nhập
         if (Auth::attempt($request->only('email', 'password'))) {
+            $user = Auth::user();
+    
+            // Kiểm tra nếu người dùng có quyền 'admin'
+            if ($user->hasPermission('admin')) {
+                return redirect()->route('homeadmin')->with('success', 'Đăng nhập thành công!');
+            }
+    
+            // Nếu người dùng không phải admin, chuyển hướng về trang chủ
             return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
         }
     
