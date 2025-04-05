@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Kalnoy\Nestedset\NodeTrait;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class Category extends Model
 {
     use HasFactory;
     use NodeTrait;
+    use SoftDeletes;
+
     protected $fillable = [
         'id',
         'name', 
@@ -16,10 +19,4 @@ class Category extends Model
         'description',
     ];
 
-// =======
-//     protected $table ='categories';
-//     public function product(){
-//         return $this->belongsToMany(Product::class);
-//     }
-// >>>>>>> main
 }

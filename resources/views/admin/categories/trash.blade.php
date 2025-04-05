@@ -11,9 +11,8 @@
                 <div class="listjs-table" id="customerList">
                     <div class="row g-4 mb-3">
                         <div class="col-sm-auto">
-                            <div>
-                                <a href="add-categories"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Add</button></a>
-                                <a href="trash-categories"><button class="btn btn-soft-danger" onClick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button></a>   
+                            <div>                               
+                                <a href="list-categories"><button class="btn btn-soft-danger" onClick="deleteMultiple()"><i class="fa-solid fa-table-list"></i></button></a>   
                             </div>
                         </div>
                         <div class="col-sm">
@@ -37,24 +36,23 @@
                                     <th class="sort" data-sort="action">Action</th>
                                 </tr>
                             </thead>
-                            @foreach ($listCategory as $ct)
+                            @foreach ($trash as $tr)
                             <tbody class="list form-check-all">
                                 <tr>
-                                    <td>{{$ct->id}}</td>
-                                    <td>{{$ct->name}}</td>
-                                    <td>{{$ct->slug}}</td>
-                                    <td>{{$ct->description}}</td>
+                                    <td>{{$tr->id}}</td>
+                                    <td>{{$tr->name}}</td>
+                                    <td>{{$tr->slug}}</td>
+                                    <td>{{$tr->description}}</td>
                                     <td>
                                         <div class="d-flex gap-2">
                                             <div class="edit">
-                                               <a href="{{route('edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Edit</button></a> 
+                                               <a href="{{route('reset',$tr->id)}}"><button class="btn btn-sm btn-primary edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal" onclick="return confirm('Bạn có chắc chắn muốn khôi phục mục này ?')">Reset</button></a> 
                                             </div>
-                                            <form action="{{route('destroy', $ct->id)}}" method="post">
+                                            <form action="{{route('forceDelete', $tr->id)}}" method="post">
                                                 @csrf
                                                 @method('delete')
                                                 <div class="remove">
-                                                    <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" 
-                                                    onclick="return confirm('Bạn có chắc chắn muốn chuyển mục này vào thùng rác không ?')">Remove</button>
+                                                    <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" onclick="return confirm('Bạn có chắc chắn muốn xóa danh mục này không?')">Delete</button>
                                                 </div>
                                             </form>
                                             
@@ -63,6 +61,7 @@
                                 </tr>
                             </tbody>
                             @endforeach
+                            
                         </table>
                        
                         <div class="noresult" style="display: none">
@@ -113,6 +112,7 @@
 <link href="admin/assets/css/app.min.css" rel="stylesheet" type="text/css" />
 <!-- custom Css-->
 <link href="admin/assets/css/custom.min.css" rel="stylesheet" type="text/css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
 @endpush
 <!--end css-->

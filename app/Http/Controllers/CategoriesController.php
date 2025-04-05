@@ -71,4 +71,22 @@ class CategoriesController extends Controller
         $delCategory->delete();
         return redirect()->route('index');
     }
+
+    public function trash( ){
+        $trash = Category::query()->onlyTrashed()->get();             
+        return view('admin.categories.trash', compact('trash'));
+    }
+
+    public function reset(string $id){
+        Category::query()->withTrashed()->where('id',$id)
+        ->restore();
+        return redirect()->route('index');       
+    }
+    public function forceDelete(string $id){
+        Category::query()->withTrashed()->where('id',$id)
+        ->forceDelete();
+        return redirect()->route('index');       
+    }
+
+
 }
