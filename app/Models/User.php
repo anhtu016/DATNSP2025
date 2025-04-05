@@ -45,4 +45,17 @@ class User extends Authenticatable
     public function productReview(){
         return $this->hasMany(ProductReview::class);
     }
-}
+    public function permissions()
+    {
+        return $this->belongsToMany(Permission::class, 'users_permissions', 'user_id', 'permission_id');
+    }
+    
+        // Phương thức kiểm tra nếu người dùng có quyền nhất định
+        public function hasPermission($permissionName)
+        {
+            // Thực hiện join giữa bảng users, users_permissions và permissions
+            return $this->permissions()
+                        ->where('permissions.permission_name', $permissionName) // Lọc theo tên quyền
+                        ->exists(); // Kiểm tra xem có quyền này không
+        }
+    }

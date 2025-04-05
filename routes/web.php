@@ -10,6 +10,8 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use League\CommonMark\Extension\Attributes\Node\Attributes;
+use App\Http\Controllers\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +28,9 @@ use App\Http\Controllers\Auth\ForgotPasswordController;
 // Route::group(['prefix' => 'admin'], function () {
 //         Route::resource('attributes', AttributeController::class);
 // });
-Route::get('/', function () {
-        return view('client.index');
-    });
+// Route::get('/', function () {
+//         return view('client.index');
+//     });
     Route::get('/home', [HomeController::class, 'index'])->name('home');
     
     
@@ -48,9 +50,9 @@ Route::get('/', function () {
     //xử lý đổi mật khẩu
     Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
     Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
-=======
+
 // Route::get('/',[CategoryController::class,'index']);
-Route::get('/', function(){return view('admin.index');});
+Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
 // Route::get('abc',[CategoryController::class,'list_category']);
 
 Route::get('list-categories',[App\Http\Controllers\CategoriesController::class,'index'])
@@ -81,8 +83,38 @@ Route::delete('admin-forceDel-categories/{id}',[App\Http\Controllers\CategoriesC
 ->name('forceDelete');
 
 // routes/web.php
-
-Route::get('/', [ProductController::class, 'index']);
+Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
+Route::get('/', [HomeController::class, 'index1']);
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('attributes', AttributeController::class);
 });
+
+
+// routes/web.php
+// Route để hiển thị danh sách người dùng
+Route::get('admin/users', [App\Http\Controllers\UserController::class, 'index'])
+    ->name('users.index');
+
+// Thêm người dùng mới
+Route::get('admin/users/create', [App\Http\Controllers\UserController::class, 'create'])
+    ->name('users.create');
+
+// Lưu người dùng mới
+Route::post('admin/users', [App\Http\Controllers\UserController::class, 'store'])
+    ->name('users.store');
+
+// Xóa người dùng
+Route::delete('admin/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])
+    ->name('users.destroy');
+
+// Route để hiển thị form chỉnh sửa người dùng (GET)
+Route::get('admin/users/{id}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
+
+// Route để cập nhật người dùng (PUT)
+Route::put('admin/users/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
+
+
+
+
+
+
