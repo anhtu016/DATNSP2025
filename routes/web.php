@@ -50,8 +50,13 @@ Route::get('admin-reset-categories/{id}',[App\Http\Controllers\CategoriesControl
 Route::delete('admin-forceDel-categories/{id}',[App\Http\Controllers\CategoriesController::class,'forceDelete'])
 ->name('forceDelete');
 
-// routes/web.php
+// chi tiết sản phẩm 
+Route::get('client-detail/{id}',[App\Http\Controllers\CuaHangController::class,'index'])
+->name('detail.index');
 
+
+
+// routes/web.php
 Route::get('/', [ProductController::class, 'index']);
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('attributes', AttributeController::class);
