@@ -106,7 +106,7 @@
             <span>Products</span>
             <p>Cum doctus civibus efficiantur in imperdiet deterruisset</p>
         </div>
-        <div class="row small-gutters">
+
 
             <!-- List product Top selling-->
             @foreach ($data as $product)
@@ -169,6 +169,7 @@
             @endforeach
             <!-- List product Top selling-->
         </div>
+
         <!-- /row -->
     </div>
     <!-- /container -->

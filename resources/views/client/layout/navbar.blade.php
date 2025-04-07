@@ -148,65 +148,39 @@
                     <!--/main-menu -->
                 </nav>
                 <div class="col-xl-3 col-lg-2 d-lg-flex align-items-center justify-content-end text-end">
-                    <ul class="top_tools">
+                    <ul class="top_tools d-flex align-items-center gap-3">
+                        <!-- Tài khoản -->
                         <li>
-                            <div class="dropdown dropdown-cart">
-                                <a href="cart.html" class="cart_bt"><strong>2</strong></a>
-                                <div class="dropdown-menu">
-                                    <ul>
+                            <div class="dropdown">
+                                @if(Auth::check()) 
+                                    <button class="btn dropdown-toggle d-flex align-items-center" type="button" id="user" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <span>Xin chào, <strong>{{ Auth::user()->name }}</strong></span>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user">
+                                        <li><a class="dropdown-item" href="#"><i class="ti-user"></i> My Profile</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="ti-package"></i> My Orders</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="ti-user"></i> Track your Orders</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="ti-heart"></i> Wishlist </a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="ti-help-alt"></i> Help and Faq </a></li>
+                                        <li><hr class="dropdown-divider"></li>
                                         <li>
-                                            <a href="product-detail-1.html">
-                                                <figure><img src="{{asset('client/img/products/product_placeholder_square_small.jpg')}}" data-src="{{asset('client/img/products/shoes/thumb/1.jpg')}}" alt="" width="50" height="50" class="lazy"></figure>
-                                                <strong><span>1x Armor Air x Fear</span>$90.00</strong>
-                                            </a>
-                                            <a href="#0" class="action"><i class="ti-trash"></i></a>
-                                        </li>
-                                        <li>
-                                            <a href="product-detail-1.html">
-                                                <figure><img src="{{asset('client/img/products/product_placeholder_square_small.jpg')}}" data-src="{{asset('client/img/products/shoes/thumb/2.jpg')}}" alt="" width="50" height="50" class="lazy"></figure>
-                                                <strong><span>1x Armor Okwahn II</span>$110.00</strong>
-                                            </a>
-                                            <a href="https://ansonika.com/allaia/0" class="action"><i class="ti-trash"></i></a>
+                                            <form action="{{ route('logout') }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item text-danger"><i class="ti-power-off"></i> Đăng xuất</button>
+                                            </form>
                                         </li>
                                     </ul>
-                                    <div class="total_drop">
-                                        <div class="clearfix"><strong>Total</strong><span>$200.00</span></div>
-                                        <a href="cart.html" class="btn_1 outline">View Cart</a><a href="checkout.html" class="btn_1">Checkout</a>
+                                @else
+                                    <div class="dropdown dropdown-access">
+                                        <a href="{{ route('login') }}" class="access_link"><span>Account</span></a>
+                                        <div class="dropdown-menu">
+                                            <a href="{{ route('login') }}" class="btn_1">Sign In or Sign Up</a>
+                                        </div>
                                     </div>
-                                </div>
+                                @endif
                             </div>
-                            <!-- /dropdown-cart-->
+                            
                         </li>
-                        <li>
-                            <a href="my-wishlist.html" class="wishlist"><span>Wishlist</span></a>
-                        </li>
-                        <li>
-                            <div class="dropdown dropdown-access">
-                                <a href="account.html" class="access_link"><span>Account</span></a>
-                                <div class="dropdown-menu">
-                                    <a href="account.html" class="btn_1">Sign In or Sign Up</a>
-                                    <ul>
-                                        <li>
-                                            <a href="track-order.html"><i class="ti-truck"></i>Track your Order</a>
-                                        </li>
-                                        <li>
-                                            <a href="my-orders.html"><i class="ti-package"></i>My Orders</a>
-                                        </li>
-                                        <li>
-                                            <a href="profile-page.html"><i class="ti-user"></i>My Profile</a>
-                                        </li>
-                                        <li>
-                                            <a href="help.html"><i class="ti-help-alt"></i>Help and Faq</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- /dropdown-access-->
-                        </li>
-                        <li>
-                            <a href="javascript:void(0);" class="search_panel"><span>Search</span></a>
-                        </li>
-                    
                     </ul>
                 </div>
             </div>
