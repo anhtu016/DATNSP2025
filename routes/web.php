@@ -82,9 +82,18 @@ Route::get('admin-reset-categories/{id}',[App\Http\Controllers\CategoriesControl
 Route::delete('admin-forceDel-categories/{id}',[App\Http\Controllers\CategoriesController::class,'forceDelete'])
 ->name('forceDelete');
 
+// chi tiết sản phẩm 
+Route::get('client-detail/{id}',[App\Http\Controllers\CuaHangController::class,'index'])
+->name('detail.index');
+
+
+
+// routes/web.php
+Route::get('/', [ProductController::class, 'index']);
 // routes/web.php
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
 Route::get('/', [HomeController::class, 'index1']);
+
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('attributes', AttributeController::class);
 });
