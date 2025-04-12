@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Controllers;
-
+namespace App\Http\Controllers\Client;
+use App\Http\Controllers\Controller;
 use App\Models\Product;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class CuaHangController extends Controller
+use App\Models\ProductImage;
+use App\Models\ProductReview;
+use Illuminate\Http\Request;
+
+
+class ProductDetailController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -14,8 +17,11 @@ class CuaHangController extends Controller
     public function index(string $id)
     {
         $detailProduct = Product::query()->find($id);
-        // dd( $detailProduct);
-        return view('client.detail-product', compact('detailProduct'));
+        $imageProduct = ProductImage::query()->where('product_id',$id)->get();
+        $loadReviews = ProductReview::with(['product', 'user'])
+        ->where('product_id', $id)->get();    
+        // dd(  $imageProduct);
+        return view('client.detail-product', compact('detailProduct','imageProduct','loadReviews'));
     }
 
     /**

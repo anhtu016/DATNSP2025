@@ -11,18 +11,7 @@
                 <div class="all">
                     <div class="slider">
                         <div class="owl-carousel owl-theme main">
-                            <div style="background-image:url(client/img/products/shoes/1.jpg);" class="item-box">
-                            </div>
-                            <div style="background-image:url(client/img/products/shoes/2.jpg);" class="item-box">
-                            </div>
-                            <div style="background-image:url(client/img/products/shoes/3.jpg);" class="item-box">
-                            </div>
-                            <div style="background-image:url(client/img/products/shoes/4.jpg);" class="item-box">
-                            </div>
-                            <div style="background-image:url(client/img/products/shoes/5.jpg);" class="item-box">
-                            </div>
-                            <div style="background-image:url(client/img/products/shoes/6.jpg);" class="item-box">
-                            </div>
+                            <div></div>
                         </div>
                         <div class="left nonl"><i class="ti-angle-left"></i></div>
                         <div class="right"><i class="ti-angle-right"></i></div>
@@ -56,17 +45,18 @@
                         <h1>{{$detailProduct->name}}</h1>
                     <span class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
                             class="icon-star voted"></i><i class="icon-star voted"></i><i
-                            class="icon-star"></i><em>4 reviews</em></span>
+                            class="icon-star"></i><em>4 reviews</em>
+                    </span>
                     <p><small>MÃ: {{$detailProduct->sku}}</small><br>{{$detailProduct->description}}</p>
                     <div class="prod_options">
                         <div class="row">
                             <label class="col-xl-5 col-lg-5  col-md-6 col-6 pt-0"><strong>Color</strong></label>
                             <div class="col-xl-4 col-lg-5 col-md-6 col-6 colors">
                                 <ul>
-                                    <li><a href="#0" class="color color_1 active"></a></li>
-                                    <li><a href="#0" class="color color_2"></a></li>
-                                    <li><a href="#0" class="color color_3"></a></li>
-                                    <li><a href="#0" class="color color_4"></a></li>
+                                    <select name="color" id="" class="col-xl-4 col-lg-5 col-md-6 col-6 colors">
+                                                                            
+                                    </select>
+                                    
                                 </ul>
                             </div>
                         </div>
@@ -161,14 +151,7 @@
                                             elaboraret</strong> his, harum efficiendi mel ne. Sale percipit
                                         vituperata ex mel, sea ne essent aeterno sanctus, nam ea laoreet civibus
                                         electram. Ea vis eius explicari. Quot iuvaret ad has.</p>
-                                    <p>Vis ei ipsum conclusionemque. Te enim suscipit recusabo mea, ne vis mazim
-                                        aliquando, everti insolens at sit. Cu vel modo unum quaestio, in vide
-                                        dicta has. Ut his laudem explicari adversarium, nisl <strong>laboramus
-                                            hendrerit</strong> te his, alia lobortis vis ea.</p>
-                                    <p>Perfecto eleifend sea no, cu audire voluptatibus eam. An alii praesent
-                                        sit, nobis numquam principes ea eos, cu autem constituto suscipiantur
-                                        eam. Ex graeci elaboraret pro. Mei te omnis tantas, nobis viderer
-                                        vivendo ex has.</p>
+                                    
                                 </div>
                                 <div class="col-lg-5">
                                     <h3>Specifications</h3>
@@ -214,70 +197,26 @@
                         <div class="card-body">
                             <div class="row justify-content-between">
                                 <div class="col-lg-6">
+                                    @foreach ($loadReviews as $reviews)
                                     <div class="review_content">
                                         <div class="clearfix add_bottom_10">
-                                            <span class="rating"><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i
-                                                    class="icon-star"></i><em>5.0/5.0</em></span>
-                                            <em>Published 54 minutes ago</em>
+                                            <span class="rating">                  
+                                                @for($i = 1; $i <= $reviews->rating; $i++)
+                                                    <i class="icon-star filled"></i>
+                                                @endfor
+                                                <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh giá)</em>
+                                            </span>
                                         </div>
-                                        <h4>"Commpletely satisfied"</h4>
-                                        <p>Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod
-                                            scaevola sea. Et nec tantas accusamus salutatus, sit commodo veritus
-                                            te, erat legere fabulas has ut. Rebum laudem cum ea, ius essent
-                                            fuisset ut. Viderer petentium cu his.</p>
+                                        <h4>{{$reviews->user->name}}</h4>
+                                        <p>{{$reviews->description}}</p>
+                                    
                                     </div>
+                                    @endforeach
                                 </div>
-                                <div class="col-lg-6">
-                                    <div class="review_content">
-                                        <div class="clearfix add_bottom_10">
-                                            <span class="rating"><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i class="icon-star"></i><i
-                                                    class="icon-star empty"></i><i
-                                                    class="icon-star empty"></i><em>4.0/5.0</em></span>
-                                            <em>Published 1 day ago</em>
-                                        </div>
-                                        <h4>"Always the best"</h4>
-                                        <p>Et nec tantas accusamus salutatus, sit commodo veritus te, erat
-                                            legere fabulas has ut. Rebum laudem cum ea, ius essent fuisset ut.
-                                            Viderer petentium cu his.</p>
-                                    </div>
-                                </div>
+
                             </div>
                             <!-- /row -->
-                            <div class="row justify-content-between">
-                                <div class="col-lg-6">
-                                    <div class="review_content">
-                                        <div class="clearfix add_bottom_10">
-                                            <span class="rating"><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i
-                                                    class="icon-star empty"></i><em>4.5/5.0</em></span>
-                                            <em>Published 3 days ago</em>
-                                        </div>
-                                        <h4>"Outstanding"</h4>
-                                        <p>Eos tollit ancillae ea, lorem consulatu qui ne, eu eros eirmod
-                                            scaevola sea. Et nec tantas accusamus salutatus, sit commodo veritus
-                                            te, erat legere fabulas has ut. Rebum laudem cum ea, ius essent
-                                            fuisset ut. Viderer petentium cu his.</p>
-                                    </div>
-                                </div>
-                                <div class="col-lg-6">
-                                    <div class="review_content">
-                                        <div class="clearfix add_bottom_10">
-                                            <span class="rating"><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i class="icon-star"></i><i
-                                                    class="icon-star"></i><i
-                                                    class="icon-star"></i><em>5.0/5.0</em></span>
-                                            <em>Published 4 days ago</em>
-                                        </div>
-                                        <h4>"Excellent"</h4>
-                                        <p>Sit commodo veritus te, erat legere fabulas has ut. Rebum laudem cum
-                                            ea, ius essent fuisset ut. Viderer petentium cu his.</p>
-                                    </div>
-                                </div>
-                            </div>
+                            
                             <!-- /row -->
                             <p class="text-end"><a href="leave-review.html" class="btn_1">Leave a review</a></p>
                         </div>
