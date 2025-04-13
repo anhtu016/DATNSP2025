@@ -3,6 +3,7 @@
 use App\Http\Controllers\AdminProductController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\Admin\ReviewController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CategoriesController;
@@ -12,7 +13,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\ForgotPasswordController;
 use League\CommonMark\Extension\Attributes\Node\Attributes;
 use App\Http\Controllers\UserController;
-
+use App\Http\Controllers\Client\ProductDetailController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -56,35 +57,46 @@ Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
 // Route::get('abc',[CategoryController::class,'list_category']);
 
 Route::get('list-categories',[App\Http\Controllers\CategoriesController::class,'index'])
-->name('index');
+->name('categories.index');
 //add
 Route::get('add-categories',[App\Http\Controllers\CategoriesController::class,'create'])
-->name('create');
+->name('categories.create');
 
 Route::post('admin-add-categories',[App\Http\Controllers\CategoriesController::class,'store'])
-->name('store');
+->name('categories.store');
 
 Route::delete('admin-delete-categories/{id}',[App\Http\Controllers\CategoriesController::class,'destroy'])
-->name('destroy');
+->name('categories.destroy');
 
 Route::get('admin-edit-categories/{id}',[App\Http\Controllers\CategoriesController::class,'edit'])
-->name('edit');
+->name('categories.edit');
 
 Route::put('admin-update-categories/{id}',[App\Http\Controllers\CategoriesController::class,'update'])
-->name('update');
+->name('categories.update');
 
 Route::get('trash-categories',[App\Http\Controllers\CategoriesController::class,'trash'])
-->name('trash');
+->name('categories.trash');
 
 Route::get('admin-reset-categories/{id}',[App\Http\Controllers\CategoriesController::class,'reset'])
-->name('reset');
+->name('categories.reset');        
 
 Route::delete('admin-forceDel-categories/{id}',[App\Http\Controllers\CategoriesController::class,'forceDelete'])
-->name('forceDelete');
+->name('categories.forceDelete');
 
 // chi tiết sản phẩm 
-Route::get('client-detail/{id}',[App\Http\Controllers\CuaHangController::class,'index'])
+Route::get('client-detail/{id}',[App\Http\Controllers\Client\ProductDetailController::class,'index'])
 ->name('detail.index');
+
+// quản lý reviews
+Route::get('list-reviews',[ReviewController::class,'index'])
+->name('reviews.index');
+// ẩn reviews
+Route::get('reviews-presently/{id}',[ReviewController::class,'presently'])
+->name('reviews.presently');
+
+// load reviews
+Route::get('load-reviews/{id}',[ReviewController::class,'loadReview'])
+->name('reviews.loadReview');
 
 
 

@@ -13,6 +13,7 @@ class ProductController extends Controller
     public function index()
     {
         $data = Product::with('productReview','brand')->get();
+        // dd($data);
         return view('client.index',compact('data'));
     }
 

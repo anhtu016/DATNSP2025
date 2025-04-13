@@ -10,12 +10,7 @@
             <div class="card-body">
                 <div class="listjs-table" id="customerList">
                     <div class="row g-4 mb-3">
-                        <div class="col-sm-auto">
-                            <div>
-                                <a href="add-categories"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Add</button></a>
-                                <a href="trash-categories"><button class="btn btn-soft-danger" onClick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button></a>   
-                            </div>
-                        </div>
+                        
                         <div class="col-sm">
                             <div class="d-flex justify-content-sm-end">
                                 <div class="search-box ms-2">
@@ -30,34 +25,37 @@
                         <table class="table align-middle table-nowrap" id="customerTable">
                             <thead class="table-light">
                                 <tr>                                   
-                                    <th class="sort" data-sort="customer_name">ID</th>
-                                    <th class="sort" data-sort="email">Tên Danh Mục</th>
-                                    <th class="sort" data-sort="phone">SLUG</th>
-                                    <th class="sort" data-sort="date">Mô tả</th>
+                                    <th class="sort" data-sort="date">Mã sản phẩm</th>
+                                    <th class="sort" data-sort="date">Product</th>
+                                    <th class="sort" data-sort="date">User</th>
+                                    <th class="sort" data-sort="date">Description</th>
+                                    <th class="sort" data-sort="email">Rating</th>
+                                    <th class="sort" data-sort="phone">Image</th>
+                                    <th class="sort" data-sort="date">Video</th> 
                                     <th class="sort" data-sort="action">Action</th>
                                 </tr>
                             </thead>
-                            @foreach ($listCategory as $ct)
+                            @foreach ($listReviews as $ct)
                             <tbody class="list form-check-all">
                                 <tr>
-                                    <td>{{$ct->id}}</td>
-                                    <td>{{$ct->name}}</td>
-                                    <td>{{$ct->slug}}</td>
+                                    <td>{{$ct->product->sku}}</td>                                   
+                                    <td>{{$ct->product->name}}</td>
+                                    <td>{{$ct->user->name}}</td>
                                     <td>{{$ct->description}}</td>
+                                    <td>{{$ct->rating}}</td>
+                                    <td>{{$ct->image}}</td>
+                                    <td>{{$ct->video}}</td>
                                     <td>
-                                        <div class="d-flex gap-2">
-                                            <div class="edit">
-                                               <a href="{{route('categories.edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Edit</button></a> 
-                                            </div>
-                                            <form action="{{route('categories.destroy', $ct->id)}}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <div class="remove">
-                                                    <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" 
-                                                    onclick="return confirm('Bạn có chắc chắn muốn chuyển mục này vào thùng rác không ?')">Remove</button>
-                                                </div>
-                                            </form>
-                                            
+                                        <div class="d-flex gap-2">                                       
+                                            <div class="remove">
+                                                <a href="{{route('reviews.presently', $ct->id)}}">
+                                                @if ($ct->status == 0) 
+                                                    <button class="btn btn-sm btn-success remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" >Hiện</button>
+                                                    @else
+                                                    <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" >Ẩn</button>
+                                                    @endif
+                                                </a>
+                                            </div>                                          
                                         </div>
                                     </td>
                                 </tr>
