@@ -14,6 +14,9 @@
 	<link href="{{ asset('client/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('client/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('client/css/responsive.css') }}" rel="stylesheet">
+	<!-- Notyf CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+
 	@include('client.layout.partials.css')
 	@stack('css')
 </head>
@@ -42,6 +45,9 @@
 	<div id="toTop"></div><!-- Back to top button -->
 	@include('client.layout.partials.js')
 	@stack('js')
+	<!-- Notyf JS -->
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
 </body>
 
 <!-- Mirrored from www.ansonika.com/allaia/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Mar 2025 05:24:02 GMT -->

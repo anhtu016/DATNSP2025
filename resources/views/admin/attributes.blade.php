@@ -151,7 +151,7 @@
                                                                             <label for="selectType" class="form-label">Type</label>
                                                                             <select name="updateType" id="selectType" class="form-select">
                                                                                 <option selected value="{{$attribute->type}}">{{$attribute->type}}</option>
-                                                                                @foreach (['color', 'text', 'image'] as $type)
+                                                                                @foreach (['color', 'size', 'image'] as $type)
                                                                                 @if ($type !== $attribute->type) <!-- Kiểm tra giá trị hiện tại có trùng không -->
                                                                                     <option value="{{ $type }}">{{ ucfirst($type) }}</option>
                                                                                 @endif
@@ -190,8 +190,6 @@
     </div>
     <!-- container-fluid -->
 </div>
-
-
 <!-- css-->
 @push('admin_css')
 <!-- App favicon -->

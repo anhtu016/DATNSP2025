@@ -39,7 +39,7 @@
                 <li class="menu-title">
                     <span data-key="t-menu">Menu</span>
                 </li>
-    
+            
                 <!-- Dashboards -->
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
@@ -48,7 +48,7 @@
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarDashboards">
                         <ul class="nav nav-sm flex-column">
-    
+            
                             <!-- User submenu -->
                             <li class="nav-item">
                                 <a class="nav-link" href="#userMenu" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="userMenu">
@@ -65,7 +65,7 @@
                                     </ul>
                                 </div>
                             </li>
-    
+            
                             <!-- Other links -->
                             <li class="nav-item">
                                 <a href="dashboard-crm.html" class="nav-link">
@@ -77,11 +77,11 @@
                                     <i class="ri-shopping-cart-2-line me-1"></i> Ecommerce
                                 </a>
                             </li>
-    
+            
                         </ul>
                     </div>
                 </li>
-    
+            
                 <!-- Apps -->
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="#sidebarApps" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApps">
@@ -108,7 +108,7 @@
                         </ul>
                     </div>
                 </li>
-    
+            
                 <!-- Attributes -->
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="#sidebarAttributes" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAttributes">
@@ -122,13 +122,32 @@
                         </ul>
                     </div>
                 </li>
+            
+                <!-- Products Section with Logo and Add Product -->
+                <li class="nav-item">
+                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarProducts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProducts">
+                        <i class="ri-shopping-bag-2-line me-2"></i> <span data-key="t-products">Products</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarProducts">
+                        <ul class="nav nav-sm flex-column ms-3">
+                            <li class="nav-item">
+                                <a href="{{ route('products.index') }}" class="nav-link">List Products</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ route('products.create') }}" class="nav-link">Add Product</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+            
+                <!-- Home -->
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="{{ route('home') }}">
                         <i class="ri-home-line me-2"></i> <span data-key="t-home">Trang chủ</span>
                     </a>
                 </li>
-                
             </ul>
+            
         </div>
     </div>
     

@@ -13,10 +13,45 @@ class CuaHangController extends Controller
      */
     public function index(string $id)
     {
-        $detailProduct = Product::query()->find($id);
-        // dd( $detailProduct);
-        return view('client.detail-product', compact('detailProduct'));
+        // Mảng ánh xạ màu
+        $colorMap = [
+            'Red' => '#FF0000',
+            'Blue' => '#0000FF',
+            'Green' => '#00FF00',
+            'Black' => '#000000',
+            'White' => '#FFFFFF',
+            // Thêm màu khác nếu cần
+        ];
+    
+        // Lấy sản phẩm và các thuộc tính của nó
+        $product = Product::with('variants.attributeValues.attribute')->findOrFail($id);
+        $attributes = [];
+    
+        // Duyệt qua tất cả các biến thể của sản phẩm
+        foreach ($product->variants as $variant) {
+            foreach ($variant->attributeValues as $attrValue) {
+                $attrName = $attrValue->attribute->name;
+    
+                // Ánh xạ màu sắc nếu thuộc tính là màu sắc
+                if ($attrName == 'color') {
+                    $attrValue->colorHex = $colorMap[$attrValue->value] ?? '#FFFFFF';  // Gán màu sắc tương ứng, mặc định là trắng nếu không tìm thấy
+                }
+    
+                // Đảm bảo không trùng lặp giá trị thuộc tính
+                if (!isset($attributes[$attrName])) {
+                    $attributes[$attrName] = [];
+                }
+    
+                if (!collect($attributes[$attrName])->contains('id', $attrValue->id)) {
+                    $attributes[$attrName][] = $attrValue;
+                }
+            }
+        }
+    
+        // Trả về view với sản phẩm và các thuộc tính đã ánh xạ
+        return view('client.detail-product', compact('product', 'attributes'));
     }
+    
 
     /**
      * Show the form for creating a new resource.
