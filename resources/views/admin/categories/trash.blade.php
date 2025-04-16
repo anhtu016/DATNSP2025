@@ -46,9 +46,9 @@
                                     <td>
                                         <div class="d-flex gap-2">
                                             <div class="edit">
-                                               <a href="{{route('reset',$tr->id)}}"><button class="btn btn-sm btn-primary edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal" onclick="return confirm('Bạn có chắc chắn muốn khôi phục mục này ?')">Reset</button></a> 
+                                               <a href="{{route('categories.reset',$tr->id)}}"><button class="btn btn-sm btn-primary edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal" onclick="return confirm('Bạn có chắc chắn muốn khôi phục mục này ?')">Reset</button></a> 
                                             </div>
-                                            <form action="{{route('forceDelete', $tr->id)}}" method="post">
+                                            <form action="{{route('categories.forceDelete', $tr->id)}}" method="post">
                                                 @csrf
                                                 @method('delete')
                                                 <div class="remove">

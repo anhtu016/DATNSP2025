@@ -2,7 +2,7 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <!-- Dark Logo-->
-        <a href="index.html" class="logo logo-dark">
+        <a href="{{ url('homeadmin') }}" class="logo logo-dark">
             <span class="logo-sm">
                 <img src="{{asset('admin/assets/images/logo-sm.png')}}" alt="" height="22">
             </span>
@@ -11,7 +11,7 @@
             </span>
         </a>
         <!-- Light Logo-->
-        <a href="{{'homeadmin'}}" class="logo logo-light">
+        <a href="{{ url('homeadmin') }}" class="logo logo-light">
             <span class="logo-sm">
                 <img src="{{asset('admin/assets/images/logo-sm.png')}}" alt="" height="22">
             </span>
@@ -65,6 +65,7 @@
                                     </ul>
                                 </div>
                             </li>
+
             
                             <!-- Other links -->
                             <li class="nav-item">
@@ -77,7 +78,6 @@
                                     <i class="ri-shopping-cart-2-line me-1"></i> Ecommerce
                                 </a>
                             </li>
-            
                         </ul>
                     </div>
                 </li>
@@ -90,17 +90,31 @@
                     <div class="collapse menu-dropdown" id="sidebarApps">
                         <ul class="nav nav-sm flex-column">
                             <!-- Categories -->
-                            <li class="nav-item">
-                                <a href="#sidebarEcommerce" class="nav-link d-flex align-items-center" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarEcommerce">
+                            <li class="nav-item">               
+                                <a href="#categoriesMenu" class="nav-link d-flex align-items-center" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="categoriesMenu">
                                     <i class="ri-folder-line me-1"></i> Categories
                                 </a>
-                                <div class="collapse menu-dropdown" id="sidebarEcommerce">
+                                <div class="collapse menu-dropdown" id="categoriesMenu">
                                     <ul class="nav nav-sm flex-column ms-3">
                                         <li class="nav-item">
-                                            <a href="{{route('index')}}" class="nav-link">List Category</a>
+                                            <a href="{{ url('list-categories') }}" class="nav-link">List Category</a>
                                         </li>
                                         <li class="nav-item">
-                                            <a href="{{route('create')}}" class="nav-link">Category Details</a>
+                                            <a href="{{ url('add-categories') }}" class="nav-link" data-key="t-create-product"> Add Category </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </li>
+                            
+                            <!-- Reviews -->
+                            <li class="nav-item">
+                                <a href="#reviewsMenu" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reviewsMenu">
+                                   <i class="ri-star-line me-1"></i> Reviews
+                                </a>
+                                <div class="collapse menu-dropdown" id="reviewsMenu">
+                                    <ul class="nav nav-sm flex-column ms-3">
+                                        <li class="nav-item">
+                                            <a href="{{ url('list-reviews') }}" class="nav-link" data-key="t-products"> List Reviews </a>
                                         </li>
                                     </ul>
                                 </div>
@@ -117,11 +131,12 @@
                     <div class="collapse menu-dropdown" id="sidebarAttributes">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ ('attributes') }}" class="nav-link">Add</a>
+                                <a href="{{ url('attributes') }}" class="nav-link">Add</a>
                             </li>
                         </ul>
                     </div>
                 </li>
+
             
                 <!-- Products Section with Logo and Add Product -->
                 <li class="nav-item">
@@ -141,6 +156,8 @@
                 </li>
             
                 <!-- Home -->
+
+
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="{{ route('home') }}">
                         <i class="ri-home-line me-2"></i> <span data-key="t-home">Trang chủ</span>
@@ -150,8 +167,6 @@
             
         </div>
     </div>
-    
-    <!-- Sidebar -->
 
     <div class="sidebar-background"></div>
 </div>

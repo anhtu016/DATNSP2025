@@ -31,7 +31,7 @@ class CategoriesController extends Controller
     {
         $data = $request->except('_token');
         $createCategory = Category::query()->create($data);
-        return redirect()->route('index');
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -59,7 +59,7 @@ class CategoriesController extends Controller
         $data = $request->except('_token');
         $updateCategory = Category::query()->findOrFail($id);
         $updateCategory->update($data);
-        return redirect()->route('index');
+        return redirect()->route('categories.index');
     }
 
     /**
@@ -69,7 +69,7 @@ class CategoriesController extends Controller
     {
         $delCategory = Category::query()->find($id);
         $delCategory->delete();
-        return redirect()->route('index');
+        return redirect()->route('categories.index');
     }
 
     public function trash( ){
@@ -80,12 +80,12 @@ class CategoriesController extends Controller
     public function reset(string $id){
         Category::query()->withTrashed()->where('id',$id)
         ->restore();
-        return redirect()->route('index');       
+        return redirect()->route('categories.index');       
     }
     public function forceDelete(string $id){
         Category::query()->withTrashed()->where('id',$id)
         ->forceDelete();
-        return redirect()->route('index');       
+        return redirect()->route('categories.index');       
     }
 
 

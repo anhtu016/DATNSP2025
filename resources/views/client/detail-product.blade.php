@@ -61,6 +61,183 @@
                                                 </label>
                                             @endforeach
                                         </div>
+=======
+<main>
+    <div class="container margin_30">
+        {{-- <div class="countdown_inner">-20% This offer ends in <div data-countdown="2019/05/15" class="countdown">
+            </div>
+        </div> --}}
+        <div class="row">
+          
+            <div class="col-md-6">
+                <div class="all">
+                    <div class="slider">
+                        <div class="owl-carousel owl-theme main">
+                            <div></div>
+                        </div>
+                        <div class="left nonl"><i class="ti-angle-left"></i></div>
+                        <div class="right"><i class="ti-angle-right"></i></div>
+                    </div>
+                    <div class="slider-two">
+                        <div class="owl-carousel owl-theme thumbs">
+                            <div style="background-image:url(client/img/products/shoes/1.jpg);" class="item active">
+                            </div>
+                            <div style="background-image:url(client/img/products/shoes/2.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/3.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/4.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/5.jpg);" class="item"></div>
+                            <div style="background-image:url(client/img/products/shoes/6.jpg);" class="item"></div>
+                        </div>
+                        <div class="left-t nonl-t"></div>
+                        <div class="right-t"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="breadcrumbs">
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Category</a></li>
+                        <li>Page active</li>
+                    </ul>
+                </div>
+                <!-- /page_header -->
+                <div class="prod_info">
+                    
+                        <h1>{{$detailProduct->name}}</h1>
+                    <span class="rating"><i class="icon-star voted"></i><i class="icon-star voted"></i><i
+                            class="icon-star voted"></i><i class="icon-star voted"></i><i
+                            class="icon-star"></i><em>4 reviews</em>
+                    </span>
+                    <p><small>MÃ: {{$detailProduct->sku}}</small><br>{{$detailProduct->description}}</p>
+                    <div class="prod_options">
+                        <div class="row">
+                            <label class="col-xl-5 col-lg-5  col-md-6 col-6 pt-0"><strong>Color</strong></label>
+                            <div class="col-xl-4 col-lg-5 col-md-6 col-6 colors">
+                                <ul>
+                                    <select name="color" id="" class="col-xl-4 col-lg-5 col-md-6 col-6 colors">
+                                                                            
+                                    </select>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xl-5 col-lg-5 col-md-6 col-6"><strong>Size</strong> - Size Guide
+                                <a href="#0" data-bs-toggle="modal" data-bs-target="#size-modal"><i
+                                        class="ti-help-alt"></i></a></label>
+                            <div class="col-xl-4 col-lg-5 col-md-6 col-6">
+                                <div class="custom-select-form">
+                                    <select class="wide">
+                                        <option value="" selected>Small (S)</option>
+                                        <option value="">M</option>
+                                        <option value=" ">L</option>
+                                        <option value=" ">XL</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <label class="col-xl-5 col-lg-5  col-md-6 col-6"><strong>Số lượng: {{$detailProduct->quantity}}</strong></label>
+                            <div class="col-xl-4 col-lg-5 col-md-6 col-6">
+                                <div class="numbers-row">
+                                    <input type="text" value="1" id="quantity_1" class="qty2" name="quantity_1">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="row">
+                        <div class="col-lg-5 col-md-6">
+                            <div class="price_main"><span class="new_price">{{$detailProduct->price}}</span><span
+                                    class="percentage"></span> <span class="old_price">{{$detailProduct->sell_price}}</span></div>
+                        </div>
+                        <div class="col-lg-4 col-md-6">
+                            <div class="btn_add_to_cart"><a href="#0" class="btn_1">Add to Cart</a></div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /prod_info -->
+                <div class="product_actions">
+                    <ul>
+                        <li>
+                            <a href="#"><i class="ti-heart"></i><span>Add to Wishlist</span></a>
+                        </li>
+                        <li>
+                            <a href="#"><i class="ti-control-shuffle"></i><span>Add to Compare</span></a>
+                        </li>
+                    </ul>
+                </div>
+                <!-- /product_actions -->
+            </div>
+           
+            
+        </div>
+        <!-- /row -->
+    </div>
+    <!-- /container -->
+
+    <div class="tabs_product">
+        <div class="container">
+            <ul class="nav nav-tabs" role="tablist">
+                <li class="nav-item">
+                    <a id="tab-A" href="#pane-A" class="nav-link active" data-bs-toggle="tab"
+                        role="tab">Description</a>
+                </li>
+                <li class="nav-item">
+                    <a id="tab-B" href="#pane-B" class="nav-link" data-bs-toggle="tab" role="tab">Reviews</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /tabs_product -->
+    <div class="tab_content_wrapper">
+        <div class="container">
+            <div class="tab-content" role="tablist">
+                <div id="pane-A" class="card tab-pane fade active show" role="tabpanel" aria-labelledby="tab-A">
+                    <div class="card-header" role="tab" id="heading-A">
+                        <h5 class="mb-0">
+                            <a class="collapsed" data-bs-toggle="collapse" href="#collapse-A"
+                                aria-expanded="false" aria-controls="collapse-A">
+                                Description
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse-A" class="collapse" role="tabpanel" aria-labelledby="heading-A">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-lg-6">
+                                    <h3>Details</h3>
+                                    <p>Lorem ipsum dolor sit amet, in eleifend <strong>inimicus
+                                            elaboraret</strong> his, harum efficiendi mel ne. Sale percipit
+                                        vituperata ex mel, sea ne essent aeterno sanctus, nam ea laoreet civibus
+                                        electram. Ea vis eius explicari. Quot iuvaret ad has.</p>
+                                    
+                                </div>
+                                <div class="col-lg-5">
+                                    <h3>Specifications</h3>
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped">
+                                            <tbody>
+                                                <tr>
+                                                    <td><strong>Color</strong></td>
+                                                    <td>Blue, Purple</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Size</strong></td>
+                                                    <td>150x100x100</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Weight</strong></td>
+                                                    <td>0.6kg</td>
+                                                </tr>
+                                                <tr>
+                                                    <td><strong>Manifacturer</strong></td>
+                                                    <td>Manifacturer</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 @endforeach
 
@@ -79,6 +256,47 @@
                         @endif
                     </div>
                 </div>
+                <!-- /TAB A -->
+                <div id="pane-B" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-B">
+                    <div class="card-header" role="tab" id="heading-B">
+                        <h5 class="mb-0">
+                            <a class="collapsed" data-bs-toggle="collapse" href="#collapse-B"
+                                aria-expanded="false" aria-controls="collapse-B">
+                                Reviews
+                            </a>
+                        </h5>
+                    </div>
+                    <div id="collapse-B" class="collapse" role="tabpanel" aria-labelledby="heading-B">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                                <div class="col-lg-6">
+                                    @foreach ($loadReviews as $reviews)
+                                    <div class="review_content">
+                                        <div class="clearfix add_bottom_10">
+                                            <span class="rating">                  
+                                                @for($i = 1; $i <= $reviews->rating; $i++)
+                                                    <i class="icon-star filled"></i>
+                                                @endfor
+                                                <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh giá)</em>
+                                            </span>
+                                        </div>
+                                        <h4>{{$reviews->user->name}}</h4>
+                                        <p>{{$reviews->description}}</p>
+                                    
+                                    </div>
+                                    @endforeach
+                                </div>
+
+                            </div>
+                            <!-- /row -->
+                            
+                            <!-- /row -->
+                            <p class="text-end"><a href="leave-review.html" class="btn_1">Leave a review</a></p>
+                        </div>
+                        <!-- /card-body -->
+                    </div>
+                </div>
+                <!-- /tab B -->
             </div>
         </div>
 
