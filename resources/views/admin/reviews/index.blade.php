@@ -37,10 +37,10 @@
                             </thead>
                             @foreach ($listReviews as $ct)
                             <tbody class="list form-check-all">
-                                <tr>
-                                    <td>{{$ct->product->sku}}</td>                                   
-                                    <td>{{$ct->product->name}}</td>
-                                    <td>{{$ct->user->name}}</td>
+                                <tr>                                    
+                                    <td>{{$ct->id}}</td>
+                                    <td>{{$ct->user_id}}</td>                                   
+                                    <td>{{$ct->product_id}}</td>
                                     <td>{{$ct->description}}</td>
                                     <td>{{$ct->rating}}</td>
                                     <td>{{$ct->image}}</td>

@@ -141,6 +141,8 @@ Route::put('/admin/orders/{id}/cancel-reject', [OrderController::class, 'rejectC
     Route::post('/orders/{id}/confirm-cancel', [OrderController::class, 'confirmCancel'])->name('admin.orders.confirmCancel');
 
 Route::post('/admin/orders/{order}/reject-cancel', [OrderController::class, 'rejectCancel'])->name('admin.orders.rejectCancel');
+Route::post('/orders/{id}/mark-delivered', [OrderController::class, 'markAsDelivered'])->name('orders.markDelivered');
+
 
 });
 

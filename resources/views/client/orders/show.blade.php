@@ -32,25 +32,30 @@
                 </p>
                 <p><strong>Phương thức vận chuyển:</strong> {{ $order->shippingMethod->name ?? 'Giao hàng tiết kiệm' }}</p>
                 <p><strong>Địa chỉ nhận hàng:</strong> {{ $order->shipping_address }}</p>
-
+                <p><strong>@if ($daysSinceDelivered !== null)
+                    <p>Đơn hàng đã giao được {{ $daysSinceDelivered }} ngày.</p>
+                @else
+                    <p>Đơn hàng được giao thành công</p>
+                @endif</strong></p>
                 <!-- Nút Xác nhận hoàn thành -->
                 @if ($order->order_status === 'delivered')
-                @if (!$order->is_confirmed)
-                    <!-- Nếu chưa xác nhận -->
-                    <form action="{{ route('user.orders.confirm', $order->id) }}" method="POST"
-                        onsubmit="return confirm('Bạn xác nhận đơn hàng đã hoàn tất?')">
-                        @csrf
-                        @method('PUT')
-                        <button class="btn btn-success mt-2">✅ Xác nhận đã hoàn thành đơn hàng</button>
-                    </form>
-                @else
-                    <!-- Nếu đã xác nhận -->
-                    <p class="text-success mt-2">
-                        <strong>✅ Bạn đã xác nhận đơn hàng này hoàn tất vào {{ \Carbon\Carbon::parse($order->confirmed_at)->format('d/m/Y H:i') }}</strong>
-                    </p>
+                    @if (!$order->is_confirmed)
+                        <!-- Nếu chưa xác nhận -->
+                        <form action="{{ route('user.orders.confirm', $order->id) }}" method="POST"
+                            onsubmit="return confirm('Bạn xác nhận đơn hàng đã hoàn tất?')">
+                            @csrf
+                            @method('PUT')
+                            <button class="btn btn-success mt-2">✅ Xác nhận đã hoàn thành đơn hàng</button>
+                        </form>
+                    @else
+                        <!-- Nếu đã xác nhận -->
+                        <p class="text-success mt-2">
+                            <strong>✅ Bạn đã xác nhận đơn hàng này hoàn tất vào
+                                {{ \Carbon\Carbon::parse($order->confirmed_at)->format('d/m/Y H:i') }}</strong>
+                        </p>
+                    @endif
                 @endif
-            @endif
-            
+
 
                 <!-- Nút Hủy đơn hàng -->
                 @if ($order->order_status === 'pending')
@@ -61,6 +66,7 @@
                         <button class="btn btn-danger mt-3">❌ Hủy đơn hàng</button>
                     </form>
                 @endif
+                
             </div>
         </div>
 

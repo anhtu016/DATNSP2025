@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 use App\Http\Controllers\Controller;
 use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Carbon;
 
 class OrderController extends Controller
 {
@@ -21,8 +22,14 @@ class OrderController extends Controller
         ->where('customer_id', Auth::id())
         ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
         ->firstOrFail();
+        if ($order->delivered_at) {
+            // Sử dụng Carbon để tính số ngày đã giao
+            $daysSinceDelivered = Carbon::parse($order->delivered_at)->diffInDays(Carbon::now());
+        } else {
+            $daysSinceDelivered = null;  // Nếu đơn hàng chưa giao
+        }
 
-    return view('client.orders.show', compact('order'));
+    return view('client.orders.show', compact('order','daysSinceDelivered'));
 }
 
 

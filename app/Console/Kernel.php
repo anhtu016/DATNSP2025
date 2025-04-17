@@ -10,10 +10,16 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      */
-    protected function schedule(Schedule $schedule): void
+    protected $commands = [
+        \App\Console\Commands\AutoCompleteOrders::class,
+    ];
+    
+    protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $schedule->command('orders:auto-complete')->dailyAt('00:00');
     }
+    
+    
 
     /**
      * Register the commands for the application.
