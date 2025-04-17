@@ -2,7 +2,7 @@
 @section('content')
     <h1>abc</h1>
     <h3>abc</h3>
-    <form action="{{route('categories.update', $editCategory->id)}}" method="post" enctype="multipart/form-data">
+    <form action="{{route('update', $editCategory->id)}}" method="post" enctype="multipart/form-data">
         @csrf
         @method('put')
         <div class="">

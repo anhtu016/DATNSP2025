@@ -14,4 +14,11 @@ class Attribute extends Model
     public function attributeValue(){
         return $this->hasMany(AttributeValue::class);
     }
+    public function products()
+    {
+        return $this->belongsToMany(Product::class)->withPivot('attribute_value_id');
+    }
+    public function values() {
+        return $this->hasMany(AttributeValue::class);
+    }
 }

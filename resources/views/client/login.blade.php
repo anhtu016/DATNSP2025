@@ -10,10 +10,6 @@
                         <h4 class="mb-0">Đăng Nhập</h4>
                     </div>
                     <div class="card-body p-4">
-                        @if(session('success'))
-                            <div class="alert alert-success text-center">{{ session('success') }}</div>
-                        @endif
-
                         <form method="POST" action="{{ route('login') }}">
                             @csrf
                             <div class="mb-3">

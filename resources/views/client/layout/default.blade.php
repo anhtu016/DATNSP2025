@@ -14,6 +14,11 @@
 	<link href="{{ asset('client/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('client/css/style.css') }}" rel="stylesheet">
     <link href="{{ asset('client/css/responsive.css') }}" rel="stylesheet">
+<!-- Notyf CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
+<!-- Notyf JS -->
+<script src="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.js"></script>
+
 	@include('client.layout.partials.css')
 	@stack('css')
 </head>

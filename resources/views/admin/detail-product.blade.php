@@ -31,16 +31,20 @@
                                         <div class="swiper product-thumbnail-slider p-2 rounded bg-light">
                                             <div class="swiper-wrapper">
                                                 <div class="swiper-slide">
-                                                    <img src="admin/assets/images/products/img-8.png" alt="" class="img-fluid d-block" />
+                                                    <img src="admin/assets/images/products/img-8.png" alt=""
+                                                        class="img-fluid d-block" />
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <img src="admin/assets/images/products/img-6.png" alt="" class="img-fluid d-block" />
+                                                    <img src="admin/assets/images/products/img-6.png" alt=""
+                                                        class="img-fluid d-block" />
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <img src="admin/assets/images/products/img-1.png" alt="" class="img-fluid d-block" />
+                                                    <img src="admin/assets/images/products/img-1.png" alt=""
+                                                        class="img-fluid d-block" />
                                                 </div>
                                                 <div class="swiper-slide">
-                                                    <img src="admin/assets/images/products/img-8.png" alt="" class="img-fluid d-block" />
+                                                    <img src="admin/assets/images/products/img-8.png" alt=""
+                                                        class="img-fluid d-block" />
                                                 </div>
                                             </div>
                                             <div class="swiper-button-next"></div>
@@ -51,22 +55,26 @@
                                             <div class="swiper-wrapper">
                                                 <div class="swiper-slide">
                                                     <div class="nav-slide-item">
-                                                        <img src="admin/assets/images/products/img-8.png" alt="" class="img-fluid d-block" />
+                                                        <img src="admin/assets/images/products/img-8.png" alt=""
+                                                            class="img-fluid d-block" />
                                                     </div>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <div class="nav-slide-item">
-                                                        <img src="admin/assets/images/products/img-6.png" alt="" class="img-fluid d-block" />
+                                                        <img src="admin/assets/images/products/img-6.png" alt=""
+                                                            class="img-fluid d-block" />
                                                     </div>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <div class="nav-slide-item">
-                                                        <img src="admin/assets/images/products/img-1.png" alt="" class="img-fluid d-block" />
+                                                        <img src="admin/assets/images/products/img-1.png" alt=""
+                                                            class="img-fluid d-block" />
                                                     </div>
                                                 </div>
                                                 <div class="swiper-slide">
                                                     <div class="nav-slide-item">
-                                                        <img src="admin/assets/images/products/img-8.png" alt="" class="img-fluid d-block" />
+                                                        <img src="admin/assets/images/products/img-8.png" alt=""
+                                                            class="img-fluid d-block" />
                                                     </div>
                                                 </div>
                                             </div>
@@ -82,16 +90,21 @@
                                             <div class="flex-grow-1">
                                                 <h4>Full Sleeve Sweatshirt for Men (Pink)</h4>
                                                 <div class="hstack gap-3 flex-wrap">
-                                                    <div><a href="#" class="text-primary d-block">Tommy Hilfiger</a></div>
+                                                    <div><a href="#" class="text-primary d-block">Tommy Hilfiger</a>
+                                                    </div>
                                                     <div class="vr"></div>
-                                                    <div class="text-muted">Seller : <span class="text-body fw-medium">Zoetic Fashion</span></div>
+                                                    <div class="text-muted">Seller : <span
+                                                            class="text-body fw-medium">Zoetic Fashion</span></div>
                                                     <div class="vr"></div>
-                                                    <div class="text-muted">Published : <span class="text-body fw-medium">26 Mar, 2021</span></div>
+                                                    <div class="text-muted">Published : <span class="text-body fw-medium">26
+                                                            Mar, 2021</span></div>
                                                 </div>
                                             </div>
                                             <div class="flex-shrink-0">
                                                 <div>
-                                                    <a href="apps-ecommerce-add-product.html" class="btn btn-light" data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i class="ri-pencil-fill align-bottom"></i></a>
+                                                    <a href="apps-ecommerce-add-product.html" class="btn btn-light"
+                                                        data-bs-toggle="tooltip" data-bs-placement="top" title="Edit"><i
+                                                            class="ri-pencil-fill align-bottom"></i></a>
                                                 </div>
                                             </div>
                                         </div>
@@ -112,7 +125,8 @@
                                                 <div class="p-2 border border-dashed rounded">
                                                     <div class="d-flex align-items-center">
                                                         <div class="avatar-sm me-2">
-                                                            <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                            <div
+                                                                class="avatar-title rounded bg-transparent text-success fs-24">
                                                                 <i class="ri-money-dollar-circle-fill"></i>
                                                             </div>
                                                         </div>
@@ -128,7 +142,8 @@
                                                 <div class="p-2 border border-dashed rounded">
                                                     <div class="d-flex align-items-center">
                                                         <div class="avatar-sm me-2">
-                                                            <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                            <div
+                                                                class="avatar-title rounded bg-transparent text-success fs-24">
                                                                 <i class="ri-file-copy-2-fill"></i>
                                                             </div>
                                                         </div>
@@ -144,7 +159,8 @@
                                                 <div class="p-2 border border-dashed rounded">
                                                     <div class="d-flex align-items-center">
                                                         <div class="avatar-sm me-2">
-                                                            <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                            <div
+                                                                class="avatar-title rounded bg-transparent text-success fs-24">
                                                                 <i class="ri-stack-fill"></i>
                                                             </div>
                                                         </div>
@@ -160,7 +176,8 @@
                                                 <div class="p-2 border border-dashed rounded">
                                                     <div class="d-flex align-items-center">
                                                         <div class="avatar-sm me-2">
-                                                            <div class="avatar-title rounded bg-transparent text-success fs-24">
+                                                            <div
+                                                                class="avatar-title rounded bg-transparent text-success fs-24">
                                                                 <i class="ri-inbox-archive-fill"></i>
                                                             </div>
                                                         </div>
@@ -179,23 +196,39 @@
                                                 <div class="mt-4">
                                                     <h5 class="fs-14">Sizes :</h5>
                                                     <div class="d-flex flex-wrap gap-2">
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Out of Stock">
-                                                            <input type="radio" class="btn-check" name="productsize-radio" id="productsize-radio1" disabled>
-                                                            <label class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center" for="productsize-radio1">S</label>
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="Out of Stock">
+                                                            <input type="radio" class="btn-check"
+                                                                name="productsize-radio" id="productsize-radio1" disabled>
+                                                            <label
+                                                                class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
+                                                                for="productsize-radio1">S</label>
                                                         </div>
 
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="04 Items Available">
-                                                            <input type="radio" class="btn-check" name="productsize-radio" id="productsize-radio2">
-                                                            <label class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center" for="productsize-radio2">M</label>
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="04 Items Available">
+                                                            <input type="radio" class="btn-check"
+                                                                name="productsize-radio" id="productsize-radio2">
+                                                            <label
+                                                                class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
+                                                                for="productsize-radio2">M</label>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="06 Items Available">
-                                                            <input type="radio" class="btn-check" name="productsize-radio" id="productsize-radio3">
-                                                            <label class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center" for="productsize-radio3">L</label>
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="06 Items Available">
+                                                            <input type="radio" class="btn-check"
+                                                                name="productsize-radio" id="productsize-radio3">
+                                                            <label
+                                                                class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
+                                                                for="productsize-radio3">L</label>
                                                         </div>
 
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Out of Stock">
-                                                            <input type="radio" class="btn-check" name="productsize-radio" id="productsize-radio4" disabled>
-                                                            <label class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center" for="productsize-radio4">XL</label>
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="Out of Stock">
+                                                            <input type="radio" class="btn-check"
+                                                                name="productsize-radio" id="productsize-radio4" disabled>
+                                                            <label
+                                                                class="btn btn-soft-primary avatar-xs rounded-circle p-0 d-flex justify-content-center align-items-center"
+                                                                for="productsize-radio4">XL</label>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -206,43 +239,60 @@
                                                 <div class=" mt-4">
                                                     <h5 class="fs-14">Colors :</h5>
                                                     <div class="d-flex flex-wrap gap-2">
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="Out of Stock">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-primary" disabled>
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="Out of Stock">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-primary"
+                                                                disabled>
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="03 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-secondary">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="03 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-secondary">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="03 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-success">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="03 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-success">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="02 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-info">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="02 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-info">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="01 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-warning">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="01 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-warning">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="04 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-danger">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="04 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-danger">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="03 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-light">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="03 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-light">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
-                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-placement="top" title="04 Items Available">
-                                                            <button type="button" class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-body">
+                                                        <div data-bs-toggle="tooltip" data-bs-trigger="hover"
+                                                            data-bs-placement="top" title="04 Items Available">
+                                                            <button type="button"
+                                                                class="btn avatar-xs p-0 d-flex align-items-center justify-content-center border rounded-circle fs-20 text-body">
                                                                 <i class="ri-checkbox-blank-circle-fill"></i>
                                                             </button>
                                                         </div>
@@ -255,7 +305,11 @@
 
                                         <div class="mt-4 text-muted">
                                             <h5 class="fs-14">Description :</h5>
-                                            <p>Tommy Hilfiger men striped pink sweatshirt. Crafted with cotton. Material composition is 100% organic cotton. This is one of the world’s leading designer lifestyle brands and is internationally recognized for celebrating the essence of classic American cool style, featuring preppy with a twist designs.</p>
+                                            <p>Tommy Hilfiger men striped pink sweatshirt. Crafted with cotton. Material
+                                                composition is 100% organic cotton. This is one of the world’s leading
+                                                designer lifestyle brands and is internationally recognized for celebrating
+                                                the essence of classic American cool style, featuring preppy with a twist
+                                                designs.</p>
                                         </div>
 
                                         <div class="row">
@@ -263,10 +317,18 @@
                                                 <div class="mt-3">
                                                     <h5 class="fs-14">Features :</h5>
                                                     <ul class="list-unstyled">
-                                                        <li class="py-1"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> Full Sleeve</li>
-                                                        <li class="py-1"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> Cotton</li>
-                                                        <li class="py-1"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> All Sizes available</li>
-                                                        <li class="py-1"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> 4 Different Color</li>
+                                                        <li class="py-1"><i
+                                                                class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                            Full Sleeve</li>
+                                                        <li class="py-1"><i
+                                                                class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                            Cotton</li>
+                                                        <li class="py-1"><i
+                                                                class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                            All Sizes available</li>
+                                                        <li class="py-1"><i
+                                                                class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                            4 Different Color</li>
                                                     </ul>
                                                 </div>
                                             </div>
@@ -285,17 +347,24 @@
                                         <div class="product-content mt-5">
                                             <h5 class="fs-14 mb-3">Product Description :</h5>
                                             <nav>
-                                                <ul class="nav nav-tabs nav-tabs-custom nav-success" id="nav-tab" role="tablist">
+                                                <ul class="nav nav-tabs nav-tabs-custom nav-success" id="nav-tab"
+                                                    role="tablist">
                                                     <li class="nav-item">
-                                                        <a class="nav-link active" id="nav-speci-tab" data-bs-toggle="tab" href="#nav-speci" role="tab" aria-controls="nav-speci" aria-selected="true">Specification</a>
+                                                        <a class="nav-link active" id="nav-speci-tab"
+                                                            data-bs-toggle="tab" href="#nav-speci" role="tab"
+                                                            aria-controls="nav-speci"
+                                                            aria-selected="true">Specification</a>
                                                     </li>
                                                     <li class="nav-item">
-                                                        <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab" href="#nav-detail" role="tab" aria-controls="nav-detail" aria-selected="false">Details</a>
+                                                        <a class="nav-link" id="nav-detail-tab" data-bs-toggle="tab"
+                                                            href="#nav-detail" role="tab" aria-controls="nav-detail"
+                                                            aria-selected="false">Details</a>
                                                     </li>
                                                 </ul>
                                             </nav>
                                             <div class="tab-content border border-top-0 p-4" id="nav-tabContent">
-                                                <div class="tab-pane fade show active" id="nav-speci" role="tabpanel" aria-labelledby="nav-speci-tab">
+                                                <div class="tab-pane fade show active" id="nav-speci" role="tabpanel"
+                                                    aria-labelledby="nav-speci-tab">
                                                     <div class="table-responsive">
                                                         <table class="table mb-0">
                                                             <tbody>
@@ -323,15 +392,29 @@
                                                         </table>
                                                     </div>
                                                 </div>
-                                                <div class="tab-pane fade" id="nav-detail" role="tabpanel" aria-labelledby="nav-detail-tab">
+                                                <div class="tab-pane fade" id="nav-detail" role="tabpanel"
+                                                    aria-labelledby="nav-detail-tab">
                                                     <div>
-                                                        <h5 class="font-size-16 mb-3">Tommy Hilfiger Sweatshirt for Men (Pink)</h5>
-                                                        <p>Tommy Hilfiger men striped pink sweatshirt. Crafted with cotton. Material composition is 100% organic cotton. This is one of the world’s leading designer lifestyle brands and is internationally recognized for celebrating the essence of classic American cool style, featuring preppy with a twist designs.</p>
+                                                        <h5 class="font-size-16 mb-3">Tommy Hilfiger Sweatshirt for Men
+                                                            (Pink)</h5>
+                                                        <p>Tommy Hilfiger men striped pink sweatshirt. Crafted with cotton.
+                                                            Material composition is 100% organic cotton. This is one of the
+                                                            world’s leading designer lifestyle brands and is internationally
+                                                            recognized for celebrating the essence of classic American cool
+                                                            style, featuring preppy with a twist designs.</p>
                                                         <div>
-                                                            <p class="mb-2"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> Machine Wash</p>
-                                                            <p class="mb-2"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> Fit Type: Regular</p>
-                                                            <p class="mb-2"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> 100% Cotton</p>
-                                                            <p class="mb-0"><i class="mdi mdi-circle-medium me-1 text-muted align-middle"></i> Long sleeve</p>
+                                                            <p class="mb-2"><i
+                                                                    class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                                Machine Wash</p>
+                                                            <p class="mb-2"><i
+                                                                    class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                                Fit Type: Regular</p>
+                                                            <p class="mb-2"><i
+                                                                    class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                                100% Cotton</p>
+                                                            <p class="mb-0"><i
+                                                                    class="mdi mdi-circle-medium me-1 text-muted align-middle"></i>
+                                                                Long sleeve</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -364,7 +447,8 @@
                                                                 </div>
                                                             </div>
                                                             <div class="text-center">
-                                                                <div class="text-muted">Total <span class="fw-medium">5.50k</span> reviews
+                                                                <div class="text-muted">Total <span
+                                                                        class="fw-medium">5.50k</span> reviews
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -378,8 +462,12 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="p-2">
-                                                                        <div class="progress animated-progress progress-sm">
-                                                                            <div class="progress-bar bg-success" role="progressbar" style="width: 50.16%" aria-valuenow="50.16" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div
+                                                                            class="progress animated-progress progress-sm">
+                                                                            <div class="progress-bar bg-success"
+                                                                                role="progressbar" style="width: 50.16%"
+                                                                                aria-valuenow="50.16" aria-valuemin="0"
+                                                                                aria-valuemax="100"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -399,8 +487,12 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="p-2">
-                                                                        <div class="progress animated-progress progress-sm">
-                                                                            <div class="progress-bar bg-success" role="progressbar" style="width: 19.32%" aria-valuenow="19.32" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div
+                                                                            class="progress animated-progress progress-sm">
+                                                                            <div class="progress-bar bg-success"
+                                                                                role="progressbar" style="width: 19.32%"
+                                                                                aria-valuenow="19.32" aria-valuemin="0"
+                                                                                aria-valuemax="100"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -420,8 +512,12 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="p-2">
-                                                                        <div class="progress animated-progress progress-sm">
-                                                                            <div class="progress-bar bg-success" role="progressbar" style="width: 18.12%" aria-valuenow="18.12" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div
+                                                                            class="progress animated-progress progress-sm">
+                                                                            <div class="progress-bar bg-success"
+                                                                                role="progressbar" style="width: 18.12%"
+                                                                                aria-valuenow="18.12" aria-valuemin="0"
+                                                                                aria-valuemax="100"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -441,8 +537,12 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="p-2">
-                                                                        <div class="progress animated-progress progress-sm">
-                                                                            <div class="progress-bar bg-warning" role="progressbar" style="width: 7.42%" aria-valuenow="7.42" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div
+                                                                            class="progress animated-progress progress-sm">
+                                                                            <div class="progress-bar bg-warning"
+                                                                                role="progressbar" style="width: 7.42%"
+                                                                                aria-valuenow="7.42" aria-valuemin="0"
+                                                                                aria-valuemax="100"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -463,8 +563,12 @@
                                                                 </div>
                                                                 <div class="col">
                                                                     <div class="p-2">
-                                                                        <div class="progress animated-progress progress-sm">
-                                                                            <div class="progress-bar bg-danger" role="progressbar" style="width: 4.98%" aria-valuenow="4.98" aria-valuemin="0" aria-valuemax="100"></div>
+                                                                        <div
+                                                                            class="progress animated-progress progress-sm">
+                                                                            <div class="progress-bar bg-danger"
+                                                                                role="progressbar" style="width: 4.98%"
+                                                                                aria-valuenow="4.98" aria-valuemin="0"
+                                                                                aria-valuemax="100"></div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -486,31 +590,41 @@
                                                             <h5 class="fs-14">Reviews: </h5>
                                                         </div>
 
-                                                        <div class="me-lg-n3 pe-lg-4" data-simplebar style="max-height: 225px;">
+                                                        <div class="me-lg-n3 pe-lg-4" data-simplebar
+                                                            style="max-height: 225px;">
                                                             <ul class="list-unstyled mb-0">
                                                                 <li class="py-2">
                                                                     <div class="border border-dashed rounded p-3">
                                                                         <div class="d-flex align-items-start mb-3">
                                                                             <div class="hstack gap-3">
-                                                                                <div class="badge rounded-pill bg-success mb-0">
+                                                                                <div
+                                                                                    class="badge rounded-pill bg-success mb-0">
                                                                                     <i class="mdi mdi-star"></i> 4.2
                                                                                 </div>
                                                                                 <div class="vr"></div>
                                                                                 <div class="flex-grow-1">
-                                                                                    <p class="text-muted mb-0"> Superb sweatshirt. I loved it. It is for winter.</p>
+                                                                                    <p class="text-muted mb-0"> Superb
+                                                                                        sweatshirt. I loved it. It is for
+                                                                                        winter.</p>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
 
                                                                         <div class="d-flex flex-grow-1 gap-2 mb-3">
                                                                             <a href="#" class="d-block">
-                                                                                <img src="admin/assets/images/small/img-12.jpg" alt="" class="avatar-sm rounded object-fit-cover">
+                                                                                <img src="admin/assets/images/small/img-12.jpg"
+                                                                                    alt=""
+                                                                                    class="avatar-sm rounded object-fit-cover">
                                                                             </a>
                                                                             <a href="#" class="d-block">
-                                                                                <img src="admin/assets/images/small/img-11.jpg" alt="" class="avatar-sm rounded object-fit-cover">
+                                                                                <img src="admin/assets/images/small/img-11.jpg"
+                                                                                    alt=""
+                                                                                    class="avatar-sm rounded object-fit-cover">
                                                                             </a>
                                                                             <a href="#" class="d-block">
-                                                                                <img src="admin/assets/images/small/img-10.jpg" alt="" class="avatar-sm rounded object-fit-cover">
+                                                                                <img src="admin/assets/images/small/img-10.jpg"
+                                                                                    alt=""
+                                                                                    class="avatar-sm rounded object-fit-cover">
                                                                             </a>
                                                                         </div>
 
@@ -520,7 +634,8 @@
                                                                             </div>
 
                                                                             <div class="flex-shrink-0">
-                                                                                <p class="text-muted fs-13 mb-0">12 Jul, 21</p>
+                                                                                <p class="text-muted fs-13 mb-0">12 Jul, 21
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -529,12 +644,15 @@
                                                                     <div class="border border-dashed rounded p-3">
                                                                         <div class="d-flex align-items-start mb-3">
                                                                             <div class="hstack gap-3">
-                                                                                <div class="badge rounded-pill bg-success mb-0">
+                                                                                <div
+                                                                                    class="badge rounded-pill bg-success mb-0">
                                                                                     <i class="mdi mdi-star"></i> 4.0
                                                                                 </div>
                                                                                 <div class="vr"></div>
                                                                                 <div class="flex-grow-1">
-                                                                                    <p class="text-muted mb-0"> Great at this price, Product quality and look is awesome.</p>
+                                                                                    <p class="text-muted mb-0"> Great at
+                                                                                        this price, Product quality and look
+                                                                                        is awesome.</p>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -544,7 +662,8 @@
                                                                             </div>
 
                                                                             <div class="flex-shrink-0">
-                                                                                <p class="text-muted fs-13 mb-0">06 Jul, 21</p>
+                                                                                <p class="text-muted fs-13 mb-0">06 Jul, 21
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -554,12 +673,14 @@
                                                                     <div class="border border-dashed rounded p-3">
                                                                         <div class="d-flex align-items-start mb-3">
                                                                             <div class="hstack gap-3">
-                                                                                <div class="badge rounded-pill bg-success mb-0">
+                                                                                <div
+                                                                                    class="badge rounded-pill bg-success mb-0">
                                                                                     <i class="mdi mdi-star"></i> 4.2
                                                                                 </div>
                                                                                 <div class="vr"></div>
                                                                                 <div class="flex-grow-1">
-                                                                                    <p class="text-muted mb-0">Good product. I am so happy.</p>
+                                                                                    <p class="text-muted mb-0">Good
+                                                                                        product. I am so happy.</p>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -569,7 +690,8 @@
                                                                             </div>
 
                                                                             <div class="flex-shrink-0">
-                                                                                <p class="text-muted fs-13 mb-0">06 Jul, 21</p>
+                                                                                <p class="text-muted fs-13 mb-0">06 Jul, 21
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -579,12 +701,14 @@
                                                                     <div class="border border-dashed rounded p-3">
                                                                         <div class="d-flex align-items-start mb-3">
                                                                             <div class="hstack gap-3">
-                                                                                <div class="badge rounded-pill bg-success mb-0">
+                                                                                <div
+                                                                                    class="badge rounded-pill bg-success mb-0">
                                                                                     <i class="mdi mdi-star"></i> 4.1
                                                                                 </div>
                                                                                 <div class="vr"></div>
                                                                                 <div class="flex-grow-1">
-                                                                                    <p class="text-muted mb-0">Nice Product, Good Quality.</p>
+                                                                                    <p class="text-muted mb-0">Nice
+                                                                                        Product, Good Quality.</p>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -594,7 +718,8 @@
                                                                             </div>
 
                                                                             <div class="flex-shrink-0">
-                                                                                <p class="text-muted fs-13 mb-0">24 Jun, 21</p>
+                                                                                <p class="text-muted fs-13 mb-0">24 Jun, 21
+                                                                                </p>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -628,46 +753,45 @@
     </div>
     <!-- End Page-content -->
 
-      <!-- css-->
-      @push('admin_css')
+    <!-- css-->
+    @push('admin_css')
         <!-- App favicon -->
-        <link rel="shortcut icon" href="{{asset('admin/assets/images/favicon.ico')}}">
+        <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.ico') }}">
 
         <!--Swiper slider css-->
-        <link href="{{asset('admin/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css')}}" />
+        <link href="{{ asset('admin/assets/libs/swiper/swiper-bundle.min.css" rel="stylesheet" type="text/css') }}" />
 
         <!-- Layout config Js -->
-        <script src="{{asset('admin/assets/js/layout.js')}}"></script>
+        <script src="{{ asset('admin/assets/js/layout.js') }}"></script>
         <!-- Bootstrap Css -->
-        <link href="{{asset('admin/assets/css/bootstrap.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- Icons Css -->
-        <link href="{{asset('admin/assets/css/icons.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- App Css-->
-        <link href="{{asset('admin/assets/css/app.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('admin/assets/css/app.min.css') }}" rel="stylesheet" type="text/css" />
         <!-- custom Css-->
-        <link href="{{asset('admin/assets/css/custom.min.css')}}" rel="stylesheet" type="text/css" />
+        <link href="{{ asset('admin/assets/css/custom.min.css') }}" rel="stylesheet" type="text/css" />
+    @endpush
+    <!--end css-->
 
-      @endpush
-      <!--end css-->
-  
-      <!-- js-->
-      @push('admin_js')
-         <!-- JAVASCRIPT -->
-        <script src="{{aset('admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js')}}"></script>
-        <script src="{{aset('admin/assets/libs/simplebar/simplebar.min.js')}}"></script>
-        <script src="{{aset('admin/assets/libs/node-waves/waves.min.js')}}"></script>
-        <script src="{{aset('admin/assets/libs/feather-icons/feather.min.js')}}"></script>
-        <script src="{{aset('admin/assets/js/pages/plugins/lord-icon-2.1.0.js')}}"></script>
-        <script src="{{aset('admin/assets/js/plugins.js')}}"></script>
+    <!-- js-->
+    @push('admin_js')
+        <!-- JAVASCRIPT -->
+        <script src="{{ aset('admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ aset('admin/assets/libs/simplebar/simplebar.min.js') }}"></script>
+        <script src="{{ aset('admin/assets/libs/node-waves/waves.min.js') }}"></script>
+        <script src="{{ aset('admin/assets/libs/feather-icons/feather.min.js') }}"></script>
+        <script src="{{ aset('admin/assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
+        <script src="{{ aset('admin/assets/js/plugins.js') }}"></script>
 
         <!--Swiper slider js-->
-        <script src="{{aset('admin/assets/libs/swiper/swiper-bundle.min.js')}}"></script>
+        <script src="{{ aset('admin/assets/libs/swiper/swiper-bundle.min.js') }}"></script>
 
         <!-- ecommerce product details init -->
-        <script src="{{aset('admin/assets/js/pages/ecommerce-product-details.init.js')}}"></script>
+        <script src="{{ aset('admin/assets/js/pages/ecommerce-product-details.init.js') }}"></script>
 
         <!-- App js -->
-        <script src="{{aset('admin/assets/js/app.js')}}"></script>
-      @endpush
-      <!--end js-->
+        <script src="{{ aset('admin/assets/js/app.js') }}"></script>
+    @endpush
+    <!--end js-->
 @endsection
