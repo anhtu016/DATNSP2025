@@ -45,4 +45,20 @@ public function cancel(Order $order)
     return back()->with('success', 'Đơn hàng đã được hủy thành công.');
 }
 
+public function confirm($id)
+{
+    $order = Order::findOrFail($id);
+
+    if ($order->order_status === 'delivered' && !$order->is_confirmed) {
+        $order->is_confirmed = true;
+        $order->confirmed_at = now();
+        $order->save();
+
+        return redirect()->back()->with('success', 'Bạn đã xác nhận đơn hàng hoàn tất.');
+    }
+
+    return redirect()->back()->with('error', 'Không thể xác nhận đơn hàng này.');
+}
+
+
 }

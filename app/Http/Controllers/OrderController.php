@@ -8,6 +8,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Log;
+use App\Models\Product;
 
 
 
@@ -20,19 +21,15 @@ class OrderController extends Controller
             return view('admin.orders.index', compact('orders'));
         }
     
-// Trong OrderController.php
 public function show($orderId)
 {
-    // Eager load mối quan hệ 'orderDetail.variant.attributes' để tối ưu số lượng truy vấn
     $order = Order::with('orderDetail.variant.attributeValues.attribute')->find($orderId);
 
 
-    // Kiểm tra xem đơn hàng có tồn tại không
     if (!$order) {
         abort(404, 'Đơn hàng không tồn tại');
     }
 
-    // Trả dữ liệu về view
     return view('admin.orders.show', compact('order'));
 }
 
@@ -74,8 +71,8 @@ public function rejectCancel($orderId)
 public function requestCancel($id)
 {
     $order = Order::where('id', $id)
-        ->where('customer_id', auth()->id()) // đảm bảo người dùng chỉ được hủy đơn của mình
-        ->where('order_status', 'pending') // chỉ cho hủy khi chưa xử lý
+        ->where('customer_id', auth()->id()) 
+        ->where('order_status', 'pending')
         ->firstOrFail();
 
     $order->order_status = 'cancel_requested';
@@ -85,7 +82,7 @@ public function requestCancel($id)
         ->with('success', 'Yêu cầu hủy đơn hàng đã được gửi. Vui lòng chờ xác nhận từ quản trị viên.');
 }
 
-    // tạo đơn hàng
+
     public function create()
     {
         $cart = session()->get('cart', []);
@@ -109,7 +106,7 @@ public function requestCancel($id)
         $user = Auth::user();
         $userName = $user ? $user->name : 'Khách';
     
-        // 👇 Thêm cart, total và userName vào đây
+        
         return view('client.order', compact('shippingMethods', 'paymentMethods', 'cart', 'total', 'userName'));
     }
     
@@ -117,32 +114,39 @@ public function requestCancel($id)
 
     public function store(Request $request)
     {
-        // Lấy giỏ hàng từ session
         $cart = session()->get('cart', []);
         $total = 0;
     
-        // Kiểm tra và tính tổng số tiền trong giỏ hàng
         foreach ($cart as $item) {
+            $product = Product::find($item['id']);
+            if (!$product) {
+                return back()->with('error', 'Sản phẩm không tồn tại.');
+            }
+    
+            if ($product->quantity < $item['quantity']) {
+                return redirect()->back()
+                ->with('error', 'Sản phẩm "' . $product->name . '" không đủ số lượng trong kho. Bạn vui lòng đặt lại số lượng sản phẩm !');
+            
+            }
+    
             $total += $item['price'] * $item['quantity'];
         }
     
-        // Lấy ID người dùng
         $customerId = Auth::id();
     
-        // Tạo đơn hàng mới
         try {
             $order = Order::create([
                 'total_amount' => $total,
                 'shipping_address' => $request->shipping_address,
-                'order_date' => now(), // Hoặc lấy từ $request nếu có
+                'order_date' => now(), 
                 'shipping_method_id' => $request->shipping_method_id,
                 'payment_methods_id' => $request->payment_methods_id,
                 'phone_number' => $request->phone_number,
                 'customer_id' => $customerId,
-                'order_status' => 'pending', // Trạng thái đơn hàng
+                'order_status' => 'pending', 
             ]);
     
-            // Lưu chi tiết đơn hàng vào bảng order_details
+            
             foreach ($cart as $item) {
                 
                
@@ -160,7 +164,7 @@ public function requestCancel($id)
             
             
     
-            // Xóa giỏ hàng sau khi đặt hàng thành công
+      
             session()->forget('cart');
     
         } catch (\Exception $e) {
@@ -169,14 +173,15 @@ public function requestCancel($id)
     
         return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
     }
-    // xóa đơn hàng
+
     public function destroy($id)
 {
     $order = Order::findOrFail($id);
-
-    // Optional: Kiểm tra trạng thái trước khi xoá
     if (in_array($order->order_status, ['pending', 'cancelled'])) {
-        $order->delete();
+    $order = Order::find($id);
+    $order->orderDetails()->delete();
+    $order->delete();
+
         return redirect()->back()->with('success', 'Đã xoá đơn hàng thành công.');
     }
 
@@ -187,14 +192,14 @@ public function requestCancel($id)
 
 public function confirmCancel($id)
 {
-    // Tìm đơn hàng yêu cầu hủy
+
     $order = Order::findOrFail($id);
 
     if ($order->order_status !== 'cancel_requested') {
         return redirect()->route('admin.orders.index')->with('error', 'Đơn hàng không yêu cầu hủy hoặc đã hủy trước đó.');
     }
 
-    // Cập nhật trạng thái đơn hàng thành hủy
+
     $order->order_status = 'cancelled';
     $order->save();
 

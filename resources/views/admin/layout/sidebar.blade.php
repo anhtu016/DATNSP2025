@@ -67,8 +67,8 @@
             
                             <!-- Other links -->
                             <li class="nav-item">
-                                <a href="dashboard-crm.html" class="nav-link">
-                                    <i class="ri-bar-chart-line me-1"></i> CRM
+                                <a href="{{route('admin.coupons.index')}}" class="nav-link">
+                                    <i class="ri-bar-chart-line me-1"></i> Coupons
                                 </a>
                             </li>
                             <li class="nav-item">

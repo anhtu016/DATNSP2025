@@ -43,7 +43,6 @@
 		<!--End Footer-->
 	</div>
 	<!-- page -->
-
 	<div id="toTop"></div><!-- Back to top button -->
 	@include('client.layout.partials.js')
 	@stack('js')

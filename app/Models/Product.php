@@ -45,4 +45,9 @@ class Product extends Model
             return $this->hasMany(Variant::class);
         }
         
+        public function coupons()
+{
+    return $this->belongsToMany(Coupon::class, 'coupon_product');
+}
+
 }

@@ -1,98 +1,120 @@
 @extends('client.layout.default')
 
 @section('content')
+    <div class="container">
+        <h2 class="mb-4">🧾 Chi tiết đơn hàng</h2>
 
-<div class="container">
-    <h2 class="mb-4">🧾 Chi tiết đơn hàng #{{ $order->id }}</h2>
+        <!-- Flash message -->
+        @if (session('success'))
+            <div class="alert alert-success">{{ session('success') }}</div>
+        @endif
+        @if (session('error'))
+            <div class="alert alert-danger">{{ session('error') }}</div>
+        @endif
 
-    <!-- Flash message -->
-    @if(session('success'))
-        <div class="alert alert-success">{{ session('success') }}</div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger">{{ session('error') }}</div>
-    @endif
-
-    <!-- Thông tin chung -->
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5>Thông tin đơn hàng</h5>
-            <p><strong>Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
-            <p><strong>Trạng thái:</strong> 
-                <span class="badge 
-                    @if($order->order_status == 'pending') bg-warning
+        <!-- Thông tin chung -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5>Thông tin đơn hàng</h5>
+                <p><strong>Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
+                <p><strong>Trạng thái:</strong>
+                    <span
+                        class="badge 
+                    @if ($order->order_status == 'pending') bg-warning
                     @elseif($order->order_status == 'shipped') bg-info
                     @elseif($order->order_status == 'delivered') bg-success
                     @elseif($order->order_status == 'cancelled') bg-danger
-                    @elseif($order->order_status == 'cancel_requested') bg-dark
-                    @endif">
-                    {{ ucfirst($order->order_status) }}
-                </span>
-            </p>
-            <p><strong>Phương thức thanh toán:</strong> {{ $order->paymentMethod->name ?? 'Thanh Toán khi nhận hàng' }}</p>
-            <p><strong>Phương thức vận chuyển:</strong> {{ $order->shippingMethod->name ?? 'Giao hàng tiết kiệm' }}</p>
-            <p><strong>Địa chỉ nhận hàng:</strong> {{ $order->shipping_address }}</p>
+                    @elseif($order->order_status == 'cancel_requested') bg-dark @endif">
+                        {{ ucfirst($order->order_status) }}
+                    </span>
+                </p>
+                <p><strong>Phương thức thanh toán:</strong> {{ $order->paymentMethod->name ?? 'Thanh Toán khi nhận hàng' }}
+                </p>
+                <p><strong>Phương thức vận chuyển:</strong> {{ $order->shippingMethod->name ?? 'Giao hàng tiết kiệm' }}</p>
+                <p><strong>Địa chỉ nhận hàng:</strong> {{ $order->shipping_address }}</p>
 
-            <!-- Nút Hủy đơn hàng -->
-            @if($order->order_status === 'pending')
-                <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
-                    @csrf
-                    @method('PUT')
-                    <button class="btn btn-danger mt-3">❌ Hủy đơn hàng</button>
-                </form>
+                <!-- Nút Xác nhận hoàn thành -->
+                @if ($order->order_status === 'delivered')
+                @if (!$order->is_confirmed)
+                    <!-- Nếu chưa xác nhận -->
+                    <form action="{{ route('user.orders.confirm', $order->id) }}" method="POST"
+                        onsubmit="return confirm('Bạn xác nhận đơn hàng đã hoàn tất?')">
+                        @csrf
+                        @method('PUT')
+                        <button class="btn btn-success mt-2">✅ Xác nhận đã hoàn thành đơn hàng</button>
+                    </form>
+                @else
+                    <!-- Nếu đã xác nhận -->
+                    <p class="text-success mt-2">
+                        <strong>✅ Bạn đã xác nhận đơn hàng này hoàn tất vào {{ \Carbon\Carbon::parse($order->confirmed_at)->format('d/m/Y H:i') }}</strong>
+                    </p>
+                @endif
             @endif
-        </div>
-    </div>
+            
 
-    <!-- Danh sách sản phẩm -->
-    <div class="card">
-        <div class="card-body">
-            <h5>Sản phẩm trong đơn hàng</h5>
-            <div class="table-responsive">
-                <table class="table table-bordered text-center align-middle">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Ảnh</th>
-                            <th>Sản phẩm</th>
-                            <th>Thông số sản phẩm</th>
-                            <th>Giá</th>
-                            <th>Số lượng</th>
-                            <th>Tổng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($order->orderDetails as $item)
-                        <tr>
-                            <td>
-                                <img src="{{ asset('storage/' . ($item->product->thumbnail ?? 'default.png')) }}" width="100px" alt="">
-                            </td>
-                            <td>{{ $item->product->name ?? 'N/A' }}</td>
-                            <td>
-                                @if($item->variant && $item->variant->attributeValues)
-                                    @foreach($item->variant->attributeValues as $value)
-                                        <span class="badge bg-secondary">{{ $value->attribute->name }}: {{ $value->value }}</span>
-                                    @endforeach
-                                @else
-                                    ---
-                                @endif
-                            </td>
-                            
-                            <td>{{ number_format($item->price) }}đ</td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>{{ number_format($item->price * $item->quantity) }}đ</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Tổng tiền -->
-            <div class="d-flex justify-content-end mt-3">
-                <h5><strong>Tổng thanh toán: {{ number_format($order->total_amount) }}đ</strong></h5>
+                <!-- Nút Hủy đơn hàng -->
+                @if ($order->order_status === 'pending')
+                    <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST"
+                        onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
+                        @csrf
+                        @method('PUT')
+                        <button class="btn btn-danger mt-3">❌ Hủy đơn hàng</button>
+                    </form>
+                @endif
             </div>
         </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="card">
+            <div class="card-body">
+                <h5>Sản phẩm trong đơn hàng</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered text-center align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Ảnh</th>
+                                <th>Sản phẩm</th>
+                                <th>Thông số sản phẩm</th>
+                                <th>Giá</th>
+                                <th>Số lượng</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($order->orderDetails as $item)
+                                <tr>
+                                    <td>
+                                        <img src="{{ asset('storage/' . ($item->product->thumbnail ?? 'default.png')) }}"
+                                            width="100px" alt="">
+                                    </td>
+                                    <td>{{ $item->product->name ?? 'N/A' }}</td>
+                                    <td>
+                                        @if ($item->variant && $item->variant->attributeValues)
+                                            @foreach ($item->variant->attributeValues as $value)
+                                                <span class="badge bg-secondary">{{ $value->attribute->name }}:
+                                                    {{ $value->value }}</span>
+                                            @endforeach
+                                        @else
+                                            ---
+                                        @endif
+                                    </td>
+
+                                    <td>{{ number_format($item->price) }}đ</td>
+                                    <td>{{ $item->quantity }}</td>
+                                    <td>{{ number_format($item->price * $item->quantity) }}đ</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Tổng tiền -->
+                <div class="d-flex justify-content-end mt-3">
+                    <h5><strong>Tổng thanh toán: {{ number_format($order->total_amount) }}đ</strong></h5>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
 
     @push('admin_css')

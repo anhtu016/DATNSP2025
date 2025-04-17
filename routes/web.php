@@ -17,6 +17,7 @@ use App\Http\Controllers\Client\ProductDetailController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
+use App\Http\Controllers\Admin\CouponController;
 
 Route::get('/', [HomeController::class, 'index1']);
 Route::get('/home', [ProductController::class, 'index'])->name('home');
@@ -152,9 +153,34 @@ Route::middleware(['auth'])->group(function () {
 
 });
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
-    // Đổi từ GET sang POST hoặc PUT
     Route::put('/orders/{id}/cancel', [OrderController::class, 'requestCancel'])->name('orders.cancel');
 });
+// confirm đơn hàng
+Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm'])->name('user.orders.confirm');
+
+
+
+//route mã giảm giá
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // Hiển thị danh sách mã giảm giá
+    Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
+
+    // Hiển thị form tạo mới mã giảm giá
+    Route::get('coupons/create', [CouponController::class, 'create'])->name('coupons.create');
+
+    // Lưu mã giảm giá mới
+    Route::post('coupons', [CouponController::class, 'store'])->name('coupons.store');
+
+    // Hiển thị form chỉnh sửa mã giảm giá
+    Route::get('coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
+
+    // Cập nhật mã giảm giá
+    Route::put('coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
+
+    // Xóa mã giảm giá
+    Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+});
+
 
 
 

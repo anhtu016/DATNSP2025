@@ -247,7 +247,7 @@ public function storeVariants(Request $request, $id)
 
 
 
-//
+
 
 
 // Hàm tạo các kết hợp (combinations) từ các giá trị thuộc tính
@@ -267,7 +267,6 @@ private function generateCombinations($attributes)
 
     return $combinations;
 }
-
 
 
 }

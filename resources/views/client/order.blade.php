@@ -1,6 +1,20 @@
 @extends('client.layout.default')
 
 @section('content')
+@if (session('success'))
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ session('success') }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
+@if (session('error'))
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        {{ session('error') }}
+        <button type="button" class="btn-close p-2" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+@endif
+
     <main>
         <!-- resources/views/checkout.blade.php -->
         <div class="checkout-container">
@@ -96,7 +110,6 @@
         </div>
         
     </main>
-
     <!-- css-->
     @push('admin_css')
         <!-- App favicon -->
