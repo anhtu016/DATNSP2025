@@ -39,112 +39,41 @@
                 <li class="menu-title">
                     <span data-key="t-menu">Menu</span>
                 </li>
-            
-                <!-- Dashboards -->
+    
+                <!-- Dashboard -->
                 <li class="nav-item">
-                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarDashboards" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarDashboards">
+                    <a class="nav-link menu-link d-flex align-items-center" href="{{ url('homeadmin') }}">
                         <i class="ri-dashboard-2-line me-2"></i> 
-                        <span data-key="t-dashboards">Dashboards</span>
+                        <span data-key="t-dashboards">Dashboard</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarDashboards">
-                        <ul class="nav nav-sm flex-column">
-            
-                            <!-- User submenu -->
-                            <li class="nav-item">
-                                <a class="nav-link" href="#userMenu" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="userMenu">
-                                    <i class="ri-user-line me-1"></i> User
-                                </a>
-                                <div class="collapse menu-dropdown" id="userMenu">
-                                    <ul class="nav nav-sm flex-column ms-3">
-                                        <li class="nav-item">
-                                            <a href="{{route('users.index')}}" class="nav-link">List User</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{route('users.create')}}" class="nav-link">Add User</a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-
-            
-                            <!-- Other links -->
-                            <li class="nav-item">
-                                <a href="dashboard-crm.html" class="nav-link">
-                                    <i class="ri-bar-chart-line me-1"></i> CRM
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="atrributes" class="nav-link">
-                                    <i class="ri-shopping-cart-2-line me-1"></i> Ecommerce
-                                </a>
-                            </li>
-                        </ul>
-                    </div>
                 </li>
-            
-                <!-- Apps -->
+    
+                <!-- Users -->
                 <li class="nav-item">
-                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarApps" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarApps">
-                        <i class="ri-apps-2-line me-2"></i> <span data-key="t-apps">Apps</span>
+                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarUsers" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarUsers">
+                        <i class="ri-user-line me-2"></i> 
+                        <span data-key="t-users">Users</span>
                     </a>
-                    <div class="collapse menu-dropdown" id="sidebarApps">
+                    <div class="collapse menu-dropdown" id="sidebarUsers">
                         <ul class="nav nav-sm flex-column">
-                            <!-- Categories -->
-                            <li class="nav-item">               
-                                <a href="#categoriesMenu" class="nav-link d-flex align-items-center" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="categoriesMenu">
-                                    <i class="ri-folder-line me-1"></i> Categories
-                                </a>
-                                <div class="collapse menu-dropdown" id="categoriesMenu">
-                                    <ul class="nav nav-sm flex-column ms-3">
-                                        <li class="nav-item">
-                                            <a href="{{ url('list-categories') }}" class="nav-link">List Category</a>
-                                        </li>
-                                        <li class="nav-item">
-                                            <a href="{{ url('add-categories') }}" class="nav-link" data-key="t-create-product"> Add Category </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </li>
-                            
-                            <!-- Reviews -->
                             <li class="nav-item">
-                                <a href="#reviewsMenu" class="nav-link" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="reviewsMenu">
-                                   <i class="ri-star-line me-1"></i> Reviews
-                                </a>
-                                <div class="collapse menu-dropdown" id="reviewsMenu">
-                                    <ul class="nav nav-sm flex-column ms-3">
-                                        <li class="nav-item">
-                                            <a href="{{ url('list-reviews') }}" class="nav-link" data-key="t-products"> List Reviews </a>
-                                        </li>
-                                    </ul>
-                                </div>
+                                <a href="{{route('users.index')}}" class="nav-link">List Users</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{route('users.create')}}" class="nav-link">Add User</a>
                             </li>
                         </ul>
                     </div>
                 </li>
-            
-                <!-- Attributes -->
-                <li class="nav-item">
-                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarAttributes" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAttributes">
-                        <i class="ri-equalizer-line me-2"></i> <span data-key="t-dashboards">Attribute</span>
-                    </a>
-                    <div class="collapse menu-dropdown" id="sidebarAttributes">
-                        <ul class="nav nav-sm flex-column">
-                            <li class="nav-item">
-                                <a href="{{ url('attributes') }}" class="nav-link">Add</a>
-                            </li>
-                        </ul>
-                    </div>
-                </li>
-
-            
-                <!-- Products Section with Logo and Add Product -->
+    
+                <!-- Products -->
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="#sidebarProducts" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarProducts">
-                        <i class="ri-shopping-bag-2-line me-2"></i> <span data-key="t-products">Products</span>
+                        <i class="ri-shopping-bag-2-line me-2"></i> 
+                        <span data-key="t-products">Products</span>
                     </a>
                     <div class="collapse menu-dropdown" id="sidebarProducts">
-                        <ul class="nav nav-sm flex-column ms-3">
+                        <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
                                 <a href="{{ route('products.index') }}" class="nav-link">List Products</a>
                             </li>
@@ -154,13 +83,76 @@
                         </ul>
                     </div>
                 </li>
-            
+    
+                <!-- Categories -->
+                <li class="nav-item">
+                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarCategories" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarCategories">
+                        <i class="ri-folder-line me-2"></i> 
+                        <span data-key="t-categories">Categories</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarCategories">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ url('list-categories') }}" class="nav-link">List Categories</a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="{{ url('add-categories') }}" class="nav-link">Add Category</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+    
+                <!-- Orders -->
+                <li class="nav-item">
+                    <a class="nav-link menu-link d-flex align-items-center" href="{{route('admin.orders.index')}}">
+                        <i class="ri-shopping-cart-2-line me-2"></i> 
+                        <span data-key="t-orders">Orders</span>
+                    </a>
+                </li>
+    
+                <!-- Coupons -->
+                <li class="nav-item">
+                    <a class="nav-link menu-link d-flex align-items-center" href="{{route('admin.coupons.index')}}">
+                        <i class="ri-bar-chart-line me-2"></i> 
+                        <span data-key="t-coupons">Coupons</span>
+                    </a>
+                </li>
+    
+                <!-- Reviews -->
+                <li class="nav-item">
+                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarReviews" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarReviews">
+                        <i class="ri-star-line me-2"></i> 
+                        <span data-key="t-reviews">Reviews</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarReviews">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ url('list-reviews') }}" class="nav-link">List Reviews</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+    
+                <!-- Attributes -->
+                <li class="nav-item">
+                    <a class="nav-link menu-link d-flex align-items-center" href="#sidebarAttributes" data-bs-toggle="collapse" role="button" aria-expanded="false" aria-controls="sidebarAttributes">
+                        <i class="ri-equalizer-line me-2"></i> 
+                        <span data-key="t-attributes">Attributes</span>
+                    </a>
+                    <div class="collapse menu-dropdown" id="sidebarAttributes">
+                        <ul class="nav nav-sm flex-column">
+                            <li class="nav-item">
+                                <a href="{{ ('attributes') }}" class="nav-link">Add Attribute</a>
+                            </li>
+                        </ul>
+                    </div>
+                </li>
+    
                 <!-- Home -->
-
-
                 <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="{{ route('home') }}">
-                        <i class="ri-home-line me-2"></i> <span data-key="t-home">Trang chủ</span>
+                        <i class="ri-home-line me-2"></i> 
+                        <span data-key="t-home">Home</span>
                     </a>
                 </li>
             </ul>
