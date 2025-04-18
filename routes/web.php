@@ -18,10 +18,13 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\OrderController as UserOrderController;
 use App\Http\Controllers\Admin\CouponController;
+Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/', [HomeController::class, 'index1']);
+    Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
+});
 
-Route::get('/', [HomeController::class, 'index1']);
 Route::get('/home', [ProductController::class, 'index'])->name('home');
-Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
+
 
 
 // ==== Auth: Đăng nhập / Đăng ký / Đăng xuất ====
@@ -39,7 +42,7 @@ Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showRes
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 
-// ==== Category ====
+//danh mục sản phẩm
 Route::get('list-categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('index');
 Route::get('add-categories', [App\Http\Controllers\CategoriesController::class, 'create'])->name('create');
 Route::post('admin-add-categories', [App\Http\Controllers\CategoriesController::class, 'store'])->name('store');
@@ -51,56 +54,43 @@ Route::get('admin-reset-categories/{id}', [App\Http\Controllers\CategoriesContro
 Route::delete('admin-forceDel-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'forceDelete'])->name('forceDelete');
 
 
-// ==== Sản phẩm - Chi tiết sản phẩm ====
+// Chi tiết sản phẩm 
 Route::get('client-detail/{id}', [App\Http\Controllers\CuaHangController::class, 'index'])->name('detail.index');
 
 
-// ==== Thuộc tính sản phẩm (attributes) ====
+// Thuộc tính sản phẩm 
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('attributes', AttributeController::class);
 });
 
 
-// ==== Quản lý người dùng (admin/users) ====
+//  Quản lý người dùng 
 Route::get('admin/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
 Route::get('admin/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
 Route::post('admin/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
 Route::get('admin/users/{id}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
 Route::put('admin/users/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
 Route::delete('admin/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
-//giở hàng
+//giỏ hàng
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-
-// thêm sản phẩm vào giỏ hàng
-
 Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-//xóa sản phẩm khỏi giỏ hàng
 Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-//cập nhật số lượng sản phẩm trong rỏ hàng
 Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
 
 
 
-
-// hiển thị danh sách sản phẩm
+// sản phẩm
 Route::get('/products', [ProductController::class, 'index1'])->name('products.index');
-// Hiển thị trang tạo sản phẩm
 Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
-// Xử lý việc tạo sản phẩm
 Route::post('/products', [ProductController::class, 'store'])->name('products.store');
-//cập nhật sản phẩm 
 Route::get('/products/{product}/edit', [ProductController::class, 'edit'])->name('products.edit');
-//xử lý put
 Route::put('/products/{product}', [ProductController::class, 'update'])->name('products.update');
-
-//xóa sản phẩm
 Route::delete('products/{product}', [ProductController::class, 'destroy'])->name('products.destroy');
 
 
 // biến thể ?
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(function () {
-    // Route để tạo mới biến thể cho sản phẩm
     Route::get('products/{product}/variants', [ProductController::class, 'showVariants'])->name('products.variants.index');
   
 }); 
@@ -110,9 +100,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
 
 
 // đặt hàng
-
-
-// routes/web.php
 Route::middleware('auth')->group(function () {
     Route::get('/checkout', [OrderController::class, 'create'])->name('checkout.form');
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
@@ -132,18 +119,15 @@ Route::get('load-reviews/{id}',[ReviewController::class,'loadReview'])
 
 // Quản lý đơn hàng
 Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
-    Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
-    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
-    Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
-    Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
+Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
+Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
 Route::put('/admin/orders/{id}/cancel-approve', [OrderController::class, 'approveCancel'])->name('admin.orders.cancel.approve');
 Route::put('/admin/orders/{id}/cancel-reject', [OrderController::class, 'rejectCancel'])->name('admin.orders.cancel.reject');
-    Route::post('/orders/{id}/confirm-cancel', [OrderController::class, 'confirmCancel'])->name('admin.orders.confirmCancel');
-
+Route::post('/orders/{id}/confirm-cancel', [OrderController::class, 'confirmCancel'])->name('admin.orders.confirmCancel');
 Route::post('/admin/orders/{order}/reject-cancel', [OrderController::class, 'rejectCancel'])->name('admin.orders.rejectCancel');
 Route::post('/orders/{id}/mark-delivered', [OrderController::class, 'markAsDelivered'])->name('orders.markDelivered');
-
-
 });
 
 // theo dõi đơn hàng
@@ -163,8 +147,7 @@ Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm
 
 
 //route mã giảm giá
-Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-    // Hiển thị danh sách mã giảm giá
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
     Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
 
     // Hiển thị form tạo mới mã giảm giá

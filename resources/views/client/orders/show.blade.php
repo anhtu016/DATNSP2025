@@ -35,7 +35,7 @@
                 <p><strong>@if ($daysSinceDelivered !== null)
                     <p>Đơn hàng đã giao được {{ $daysSinceDelivered }} ngày.</p>
                 @else
-                    <p>Đơn hàng được giao thành công</p>
+                    
                 @endif</strong></p>
                 <!-- Nút Xác nhận hoàn thành -->
                 @if ($order->order_status === 'delivered')

@@ -1,90 +1,91 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="container py-5 ">
-    <div class="card shadow rounded">
-        <div class="card-body">
-            <h2 class="mb-4 mt-4">Chi tiết đơn hàng <span class="text-primary">#{{ $order->id }}</span></h2>
+    <div class="container py-5 ">
+        <div class="card shadow rounded">
+            <div class="card-body">
+                <h2 class="mb-4 mt-4">Chi tiết đơn hàng <span class="text-primary">#{{ $order->id }}</span></h2>
 
-            <div class="mb-4">
-                <p><strong>👤 Khách hàng:</strong> {{ $order->customer->name ?? 'N/A' }}</p>
-                <p><strong>📞 SĐT:</strong> {{ $order->phone_number }}</p>
-                <p><strong>📍 Địa chỉ:</strong> {{ $order->shipping_address }}</p>
-                <p><strong>🗓 Ngày đặt:</strong> {{ $order->order_date }}</p>
-                <p><strong>📦 Trạng thái:</strong> 
-                    <span class="badge 
-                        @if($order->order_status == 'pending') bg-warning
+                <div class="mb-4">
+                    <p><strong>👤 Khách hàng:</strong> {{ $order->customer->name ?? 'N/A' }}</p>
+                    <p><strong>📞 SĐT:</strong> {{ $order->phone_number }}</p>
+                    <p><strong>📍 Địa chỉ:</strong> {{ $order->shipping_address }}</p>
+                    <p><strong>🗓 Ngày đặt:</strong> {{ $order->order_date }}</p>
+                    <p><strong>📦 Trạng thái:</strong>
+                        <span
+                            class="badge 
+                        @if ($order->order_status == 'pending') bg-warning
                         @elseif($order->order_status == 'shipped') bg-info
                         @elseif($order->order_status == 'delivered') bg-success
                         @elseif($order->order_status == 'cancelled') bg-danger
-                         @elseif($order->order_status == 'cancel_requested') bg-dark
-                        @endif">
-                        {{ ucfirst($order->order_status) }}
-                    </span>
-                </p>
-            </div>
-
-            <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
-                @csrf
-                <div class="row align-items-end">
-                    <div class="col-md-4">
-                        <label for="order_status" class="form-label">Thay đổi trạng thái:</label>
-                        <select name="order_status" id="order_status" class="form-select" 
-                                @disabled($order->order_status == 'cancel_requested')>
-                            <option value="pending" @selected($order->order_status == 'pending')>Chờ xử lý</option>
-                            <option value="shipped" @selected($order->order_status == 'shipped')>Đã giao hàng</option>
-                            <option value="delivered" @selected($order->order_status == 'delivered')>Hoàn tất</option>
-                            <option value="cancelled" @selected($order->order_status == 'cancelled')>Đã hủy</option>
-                        </select>
-                        @if($order->order_status == 'cancel_requested')
-                            <small class="text-warning">Yêu cầu hủy, không thể thay đổi trạng thái</small>
-                        @endif
-                    </div>
-                    <div class="col-md-2">
-                        @if($order->order_status != 'cancel_requested')
-                            <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
-                        @endif
-                    </div>
+                         @elseif($order->order_status == 'cancel_requested') bg-dark @endif">
+                            {{ ucfirst($order->order_status) }}
+                        </span>
+                    </p>
                 </div>
-            </form>
-            
-            <h4 class="mb-3">🛒 Sản phẩm đã đặt</h4>
-            <div class="table-responsive">
-                <table class="table table-bordered align-middle text-center">
-                    <thead class="table-light">
-                        <tr>
-                            <th>Sản phẩm</th>
-                            <th>Thông số sản phẩm</th>
-                            <th>Số lượng</th>
-                            <th>Giá</th>
-                            <th>Tổng</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach($order->orderDetail as $item)
-                        <tr>
-                            <td>{{ $item->product->name ?? 'N/A' }}</td>
-                            <td>
-                                @if ($item->variant && $item->variant->attributeValues)
-                                    @foreach ($item->variant->attributeValues as $attrValue)
-                                        <span class="badge bg-secondary">
-                                            {{ $attrValue->attribute->name ?? '' }}: {{ $attrValue->value }}
-                                        </span>
-                                    @endforeach
-                                @else
-                                    <em>Không có</em>
-                                @endif
-                            </td>
-                            <td>{{ $item->quantity }}</td>
-                            <td>{{ number_format($item->price) }}đ</td>
-                            <td>{{ number_format($item->total) }}đ</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+
+                <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
+                    @csrf
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label for="order_status" class="form-label">Thay đổi trạng thái:</label>
+                            <select name="order_status" id="order_status" class="form-select" @disabled(in_array($order->order_status, ['cancel_requested', 'cancelled']))>
+
+                                <option value="pending" @selected($order->order_status == 'pending')>Chờ xử lý</option>
+                                <option value="shipped" @selected($order->order_status == 'shipped')>Đã giao hàng</option>
+                                <option value="delivered" @selected($order->order_status == 'delivered')>Hoàn tất</option>
+                                <option value="cancelled" @selected($order->order_status == 'cancelled')>Đã hủy</option>
+                            </select>
+                            @if ($order->order_status == 'cancel_requested')
+                                <small class="text-warning">Yêu cầu hủy, không thể thay đổi trạng thái</small>
+                            @endif
+                        </div>
+                        <div class="col-md-2">
+                            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled']))
+                                <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
+                            @endif
+
+                        </div>
+                    </div>
+                </form>
+
+                <h4 class="mb-3">🛒 Sản phẩm đã đặt</h4>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Sản phẩm</th>
+                                <th>Thông số sản phẩm</th>
+                                <th>Số lượng</th>
+                                <th>Giá</th>
+                                <th>Tổng</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($order->orderDetail as $item)
+                                <tr>
+                                    <td>{{ $item->product->name ?? 'N/A' }}</td>
+                                    <td>
+                                        @if ($item->variant && $item->variant->attributeValues)
+                                            @foreach ($item->variant->attributeValues as $attrValue)
+                                                <span class="badge bg-secondary">
+                                                    {{ $attrValue->attribute->name ?? '' }}: {{ $attrValue->value }}
+                                                </span>
+                                            @endforeach
+                                        @else
+                                            <em>Không có</em>
+                                        @endif
+                                    </td>
+                                    <td>{{ $item->quantity }}</td>
+                                    <td>{{ number_format($item->price) }}đ</td>
+                                    <td>{{ number_format($item->total) }}đ</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
     <!-- End Page-content -->
 
