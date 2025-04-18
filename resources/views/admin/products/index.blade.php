@@ -51,7 +51,7 @@
                 
                         <td>
                             <a href="{{ route('Variants', $product->id) }}" class="btn btn-success">Variants</a>
-                            
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                
                                 <!-- Form xóa sản phẩm -->
                                 <form action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:inline;">
                                     @csrf
