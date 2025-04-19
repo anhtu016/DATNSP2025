@@ -24,20 +24,47 @@ class ReviewController extends Controller
     {
         $ratings = $request->input('rating');
         $description = $request->input('description');
+        $hasReview = false;
+        $hasError = false;
 
         foreach ($order->orderDetails as $item) {
-            if (isset($ratings[$item->id]) && isset($comments[$item->id])) {
-                ProductReview::create([
+            if (isset($ratings[$item->id]) && isset($description[$item->id])) {
+                // Kiểm tra xem đã có đánh giá cho sản phẩm này trong đơn hàng này chưa
+                $existingReview = ProductReview::where([
                     'product_id' => $item->product_id,
-                    'rating' => $ratings[$item->id],
-                    'description' => $description[$item->id],
                     'user_id' => auth()->id(),
-                    'status' => 1
-                ]);
+                    'order_id' => $item->order_id
+                ])->first();
+
+                if (!$existingReview) {
+                    // Nếu chưa có đánh giá, tạo mới
+                    ProductReview::create([
+                        'product_id' => $item->product_id,
+                        'user_id' => auth()->id(),
+                        'order_id' => $item->order_id,
+                        'rating' => $ratings[$item->id],
+                        'description' => $description[$item->id],
+                        'status' => 1
+                    ]);
+                    $hasReview = true;
+                } else {
+                    $hasError = true;
+                }
             }
         }
 
-        return redirect()->route('orders.review', $order->id)->with('success', 'Đánh giá của bạn đã được gửi thành công!');
+        if ($hasReview) {
+            return redirect()->route('orders.review', $order->id)
+                ->with('success', 'Đánh giá của bạn đã được gửi thành công!');
+        } elseif ($hasError) {
+            return redirect()->route('orders.review', $order->id)
+                ->with('error', 'Bạn đã đánh giá sản phẩm này rồi')
+                ->withInput();
+        }
+
+        return redirect()->route('orders.review', $order->id)
+            ->with('error', 'Vui lòng chọn đánh giá và nhập bình luận cho sản phẩm')
+            ->withInput();
     }
 
     /**
