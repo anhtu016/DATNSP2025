@@ -28,10 +28,11 @@ class ReviewController extends Controller
         $hasError = false;
 
         foreach ($order->orderDetails as $item) {
+            // dd($item);
             if (isset($ratings[$item->id]) && isset($description[$item->id])) {
                 // Kiểm tra xem đã có đánh giá cho sản phẩm này trong đơn hàng này chưa
                 $existingReview = ProductReview::where([
-                    'product_id' => $item->product_id,
+                    'variants_id' => $item->variant_id,
                     'user_id' => auth()->id(),
                     'order_id' => $item->order_id
                 ])->first();
@@ -39,12 +40,13 @@ class ReviewController extends Controller
                 if (!$existingReview) {
                     // Nếu chưa có đánh giá, tạo mới
                     ProductReview::create([
-                        'product_id' => $item->product_id,
+                        'variants_id' => $item->variant_id,
                         'user_id' => auth()->id(),
                         'order_id' => $item->order_id,
                         'rating' => $ratings[$item->id],
                         'description' => $description[$item->id],
-                        'status' => 1
+                        'status' => 1,
+                        'product_id'=> $item->product_id
                     ]);
                     $hasReview = true;
                 } else {
