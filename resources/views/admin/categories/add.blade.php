@@ -2,7 +2,7 @@
 @section('content')
     <h1>abc</h1>
     <h3>abc</h3>
-    <form action="{{route('store')}}" method="post" enctype="multipart/form-data">
+    <form action="{{route('categories.store')}}" method="post" enctype="multipart/form-data">
         @csrf
         <div class="">
             <div class="card">

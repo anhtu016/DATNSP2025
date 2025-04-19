@@ -22,6 +22,7 @@ class OrderController extends Controller
         ->where('customer_id', Auth::id())
         ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
         ->firstOrFail();
+        // dd($order->orderDetails);
         if ($order->delivered_at) {
             // Sử dụng Carbon để tính số ngày đã giao
             $daysSinceDelivered = Carbon::parse($order->delivered_at)->diffInDays(Carbon::now());

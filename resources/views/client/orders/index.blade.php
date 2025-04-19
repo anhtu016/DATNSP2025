@@ -1,7 +1,7 @@
 @extends('client.layout.default')
 
 @section('content')
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <div class="cart-table-container">
         <h2 class="mb-4">📋 Lịch sử đơn hàng của bạn</h2>
 
@@ -39,6 +39,11 @@
                     <td>{{ number_format($order->total_amount) }}đ</td>
                     <td>
                         <a href="{{ route('user.orders.show', $order->id) }}" class="btn btn-sm btn-primary">Xem</a>
+                        @if ($order->order_status == 'delivered')
+                       <a href="{{route('orders.review', $order->id)}}" class="btn btn-sm btn-success">
+                            Đánh giá
+                        </a>
+                        @endif
                     </td>
                 </tr>
                 @empty
@@ -49,7 +54,7 @@
             </tbody>
         </table>
     </div>
-
+    
     <!-- Pagination -->
     <div class="d-flex justify-content-end mt-3">
         {{ $orders->links('pagination::bootstrap-5') }}
@@ -83,31 +88,13 @@
     @endpush
     <!--end css-->
 
-    <!-- js-->
-    @push('admin_js')
-        <!-- JAVASCRIPT -->
-        <script src="{{ asset('admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-        <script src="{{ asset('admin/assets/libs/simplebar/simplebar.min.js') }}"></script>
-        <script src="{{ asset('admin/assets/libs/node-waves/waves.min.js') }}"></script>
-        <script src="{{ asset('admin/assets/libs/feather-icons/feather.min.js') }}"></script>
-        <script src="{{ asset('admin/assets/js/pages/plugins/lord-icon-2.1.0.js') }}"></script>
-        <script src="{{ asset('admin/assets/js/plugins.js') }}"></script>
+    @push('scripts')
+        <!-- jQuery -->
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <!-- SweetAlert2 -->
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-        <!-- apexcharts -->
-        <script src="{{ asset('admin/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
-
-        <!-- Vector map-->
-        <script src="{{ asset('admin/assets/libs/jsvectormap/js/jsvectormap.min.js') }}"></script>
-        <script src="{{ asset('admin/assets/libs/jsvectormap/maps/world-merc.js') }}"></script>
-
-        <!-- Swiper slider js-->
-        <script src="{{ asset('admin/assets/libs/swiper/swiper-bundle.min.js') }}"></script>
-
-        <!-- Dashboard init -->
-        <script src="{{ asset('admin/assets/js/pages/dashboard-ecommerce.init.js') }}"></script>
-
-        <!-- App js -->
-        <script src="{{ asset('admin/assets/js/app.js') }}"></script>
+        
     @endpush
     <!--end js-->
 @endsection

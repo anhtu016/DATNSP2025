@@ -47,9 +47,9 @@
                                     <td>
                                         <div class="d-flex gap-2">
                                             <div class="edit">
-                                               <a href="{{route('edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Edit</button></a> 
+                                               <a href="{{route('categories.edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Edit</button></a> 
                                             </div>
-                                            <form action="{{route('destroy', $ct->id)}}" method="post">
+                                            <form action="{{route('categories.destroy', $ct->id)}}" method="post">
                                                 @csrf
                                                 @method('delete')
                                                 <div class="remove">

@@ -40,15 +40,16 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 
 
 // ==== Category ====
-Route::get('list-categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('index');
-Route::get('add-categories', [App\Http\Controllers\CategoriesController::class, 'create'])->name('create');
-Route::post('admin-add-categories', [App\Http\Controllers\CategoriesController::class, 'store'])->name('store');
-Route::delete('admin-delete-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'destroy'])->name('destroy');
-Route::get('admin-edit-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'edit'])->name('edit');
-Route::put('admin-update-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'update'])->name('update');
-Route::get('trash-categories', [App\Http\Controllers\CategoriesController::class, 'trash'])->name('trash');
-Route::get('admin-reset-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'reset'])->name('reset');
-Route::delete('admin-forceDel-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'forceDelete'])->name('forceDelete');
+Route::get('list-categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('categories.index');
+Route::get('add-categories', [App\Http\Controllers\CategoriesController::class, 'create'])->name('categories.create');
+Route::post('admin-add-categories', [App\Http\Controllers\CategoriesController::class, 'store'])->name('categories.store');
+Route::delete('admin-delete-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'destroy'])->name('categories.destroy');
+Route::get('admin-edit-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'edit'])->name('categories.edit');
+Route::put('admin-update-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'update'])->name('categories.update');
+Route::get('trash-categories', [App\Http\Controllers\CategoriesController::class, 'trash'])->name('categories.trash');
+Route::get('admin-reset-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'reset'])->name('categories.reset');
+Route::delete('admin-forceDel-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'forceDelete'])->name('categories.forceDelete');
+
 
 
 // ==== Sản phẩm - Chi tiết sản phẩm ====
@@ -107,8 +108,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
  Route::post('products/{product}/variants', [ProductController::class, 'storeVariants'])->name('products.variants.store');
  Route::get('/products/{product}/addVariants', [ProductController::class, 'Variants'])->name('Variants');
 
-
-
 // đặt hàng
 
 
@@ -128,7 +127,11 @@ Route::get('reviews-presently/{id}',[ReviewController::class,'presently'])
 // load reviews
 Route::get('load-reviews/{id}',[ReviewController::class,'loadReview'])
 ->name('reviews.loadReview');
-
+// đánh giá sản phẩm
+Route::get('product-review/{id}',[\App\Http\Controllers\Client\ReviewController::class,'show'])
+->name('orders.review');
+// tạo đánh giá
+Route::post('orders/{order}/reviews', [\App\Http\Controllers\Client\ReviewController::class, 'create'])->name('orders.reviews.create');
 
 // Quản lý đơn hàng
 Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
@@ -160,7 +163,8 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 // confirm đơn hàng
 Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm'])->name('user.orders.confirm');
 
-
+// đánh giá đơn hàng
+Route::get('/user/orders/{order}/review', [UserOrderController::class, 'review'])->name('user.orders.review');
 
 //route mã giảm giá
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
@@ -183,12 +187,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
 });
 
-
-
-
-
-
-
+Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.store');
 
 
 
