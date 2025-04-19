@@ -13,7 +13,7 @@
 	<title>Allaia | Bootstrap eCommerce Template - ThemeForest</title>
 	<link href="{{ asset('client/css/bootstrap.min.css') }}" rel="stylesheet">
     <link href="{{ asset('client/css/style.css') }}" rel="stylesheet">
-    <link href="{{ asset('client/css/responsive.css') }}" rel="stylesheet">
+    {{-- <link href="{{ asset('client/css/responsive.css') }}" rel="stylesheet"> --}}
 <!-- Notyf CSS -->
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 <!-- Notyf JS -->

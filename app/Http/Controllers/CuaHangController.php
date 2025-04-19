@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductImage;
 use Illuminate\Http\Request;
+use App\Models\ProductReview;
 use Illuminate\Support\Facades\DB;
 
 class CuaHangController extends Controller
@@ -26,6 +28,10 @@ class CuaHangController extends Controller
         // Lấy sản phẩm và các thuộc tính của nó
         $product = Product::with('variants.attributeValues.attribute')->findOrFail($id);
         $attributes = [];
+        $detailProduct = Product::query()->find($id);
+        $imageProduct = ProductImage::query()->where('product_id',$id)->get();
+        $loadReviews = ProductReview::with(['product', 'user'])
+        ->where('product_id', $id)->get();
     
         // Duyệt qua tất cả các biến thể của sản phẩm
         foreach ($product->variants as $variant) {
@@ -49,7 +55,7 @@ class CuaHangController extends Controller
         }
     
         // Trả về view với sản phẩm và các thuộc tính đã ánh xạ
-        return view('client.detail-product', compact('product', 'attributes'));
+        return view('client.detail-product', compact('product', 'attributes','detailProduct','imageProduct','loadReviews'));
     }
     
 

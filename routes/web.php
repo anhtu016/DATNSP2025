@@ -181,15 +181,16 @@ Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'
 
 
 // ==== Category ====
-Route::get('list-categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('index');
-Route::get('add-categories', [App\Http\Controllers\CategoriesController::class, 'create'])->name('create');
-Route::post('admin-add-categories', [App\Http\Controllers\CategoriesController::class, 'store'])->name('store');
-Route::delete('admin-delete-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'destroy'])->name('destroy');
-Route::get('admin-edit-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'edit'])->name('edit');
-Route::put('admin-update-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'update'])->name('update');
-Route::get('trash-categories', [App\Http\Controllers\CategoriesController::class, 'trash'])->name('trash');
-Route::get('admin-reset-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'reset'])->name('reset');
-Route::delete('admin-forceDel-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'forceDelete'])->name('forceDelete');
+Route::get('list-categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('categories.index');
+Route::get('add-categories', [App\Http\Controllers\CategoriesController::class, 'create'])->name('categories.create');
+Route::post('admin-add-categories', [App\Http\Controllers\CategoriesController::class, 'store'])->name('categories.store');
+Route::delete('admin-delete-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'destroy'])->name('categories.destroy');
+Route::get('admin-edit-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'edit'])->name('categories.edit');
+Route::put('admin-update-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'update'])->name('categories.update');
+Route::get('trash-categories', [App\Http\Controllers\CategoriesController::class, 'trash'])->name('categories.trash');
+Route::get('admin-reset-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'reset'])->name('categories.reset');
+Route::delete('admin-forceDel-categories/{id}', [App\Http\Controllers\CategoriesController::class, 'forceDelete'])->name('categories.forceDelete');
+
 
 
 // ==== Sản phẩm - Chi tiết sản phẩm ====
@@ -248,8 +249,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'admin'])->group(fun
  Route::post('products/{product}/variants', [ProductController::class, 'storeVariants'])->name('products.variants.store');
  Route::get('/products/{product}/addVariants', [ProductController::class, 'Variants'])->name('Variants');
 
-
-
 // đặt hàng
 
 
@@ -259,6 +258,77 @@ Route::middleware('auth')->group(function () {
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
 });
 
+// quản lý reviews
+Route::get('list-reviews',[ReviewController::class,'index'])
+->name('reviews.index');
+// ẩn reviews
+Route::get('reviews-presently/{id}',[ReviewController::class,'presently'])
+->name('reviews.presently');
+
+// load reviews
+Route::get('load-reviews/{id}',[ReviewController::class,'loadReview'])
+->name('reviews.loadReview');
+// đánh giá sản phẩm
+Route::get('product-review/{id}',[\App\Http\Controllers\Client\ReviewController::class,'show'])
+->name('orders.review');
+// tạo đánh giá
+Route::post('orders/{order}/reviews', [\App\Http\Controllers\Client\ReviewController::class, 'create'])->name('orders.reviews.create');
+
+// Quản lý đơn hàng
+Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
+    Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
+    Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
+    Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
+    Route::delete('/admin/orders/{order}', [OrderController::class, 'destroy'])->name('admin.orders.destroy');
+Route::put('/admin/orders/{id}/cancel-approve', [OrderController::class, 'approveCancel'])->name('admin.orders.cancel.approve');
+Route::put('/admin/orders/{id}/cancel-reject', [OrderController::class, 'rejectCancel'])->name('admin.orders.cancel.reject');
+    Route::post('/orders/{id}/confirm-cancel', [OrderController::class, 'confirmCancel'])->name('admin.orders.confirmCancel');
+
+Route::post('/admin/orders/{order}/reject-cancel', [OrderController::class, 'rejectCancel'])->name('admin.orders.rejectCancel');
+Route::post('/orders/{id}/mark-delivered', [OrderController::class, 'markAsDelivered'])->name('orders.markDelivered');
+
+
+});
+
+// theo dõi đơn hàng
+Route::middleware(['auth'])->group(function () {
+    Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
+    Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('user.orders.show');
+    Route::put('/orders/{order}/cancel', [UserOrderController::class, 'cancel'])->name('user.orders.cancel');
+    Route::put('/user/orders/{id}/cancel-request', [UserOrderController::class, 'requestCancel'])->name('user.orders.cancel');
+
+});
+Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
+    Route::put('/orders/{id}/cancel', [OrderController::class, 'requestCancel'])->name('orders.cancel');
+});
+// confirm đơn hàng
+Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm'])->name('user.orders.confirm');
+
+// đánh giá đơn hàng
+Route::get('/user/orders/{order}/review', [UserOrderController::class, 'review'])->name('user.orders.review');
+
+//route mã giảm giá
+Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
+    // Hiển thị danh sách mã giảm giá
+    Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
+
+    // Hiển thị form tạo mới mã giảm giá
+    Route::get('coupons/create', [CouponController::class, 'create'])->name('coupons.create');
+
+    // Lưu mã giảm giá mới
+    Route::post('coupons', [CouponController::class, 'store'])->name('coupons.store');
+
+    // Hiển thị form chỉnh sửa mã giảm giá
+    Route::get('coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
+
+    // Cập nhật mã giảm giá
+    Route::put('coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
+
+    // Xóa mã giảm giá
+    Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+});
+
+Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.store');
 
 
 

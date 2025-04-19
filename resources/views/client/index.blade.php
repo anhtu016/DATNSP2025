@@ -32,10 +32,10 @@
                                         <h2 class="owl-slide-animated owl-slide-title">Attack Air<br>VaporMax
                                             Flyknit 3</h2>
                                         <p class="owl-slide-animated owl-slide-subtitle">
-                                            Limited items available at this price
+                                            Số lượng có hạn với mức giá này
                                         </p>
                                         <div class="owl-slide-animated owl-slide-cta"><a class="btn_1"
-                                                href="listing-grid-1-full.html" role="button">Shop Now</a></div>
+                                                href="listing-grid-1-full.html" role="button">Mua ngay</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -52,10 +52,10 @@
                                         <h2 class="owl-slide-animated owl-slide-title">Attack Air<br>Monarch IV SE
                                         </h2>
                                         <p class="owl-slide-animated owl-slide-subtitle">
-                                            Lightweight cushioning and durable support with a Phylon midsole
+                                            Đệm nhẹ và hỗ trợ bền bỉ với đế giữa Phylon
                                         </p>
                                         <div class="owl-slide-animated owl-slide-cta"><a class="btn_1"
-                                                href="listing-grid-1-full.html" role="button">Shop Now</a></div>
+                                                href="listing-grid-1-full.html" role="button">Mua ngay</a></div>
                                     </div>
                                 </div>
                             </div>
@@ -73,8 +73,8 @@
                 <a href="#0" class="img_container">
                     <img src="client/img/banner_menu.jpg" data-src="" alt="" class="lazy">
                     <div class="short_info opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                        <h3>Men's Collection</h3>
-                        <div><span class="btn_1">Shop Now</span></div>
+                        <h3>Bộ sưu tập Nam</h3>
+                        <div><span class="btn_1">Mua ngay</span></div>
                     </div>
                 </a>
             </li>
@@ -82,8 +82,8 @@
                 <a href="#0" class="img_container">
                     <img src="client/img/blog-single.jpg" alt="" class="lazy">
                     <div class="short_info opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                        <h3>Womens's Collection</h3>
-                        <div><span class="btn_1">Shop Now</span></div>
+                        <h3>Bộ sưu tập Nữ</h3>
+                        <div><span class="btn_1">Mua ngay</span></div>
                     </div>
                 </a>
             </li>
@@ -91,8 +91,8 @@
                 <a href="#0" class="img_container">
                     <img src="client/img/bg_cat_shoes.jpg" data-src="" alt="" class="lazy">
                     <div class="short_info opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                        <h3>Kids's Collection</h3>
-                        <div><span class="btn_1">Shop Now</span></div>
+                        <h3>Bộ sưu tập Trẻ em</h3>
+                        <div><span class="btn_1">Mua ngay</span></div>
                     </div>
                 </a>
             </li>
@@ -101,8 +101,8 @@
 
         <div class="container margin_60_35">
             <div class="main_title">
-                <h2>Top Selling</h2>
-                <span>Products</span>
+                <h2>Sản phẩm</h2>
+                <span>Bán chạy nhất</span>
             </div>
 
 
@@ -209,7 +209,7 @@
         </div>
         <!-- /bg_gray -->
 
-        <div class="container margin_60_35">
+        {{-- <div class="container margin_60_35">
             <div class="main_title">
                 <h2>Latest News</h2>
                 <span>Blog</span>
@@ -286,7 +286,7 @@
                 <!-- /box_news -->
             </div>
             <!-- /row -->
-        </div>
+        </div> --}}
         <!-- /container -->
     </main>
     {{-- <div class="popup_wrapper">

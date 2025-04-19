@@ -24,10 +24,10 @@
                         </div>
                         <ul>
                             <li>
-                                <a href="{{route('home')}}" class="show-submenu">Home</a>
+                                <a href="{{route('home')}}" class="show-submenu">Trang chủ</a>
                             </li>
                             <li class="submenu">
-                                <a href="javascript:void(0);" class="show-submenu">Extra Pages</a>
+                                <a href="javascript:void(0);" class="show-submenu">Danh mục</a>
                                 <ul>
                                     @foreach ($categories as $category)
                                         <li>
@@ -54,12 +54,12 @@
                                     @endforeach
                                 </ul>
                             </li>
-                            <li>
+                            {{-- <li>
                                 <a href="blog.html">Blog</a>
                             </li>
                             <li>
                                 <a href="#" target="_parent">Contact</a>
-                            </li>       
+                            </li>        --}}
                         </ul>
                     </div>
                     <!--/main-menu -->
@@ -75,10 +75,9 @@
                                         <span>Xin chào, <strong>{{ Auth::user()->name }}</strong></span>
                                     </button>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user">
-                                        <li><a class="dropdown-item" href="#"><i class="ti-user"></i> My Profile</a></li> 
-                                        <li><a class="dropdown-item" href="{{route('user.orders.index')}}"><i class="ti-user"></i> Track your Orders</a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="ti-heart"></i> Wishlist </a></li>
-                                        <li><a class="dropdown-item" href="#"><i class="ti-help-alt"></i> Help and Faq </a></li>
+                                     
+                                        <li><a class="dropdown-item" href="{{route('user.orders.index')}}"><i class="ti-user"></i> Theo dõi đơn hàng</a></li>
+                                        
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <form action="{{ route('logout') }}" method="POST">
