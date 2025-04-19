@@ -6,7 +6,7 @@ use App\Models\Order;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
 
-class OrderController extends Controller
+class UserOrderController extends Controller
 {
     public function index()
     {
@@ -23,7 +23,6 @@ class OrderController extends Controller
         ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
         ->firstOrFail();
         if ($order->delivered_at) {
-            // Sử dụng Carbon để tính số ngày đã giao
             $daysSinceDelivered = Carbon::parse($order->delivered_at)->diffInDays(Carbon::now());
         } else {
             $daysSinceDelivered = null;  // Nếu đơn hàng chưa giao

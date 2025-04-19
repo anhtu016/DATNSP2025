@@ -4,14 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Order;
 use Illuminate\Http\Request;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
-
-
-
 class OrderController extends Controller
 {
     
