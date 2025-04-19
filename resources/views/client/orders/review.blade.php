@@ -9,6 +9,22 @@
                         <h4 class="card-title mb-0"><i class="fas fa-star me-2"></i>Đánh giá đơn hàng</h4>
                     </div>
                     <div class="card-body">
+                        @if (session('error'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <i class="fas fa-exclamation-circle me-2"></i>
+                                {{ session('error') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
+                        @if (session('success'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <i class="fas fa-check-circle me-2"></i>
+                                {{ session('success') }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        @endif
+
                         <form action="{{ route('orders.reviews.create', $order->id) }}" method="POST" enctype="multipart/form-data">
                             @csrf
                             <div class="table-responsive">
@@ -66,7 +82,7 @@
                                                             <i class="fas fa-comment-alt text-primary me-2"></i>
                                                             <span class="comment-title" name="description">Bình luận của bạn</span>
                                                         </div>
-                                                        <textarea name="comment[{{ $item->id }}]" 
+                                                        <textarea name="description[{{ $item->id }}]" 
                                                             class="form-control" 
                                                             rows="5"
                                                             cols="40" 
@@ -101,5 +117,10 @@
 @endpush
 
 @push('scripts')
-
+    <script>
+        // Tự động ẩn thông báo sau 5 giây
+        setTimeout(function() {
+            $('.alert').alert('close');
+        }, 5000);
+    </script>
 @endpush
