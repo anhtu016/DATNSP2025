@@ -73,7 +73,7 @@
                 <a href="#0" class="img_container">
                     <img src="client/img/banner_menu.jpg" data-src="" alt="" class="lazy">
                     <div class="short_info opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                        <h3>Bộ sưu tập Nam</h3>
+                        <h3>Bộ sưu tập</h3>
                         <div><span class="btn_1">Mua ngay</span></div>
                     </div>
                 </a>
@@ -82,7 +82,7 @@
                 <a href="#0" class="img_container">
                     <img src="client/img/blog-single.jpg" alt="" class="lazy">
                     <div class="short_info opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                        <h3>Bộ sưu tập Nữ</h3>
+                        <h3>Giày thể thao</h3>
                         <div><span class="btn_1">Mua ngay</span></div>
                     </div>
                 </a>
@@ -91,7 +91,7 @@
                 <a href="#0" class="img_container">
                     <img src="client/img/bg_cat_shoes.jpg" data-src="" alt="" class="lazy">
                     <div class="short_info opacity-mask" data-opacity-mask="rgba(0, 0, 0, 0.5)">
-                        <h3>Bộ sưu tập Trẻ em</h3>
+                        <h3>Bộ sưu tập 2025</h3>
                         <div><span class="btn_1">Mua ngay</span></div>
                     </div>
                 </a>

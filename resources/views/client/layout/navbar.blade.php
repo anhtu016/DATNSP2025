@@ -88,9 +88,9 @@
                                     </ul>
                                 @else
                                     <div class="dropdown dropdown-access">
-                                        <a href="{{ route('login') }}" class="access_link"><span>Account</span></a>
+                                        <a href="{{ route('login') }}" class="access_link"><span>Tài Khoản</span></a>
                                         <div class="dropdown-menu">
-                                            <a href="{{ route('login') }}" class="btn_1">Sign In or Sign Up</a>
+                                            <a href="{{ route('login') }}" class="btn_1">Đăng nhập hoặc đăng ký</a>
                                         </div>
                                     </div>
                                 @endif

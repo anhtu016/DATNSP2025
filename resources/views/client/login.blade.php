@@ -1,48 +1,58 @@
-@extends('client.layout.default')
-
-@section('content')
-<main class="d-flex align-items-center min-vh-100 bg-light">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-5">
-                <div class="card shadow-lg border-0 rounded-4">
-                    <div class="card-header bg-gradient-primary text-white text-center py-3 rounded-top">
-                        <h4 class="mb-0">Đăng Nhập</h4>
-                    </div>
-                    <div class="card-body p-4">
-                        <form method="POST" action="{{ route('login') }}">
-                            @csrf
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">📧 Email</label>
-                                <input type="email" name="email" class="form-control rounded-3" required>
-                                @error('email') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
-
-                            <div class="mb-3">
-                                <label class="form-label fw-bold">🔑 Mật khẩu</label>
-                                <input type="password" name="password" class="form-control rounded-3" required>
-                                @error('password') <small class="text-danger">{{ $message }}</small> @enderror
-                            </div>
-
-                            <button type="submit" class="btn btn-primary w-100 rounded-3 shadow-sm">
-                                <i class="ti-unlock"></i> Đăng nhập
-                            </button>
-                        </form>
-
-                        <div class="text-center mt-3">
-                            <a href="{{route('password.request')}}" class="text-decoration-none">🔄 Quên mật khẩu?</a>
-                        </div>
-                    </div>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+<div class="container">
+    <div class="row justify-content-center align-items-center" style="height: 95vh;">
+        <div class="col-lg-10 shadow-lg rounded-4 overflow-hidden d-flex p-0 bg-white">
+            <div class="col-md-6 d-none d-md-block p-0">
+                <img src="{{ asset('./client/img/blog-3.jpg') }}" 
+                     alt="Login Image" 
+                     class="img-fluid h-100 w-100" 
+                     style="object-fit: cover;">
+            </div>
+            <div class="col-md-6 p-5 d-flex flex-column justify-content-center" style="min-height: 500px;">
+                <div class="text-center mb-4">
+                    <h3 class="fw-bold text-primary">🔐 Đăng nhập</h3>
+                    <p class="text-muted">Vui lòng nhập thông tin tài khoản của bạn</p>
                 </div>
 
-                <div class="text-center mt-3">
-                    <p class="mb-0">Chưa có tài khoản? 
-                        <a href="{{ route('register') }}" class="text-primary fw-bold text-decoration-none">Đăng ký ngay</a>
-                    </p>
+                @if (session('error'))
+                    <div class="alert alert-danger">{{ session('error') }}</div>
+                @endif
+
+                <form method="POST" action="{{ route('login') }}">
+                    @csrf
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">📧 Email</label>
+                        <input type="email" name="email" class="form-control rounded-pill" placeholder="Nhập email của bạn" required>
+                        @error('email') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-bold">🔑 Mật khẩu</label>
+                        <input type="password" name="password" class="form-control rounded-pill" placeholder="********" required>
+                        @error('password') <small class="text-danger">{{ $message }}</small> @enderror
+                    </div>
+
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="remember" name="remember">
+                        <label class="form-check-label" for="remember">Ghi nhớ đăng nhập</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100 rounded-pill fw-bold py-2">
+                        🚪 Đăng nhập
+                    </button>
+                </form>
+
+                <div class="text-center mt-4">
+                    <a href="{{ route('password.request') }}" class="text-decoration-none text-warning fw-semibold">❓ Quên mật khẩu?</a>
+                    <br>
+                    <a href="{{ route('register') }}" class="text-decoration-none text-primary fw-semibold mt-2 d-inline-block">📌 Chưa có tài khoản? Đăng ký</a>
+                    <br>
+                    <a href="{{ route('home') }}" class="text-decoration-none text-primary fw-semibold mt-2 d-inline-block">Quay lại trang chủ</a>
                 </div>
             </div>
         </div>
     </div>
-</main>
+</div>
 
-@endsection
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
