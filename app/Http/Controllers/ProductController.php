@@ -38,26 +38,25 @@ class ProductController extends Controller
         return view('admin.products.index', compact('products', 'attributes'));
     }
      // Hiển thị trang tạo sản phẩm
-
      public function create()
      {
          $attributes = Attribute::with('attributeValue')->get();
          $brands = Brand::all();
          $categories = Category::all();
-         return view('admin.products.create', compact('attributes', 'brands','categories'));
+         return view('admin.products.create', compact('attributes', 'brands', 'categories'));
      }
      
- 
      public function store(Request $request)
      {
          $request->validate([
              'name' => 'required|string|max:200',
              'sku' => 'required|string|max:150|unique:products',
-             'price' => 'required|integer|min:0',
+             'price' => 'required|numeric|min:0',
+             'sell_price' => 'required|nullable|numeric|min:0',
              'short_description' => 'required|string',
              'description' => 'required|string',
-             'thumbnail' => 'nullable|image|max:2048',
-             'quantity' => 'required|integer|min:0',
+             'thumbnail' => 'required|nullable|image|max:2048',
+             'quantity' => 'required|integer|min:1',
              'brand_id' => 'required|exists:brands,id',
              'categories' => 'required|array',
          ]);
@@ -67,9 +66,18 @@ class ProductController extends Controller
              $thumbnailPath = $request->file('thumbnail')->store('products', 'public');
          }
      
+         // Tạo slug và kiểm tra trùng lặp
+         $slug = Str::slug($request->name);
+         $originalSlug = $slug;
+         $count = 1;
+
+         while (Product::where('slug', $slug)->exists()) {
+             $slug = $originalSlug . '-' . $count++;
+         }
+     
          $product = Product::create([
              'name' => $request->name,
-             'slug' => Str::slug($request->name),
+             'slug' => $slug,
              'sku' => $request->sku,
              'price' => $request->price,
              'sell_price' => $request->sell_price ?? 0,
@@ -85,13 +93,10 @@ class ProductController extends Controller
          return redirect()->route('Variants', $product->id)->with('success', 'Tạo sản phẩm thành công!');
      }
      
-
      public function edit($id)
      {
-      
          $product = Product::with('categories')->findOrFail($id);
-         $categories = Category::all(); // Tất cả các danh mục
-     
+         $categories = Category::all();
          return view('admin.products.edit', compact('product', 'categories'));
      }
      
@@ -99,12 +104,11 @@ class ProductController extends Controller
      {
          $product = Product::findOrFail($id);
      
-         // Validate dữ liệu
          $request->validate([
              'name' => 'required|string|max:200',
              'sku' => 'required|string|max:150|unique:products,sku,' . $product->id,
-             'price' => 'required|integer|min:0',
-             'sell_price' => 'nullable|integer|min:0',
+             'price' => 'required|numeric|min:0',
+             'sell_price' => 'nullable|numeric|min:0',
              'short_description' => 'required|string',
              'description' => 'required|string',
              'thumbnail' => 'nullable|image|max:2048',
@@ -114,14 +118,24 @@ class ProductController extends Controller
          ]);
      
          if ($request->hasFile('thumbnail')) {
-             $thumbnailPath = $request->file('thumbnail')->store('products', 'public');
-             $product->thumbnail = $thumbnailPath;
+             $product->thumbnail = $request->file('thumbnail')->store('products', 'public');
          }
      
-
+         // Cập nhật slug nếu tên thay đổi
+         if ($product->name !== $request->name) {
+             $slug = Str::slug($request->name);
+             $originalSlug = $slug;
+             $count = 1;
+     
+             while (Product::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+                 $slug = $originalSlug . '-' . $count++;
+             }
+     
+             $product->slug = $slug;
+         }
+     
          $product->update([
              'name' => $request->name,
-             'slug' => Str::slug($request->name),
              'sku' => $request->sku,
              'price' => $request->price,
              'sell_price' => $request->sell_price ?? 0,
@@ -131,28 +145,12 @@ class ProductController extends Controller
              'brand_id' => $request->brand_id,
          ]);
      
-      
          $product->categories()->sync($request->categories);
      
          return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
      }
-     
-     
-     
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+  
 
 
     public function show($id)

@@ -24,8 +24,8 @@ class CategoriesController extends Controller
         // Validate input
         $request->validate([
             'name' => 'required|string|max:255',
-            'slug' => 'nullable|string|max:255|unique:categories', // Kiểm tra slug không trùng
-            'description' => 'nullable|string|max:255'
+            'slug' => 'required|nullable|string|max:255|unique:categories', // Kiểm tra slug không trùng
+            'description' => 'required|nullable|string|max:255'
         ]);
     
         // Nếu người dùng không nhập slug, tự động tạo slug từ tên

@@ -1,56 +1,74 @@
 @extends('admin.layout.default')
 
 @section('content')
-    <div class="page-content">
-        <div class="container-fluid">
-            <h2 class="mb-4">Thêm người dùng mới</h2>
-            <form action="{{ route('users.store') }}" method="POST">
-                @csrf
-            
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
-            
-                <div class="form-group">
-                    <label for="name">Tên người dùng</label>
-                    <input type="text" class="form-control" id="name" name="name" value="{{ old('name') }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" value="{{ old('email') }}" required>
-                </div>
-                <div class="form-group">
-                    <label for="permissions">Chọn quyền</label>
-                    <select name="permissions" id="permissions" class="form-control">
-                        @foreach($permissions as $permission)
-                            <option value="{{ $permission->id }}" {{ old('permissions') == $permission->id ? 'selected' : '' }}>
-                                {{ $permission->permission_name }}
-                            </option>
+<div class="page-content">
+    <div class="container-fluid">
+        <h2 class="mb-4">Thêm người dùng mới</h2>
+        <form action="{{ route('users.store') }}" method="POST">
+            @csrf
+        
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
                         @endforeach
-                    </select>
+                    </ul>
                 </div>
-                
-                <div class="form-group">
-                    <label for="password">Mật khẩu</label>
-                    <input type="password" class="form-control" id="password" name="password" required>
-                </div>
-                <div class="form-group">
-                    <label for="password_confirmation">Xác nhận mật khẩu</label>
-                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" required>
-                </div>
-                <br>
-                <button type="submit" class="btn btn-primary">Thêm người dùng</button>
-            </form>
+            @endif
+        
+            <div class="form-group">
+                <label for="name">Tên người dùng</label>
+                <input type="text" class="form-control @error('name') is-invalid @enderror" id="name" name="name" value="{{ old('name') }}" >
+                @error('name')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="email">Email</label>
+                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email') }}" >
+                @error('email')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="permissions">Chọn quyền</label>
+                <select name="permissions" id="permissions" class="form-control @error('permissions') is-invalid @enderror">
+                    @foreach($permissions as $permission)
+                        <option value="{{ $permission->id }}" {{ old('permissions') == $permission->id ? 'selected' : '' }}>
+                            {{ $permission->permission_name }}
+                        </option>
+                    @endforeach
+                </select>
+                @error('permissions')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
             
-            
-        </div>
+            <div class="form-group">
+                <label for="password">Mật khẩu</label>
+                <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password">
+                @error('password')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <div class="form-group">
+                <label for="password_confirmation">Xác nhận mật khẩu</label>
+                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation">
+                @error('password_confirmation')
+                    <div class="invalid-feedback">{{ $message }}</div>
+                @enderror
+            </div>
+
+            <br>
+            <button type="submit" class="btn btn-primary">Thêm người dùng</button>
+        </form>
     </div>
+</div>
+
     @push('admin_css')
     <!-- App favicon -->
     <link rel="shortcut icon" href="{{ asset('admin/assets/images/favicon.ico') }}">
