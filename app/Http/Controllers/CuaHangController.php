@@ -32,7 +32,8 @@ class CuaHangController extends Controller
         $imageProduct = ProductImage::query()->where('product_id',$id)->get();
         $loadReviews = ProductReview::with(['product', 'user'])
         ->where('product_id', $id)->get();
-    
+        
+        $isLowStock = $product->quantity <= 5;
         // Duyệt qua tất cả các biến thể của sản phẩm
         foreach ($product->variants as $variant) {
             foreach ($variant->attributeValues as $attrValue) {
@@ -55,55 +56,7 @@ class CuaHangController extends Controller
         }
     
         // Trả về view với sản phẩm và các thuộc tính đã ánh xạ
-        return view('client.detail-product', compact('product', 'attributes','detailProduct','imageProduct','loadReviews'));
+        return view('client.detail-product', compact('product', 'attributes','detailProduct','imageProduct','loadReviews','isLowStock'));
     }
     
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

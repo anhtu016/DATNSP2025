@@ -54,7 +54,20 @@
                                         </div>
                                     </div>
                                 @endforeach
-                
+                                <div class="mb-3">
+                                    <p>Số lượng có sẵn: 
+                                        <span class="quantity">
+                                            {{ $product->quantity }} sản phẩm
+                                        </span>
+                                    </p>
+                                    {{-- cảnh báo sắp hết --}}
+                                    @if (isset($isLowStock) && $isLowStock)
+                                    <div class="alert alert-warning"> 
+                                        <strong>Cảnh báo:</strong> Sản phẩm này gần hết hàng ! Chỉ còn {{ $detailProduct->quantity }} sản phẩm.
+                                    </div>
+                                @endif
+                                
+                                </div>
                                 <div class="mb-3">
                                     <label for="quantity">Số lượng:</label>
                                     <input type="number" name="quantity" class="form-control" value="1" min="1" max="{{ $product->quantity }}">

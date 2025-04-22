@@ -158,7 +158,7 @@ class ProductController extends Controller
         
         $products = Product::with(['variants.attributeValues.attribute'])->get();
 
-    
+        
         return view('admin.products.index', compact('product'));
     }
     
