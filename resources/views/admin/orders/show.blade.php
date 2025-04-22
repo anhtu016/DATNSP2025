@@ -9,11 +9,13 @@
                     <p><strong>👤 Khách hàng:</strong> {{ $order->customer->name ?? 'N/A' }}</p>
                     <p><strong>📞 SĐT:</strong> {{ $order->phone_number }}</p>
                     <p><strong>📍 Địa chỉ:</strong> {{ $order->shipping_address }}</p>
-                    <p><strong>🗓 Ngày đặt:</strong> {{ $order->order_date }}</p>
+                    <p><strong>⏰ Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
                     <p><strong>📦 Trạng thái:</strong>
                         <span
                             class="badge 
                         @if ($order->order_status == 'pending') bg-warning
+                         @elseif($order->order_status == 'processing') bg-primary
+                          @elseif($order->order_status == 'delivering') bg-secondary 
                         @elseif($order->order_status == 'shipped') bg-info
                         @elseif($order->order_status == 'delivered') bg-success
                         @elseif($order->order_status == 'cancelled') bg-danger
@@ -21,6 +23,7 @@
                             {{ ucfirst($order->order_status) }}
                         </span>
                     </p>
+
                 </div>
 
                 <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
@@ -31,6 +34,8 @@
                             <select name="order_status" id="order_status" class="form-select" @disabled(in_array($order->order_status, ['cancel_requested', 'cancelled']))>
 
                                 <option value="pending" @selected($order->order_status == 'pending')>Chờ xử lý</option>
+                                <option value="processing" @selected($order->order_status == 'processing')>Đang xử lý đơn hàng</option>
+                                <option value="delivering" @selected($order->order_status == 'delivering')>Đang giao hàng</option>
                                 <option value="shipped" @selected($order->order_status == 'shipped')>Đã giao hàng</option>
                                 <option value="delivered" @selected($order->order_status == 'delivered')>Hoàn tất</option>
                                 <option value="cancelled" @selected($order->order_status == 'cancelled')>Đã hủy</option>

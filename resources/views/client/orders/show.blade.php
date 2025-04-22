@@ -13,65 +13,30 @@
         @endif
 
         <!-- Thông tin chung -->
-        <div class="card mb-4">
-            <div class="card-body">
-                <h5>Thông tin đơn hàng</h5>
-                <p><strong>Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
-                <p><strong>Trạng thái:</strong>
-                    <span
-                        class="badge 
-                    @if ($order->order_status == 'pending') bg-warning
-                    @elseif($order->order_status == 'shipped') bg-info
-                    @elseif($order->order_status == 'delivered') bg-success
-                    @elseif($order->order_status == 'cancelled') bg-danger
-                    @elseif($order->order_status == 'cancel_requested') bg-dark @endif">
-                        {{ ucfirst($order->order_status) }}
-                    </span>
-                </p>
-                <p><strong>Phương thức thanh toán:</strong> {{ $order->paymentMethod->name ?? 'Thanh Toán khi nhận hàng' }}
-                </p>
-                <p><strong>Phương thức vận chuyển:</strong> {{ $order->shippingMethod->name ?? 'Giao hàng tiết kiệm' }}</p>
-                <p><strong>Địa chỉ nhận hàng:</strong> {{ $order->shipping_address }}</p>
-                <p><strong>@if ($daysSinceDelivered !== null)
-                    <p>Đơn hàng đã giao được {{ $daysSinceDelivered }} ngày.</p>
-                @else
-                    
-                @endif</strong></p>
-                <!-- Nút Xác nhận hoàn thành -->
-                @if ($order->order_status === 'delivered')
-                    @if (!$order->is_confirmed)
-                        <!-- Nếu chưa xác nhận -->
-                        <form action="{{ route('user.orders.confirm', $order->id) }}" method="POST"
-                            onsubmit="return confirm('Bạn xác nhận đơn hàng đã hoàn tất?')">
-                            @csrf
-                            @method('PUT')
-                            <button class="btn btn-success mt-2">✅ Xác nhận đã hoàn thành đơn hàng</button>
-                        </form>
-                    @else
-                        <!-- Nếu đã xác nhận -->
-                        <p class="text-success mt-2">
-                            <strong>✅ Bạn đã xác nhận đơn hàng này hoàn tất vào
-                                {{ \Carbon\Carbon::parse($order->confirmed_at)->format('d/m/Y H:i') }}</strong>
-                        </p>
-                    @endif
-                @endif
+        <div class="card-body mb-4">
+            <h5>Thông tin đơn hàng</h5>
+            <p><strong>Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
+            <p><strong>Phương thức thanh toán:</strong> {{ $order->paymentMethod->name ?? 'Thanh Toán khi nhận hàng' }}</p>
+            <p><strong>Phương thức vận chuyển:</strong> {{ $order->shippingMethod->name ?? 'Giao hàng tiết kiệm' }}</p>
+            <p><strong>Địa chỉ nhận hàng:</strong> {{ $order->shipping_address }}</p>
 
-
-                <!-- Nút Hủy đơn hàng -->
-                @if ($order->order_status === 'pending')
-                    <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST"
-                        onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
-                        @csrf
-                        @method('PUT')
-                        <button class="btn btn-danger mt-3">❌ Hủy đơn hàng</button>
-                    </form>
-                @endif
-                
+            <div id="order-status-partial">
+                @include('client.orders.order-status', ['order' => $order, 'daysSinceDelivered' => $daysSinceDelivered])
             </div>
+            <script>
+                setInterval(() => {
+                    fetch("{{ route('order.status.partial', $order->id) }}")
+                        .then(res => res.text())
+                        .then(html => {
+                            document.getElementById('order-status-wrapper').innerHTML = html;
+                        })
+                        .catch(err => console.error('Lỗi khi load trạng thái đơn hàng:', err));
+                }, 3000); // 5 giây
+            </script>
         </div>
 
         <!-- Danh sách sản phẩm -->
-        <div class="card">
+        <div class="card mb-4">
             <div class="card-body">
                 <h5>Sản phẩm trong đơn hàng</h5>
                 <div class="table-responsive">
@@ -121,7 +86,7 @@
             </div>
         </div>
     </div>
-
+    
 
     @push('admin_css')
         <!-- App favicon -->

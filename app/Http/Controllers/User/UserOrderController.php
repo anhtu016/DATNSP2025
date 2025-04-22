@@ -67,5 +67,16 @@ public function confirm($id)
     return redirect()->back()->with('error', 'Không thể xác nhận đơn hàng này.');
 }
 
+public function statusPartial($id)
+{
+    $order = Order::with(['paymentMethod', 'shippingMethod'])->findOrFail($id);
+
+    $daysSinceDelivered = null;
+    if ($order->order_status === 'delivered' && $order->delivered_at) {
+        $daysSinceDelivered = \Carbon\Carbon::parse($order->delivered_at)->diffInDays(now());
+    }
+
+    return view('client.orders.order-status', compact('order', 'daysSinceDelivered'));
+}
 
 }

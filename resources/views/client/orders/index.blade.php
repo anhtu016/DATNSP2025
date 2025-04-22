@@ -26,19 +26,37 @@
                     <td>#{{ $order->id }}</td>
                     <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>
                     <td>
-                        <span class="badge 
-                            @if($order->order_status == 'pending') bg-warning
-                            @elseif($order->order_status == 'shipped') bg-info
-                            @elseif($order->order_status == 'delivered') bg-success
-                            @elseif($order->order_status == 'cancelled') bg-danger
-                            @elseif($order->order_status == 'cancel_requested') bg-dark
-                            @endif">
-                            {{ ucfirst($order->order_status) }}
-                        </span>
+                        @switch($order->order_status)
+                            @case('pending')
+                                <span class="badge bg-warning">Chờ xử lý</span>
+                                @break
+                            @case('processing')
+                                <span class="badge bg-primary">Đang xử lý đơn hàng</span>
+                                @break
+                            @case('delivering')
+                                <span class="badge bg-secondary">Đang giao hàng</span>
+                                @break
+                            @case('shipped')
+                                <span class="badge bg-info">Đã giao hàng</span>
+                                @break
+                            @case('delivered')
+                                <span class="badge bg-success">Hoàn tất</span>
+                                @break
+                            @case('cancelled')
+                                <span class="badge bg-danger">Đã hủy</span>
+                                @break
+                            @case('cancel_requested')
+                                <span class="badge bg-dark">Yêu cầu hủy</span>
+                                @break
+                            @default
+                                <span class="badge bg-secondary">Không xác định</span>
+                        @endswitch
+                        
                     </td>
+                    
                     <td>{{ number_format($order->total_amount) }}đ</td>
                     <td>
-                        <a href="{{ route('user.orders.show', $order->id) }}" class="btn btn-sm btn-primary">Xem</a>
+                        <a href="{{ route('user.orders.show', $order->id) }}" class="btn btn-sm btn-primary mb-2">Xem</a>
                         @if ($order->order_status == 'delivered')
                        <a href="{{route('orders.review', $order->id)}}" class="btn btn-sm btn-success p-2 mt-2">
                             Đánh giá
@@ -60,6 +78,8 @@
         {{ $orders->links('pagination::bootstrap-5') }}
     </div>
     </div>
+
+
 
     @push('admin_css')
         <!-- App favicon -->

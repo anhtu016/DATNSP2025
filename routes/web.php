@@ -290,7 +290,9 @@ Route::put('/admin/orders/{id}/cancel-reject', [OrderController::class, 'rejectC
     Route::post('/orders/{id}/confirm-cancel', [OrderController::class, 'confirmCancel'])->name('admin.orders.confirmCancel');
 
 Route::post('/admin/orders/{order}/reject-cancel', [OrderController::class, 'rejectCancel'])->name('admin.orders.rejectCancel');
-Route::post('/orders/{id}/mark-delivered', [OrderController::class, 'markAsDelivered'])->name('orders.markDelivered');
+// Route cập nhật trạng thái "Đang giao hàng"
+Route::put('/orders/{order}/delivering', [OrderController::class, 'updateStatusToDelivering'])->name('admin.orders.delivering');
+
 
 
 });
@@ -336,6 +338,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.store');
 
 
+Route::get('/order-status/{id}', [UserOrderController::class, 'statusPartial'])->name('order.status.partial');
 
 
 

@@ -31,6 +31,8 @@
                         <td>
                             <span class="badge 
                                 @if($order->order_status == 'pending') bg-warning
+                                @elseif($order->order_status == 'processing') bg-primary
+                                @elseif($order->order_status == 'delivering') bg-info 
                                 @elseif($order->order_status == 'shipped') bg-info
                                 @elseif($order->order_status == 'delivered') bg-success
                                 @elseif($order->order_status == 'cancelled') bg-danger

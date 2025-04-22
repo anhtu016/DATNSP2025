@@ -30,22 +30,34 @@ public function show($orderId)
 
     
 public function updateStatus(Request $request, Order $order)
-        {
-            $request->validate([
-                'order_status' => 'required|string'
-            ]);
-    
-            $order->order_status = $request->order_status;
-            if ($request->order_status === 'delivered') {
-                $order->delivered_at = now();
-            }
-            $order->save();
-    
-            return back()->with('success', 'Cập nhật trạng thái thành công.');
-        }
+{
+    $request->validate([
+        'order_status' => 'required|string'
+    ]);
+
+    $order->order_status = $request->order_status;
+
+    // trạng thái
+    if ($request->order_status === 'delivered') {
+        $order->delivered_at = now();
+    }
+
+    if ($request->order_status === 'delivering') {
+        $order->delivering_at = now();
+    }
+
+    if ($request->order_status === 'processing') {
+        $order->processing_at = now();
+    }
+
+    $order->save();
+
+    return back()->with('success', 'Cập nhật trạng thái thành công.');
+}
 
 
-        public function approveCancel($orderId)
+
+public function approveCancel($orderId)
 {
     $order = Order::findOrFail($orderId);
 
@@ -203,8 +215,5 @@ public function confirmCancel($id)
 
     return redirect()->route('admin.orders.index')->with('success', 'Đơn hàng đã được xác nhận hủy.');
 }
-
-
-
-    
 }
+
