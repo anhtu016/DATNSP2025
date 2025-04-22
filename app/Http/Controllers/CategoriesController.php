@@ -5,88 +5,99 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 
+use Illuminate\Support\Str;
 class CategoriesController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $listCategory = Category::query()->get();
         return view('admin.categories.index', compact('listCategory'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         return view('admin.categories.add');
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        $data = $request->except('_token');
-        $createCategory = Category::query()->create($data);
-        return redirect()->route('index');
+        // Validate input
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:categories', // Kiểm tra slug không trùng
+            'description' => 'nullable|string|max:255'
+        ]);
+    
+        // Nếu người dùng không nhập slug, tự động tạo slug từ tên
+        $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
+    
+        // Lưu danh mục mới với slug nhập vào
+        $data = $request->only('name','description');
+        $data['slug'] = $slug;
+    
+        Category::create($data);
+    
+        return redirect()->route('categories.index')->with('success', 'Danh mục đã được tạo thành công');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(string $id)
     {
-        $editCategory = Category::query()->find($id);
+        $editCategory = Category::findOrFail($id);
         return view('admin.categories.edit', compact('editCategory'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
-        $data = $request->except('_token');
-        $updateCategory = Category::query()->findOrFail($id);
-        $updateCategory->update($data);
-        return redirect()->route('index');
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'slug' => 'nullable|string|max:255|unique:categories,slug,' . $id,
+            'description' => 'nullable|string',
+        ]);
+    
+        $category = Category::findOrFail($id);
+    
+        $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
+    
+        $category->update([
+            'name' => $request->name,
+            'slug' => $slug,
+            'description' => $request->description,
+        ]);
+    
+        return redirect()->route('categories.index')->with('success', 'Cập nhật danh mục thành công');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(string $id)
     {
-        $delCategory = Category::query()->find($id);
+        $delCategory = Category::findOrFail($id);
         $delCategory->delete();
-        return redirect()->route('index');
+
+        return redirect()->route('categories.index')->with('success', 'Danh mục đã được đưa vào thùng rác');
     }
 
-    public function trash( ){
-        $trash = Category::query()->onlyTrashed()->get();             
+    public function trash()
+    {
+        $trash = Category::onlyTrashed()->get();
         return view('admin.categories.trash', compact('trash'));
     }
 
-    public function reset(string $id){
-        Category::query()->withTrashed()->where('id',$id)
-        ->restore();
-        return redirect()->route('index');       
-    }
-    public function forceDelete(string $id){
-        Category::query()->withTrashed()->where('id',$id)
-        ->forceDelete();
-        return redirect()->route('index');       
+    public function reset(string $id)
+    {
+        Category::withTrashed()->where('id', $id)->restore();
+        return redirect()->route('categories.index')->with('success', 'Khôi phục danh mục thành công');
     }
 
+    public function forceDelete(string $id)
+    {
+        Category::withTrashed()->where('id', $id)->forceDelete();
+        return redirect()->route('categories.index')->with('success', 'Xóa vĩnh viễn danh mục thành công');
+    }
 
+    public function showProducts($slug)
+{
+    $category = Category::where('slug', $slug)->firstOrFail();
+    $products = $category->products()->paginate(12);
+
+    return view('client.categories.index', compact('category', 'products'));
+}
 }

@@ -89,6 +89,11 @@ Route::get('admin-reset-categories/{id}',[App\Http\Controllers\CategoriesControl
 
 Route::delete('admin-forceDel-categories/{id}',[App\Http\Controllers\CategoriesController::class,'forceDelete'])
 ->name('categories.forceDelete');
+// hiện sản phẩm theo danh mục
+// routes/web.php
+Route::get('/danh-muc/{slug}', [CategoriesController::class, 'showProducts'])->name('categories.products');
+
+
 
 // chi tiết sản phẩm 
 Route::get('client-detail/{id}',[App\Http\Controllers\Client\ProductDetailController::class,'index'])

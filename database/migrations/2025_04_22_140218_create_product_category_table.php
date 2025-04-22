@@ -11,9 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('product_reviews', function (Blueprint $table) {
-            $table->foreignId('order_id')->after('user_id')->nullable()->constrained()->onDelete('cascade');
+        Schema::create('product_category', function (Blueprint $table) {
+            $table->foreignId('product_id')->constrained()->onDelete('cascade');
+            $table->foreignId('category_id')->constrained()->onDelete('cascade');
+            $table->primary(['product_id', 'category_id']);
         });
+        
     }
 
     /**
@@ -21,9 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('product_reviews', function (Blueprint $table) {
-            $table->dropForeign(['order_id']);
-            $table->dropColumn('order_id');
-        });
+        Schema::dropIfExists('product_category');
     }
-}; 
+};

@@ -50,7 +50,23 @@
                         @endforeach
                     </select>
                 </div>
-            
+                <div class="mb-3">
+                    <div class="col-md-12 mt-3">
+                        <label><strong>Danh mục</strong></label>
+                    </div>
+                    @foreach ($categories as $category)
+                        <div class="col-md-4 mt-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $category->id }}" id="category-{{ $category->id }}">
+                                <label class="form-check-label" for="category-{{ $category->id }}">
+                                    {{ $category->name }}
+                                </label>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+                
+                
                 <div class="mb-3">
                     <label for="thumbnail">Hình đại diện</label>
                     <input type="file" name="thumbnail" class="form-control">

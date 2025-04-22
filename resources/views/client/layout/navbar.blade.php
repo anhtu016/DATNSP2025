@@ -31,17 +31,17 @@
                                 <ul>
                                     @foreach ($categories as $category)
                                         <li>
-                                            <a href="{{ $category->slug }}">{{ $category->name }}</a>
+                                            <a href="{{ route('categories.products', $category->slug) }}">{{ $category->name }}</a>
                                             @if ($category->children->isNotEmpty())
                                                 <ul>
                                                     @foreach ($category->children as $child)
                                                         <li>
-                                                            <a href="{{ $child->slug }}">{{ $child->name }}</a>
+                                                            <a href="{{ route('categories.products', $child->slug) }}">{{ $child->name }}</a>
                                                             @if ($child->children->isNotEmpty())
                                                                 <ul>
                                                                     @foreach ($child->children as $grandchild)
                                                                         <li>
-                                                                            <a href="{{ $grandchild->slug }}">{{ $grandchild->name }}</a>
+                                                                            <a href="{{ route('categories.products', $grandchild->slug) }}">{{ $grandchild->name }}</a>
                                                                         </li>
                                                                     @endforeach
                                                                 </ul>
@@ -54,6 +54,7 @@
                                     @endforeach
                                 </ul>
                             </li>
+                            
                             {{-- <li>
                                 <a href="blog.html">Blog</a>
                             </li>

@@ -115,30 +115,12 @@
                                 <figure>
                                     <!-- Liên kết đến trang chi tiết sản phẩm -->
                                     <a href="{{ route('detail.index', $product->id) }}">
-                                        <!-- Ảnh lazy loading cho sản phẩm -->
                                         <div class="col-md-6">
                                             <img src="{{ asset('storage/' . $product->thumbnail) }}"
                                                 alt="{{ $product->name }}" class="img-fluid">
                                         </div>
                                 </figure>
 
-                                <!-- Đánh giá sản phẩm -->
-                                <div class="rating">
-                                    @if (round($product->productReview->avg('rating')) > 0)
-                                        @for ($i = 0; $i < round($product->productReview->avg('rating')); $i++)
-                                            <i class="icon-star voted"></i>
-                                            @if ($i == 5)
-                                                @break
-                                            @endif
-                                        @endfor
-                                    @else
-                                        <i class="icon-star voted"></i>
-                                        <i class="icon-star voted"></i>
-                                        <i class="icon-star voted"></i>
-                                        <i class="icon-star voted"></i>
-                                        <i class="icon-star voted"></i>
-                                    @endif
-                                </div>
 
                                 <!-- Tên sản phẩm và giá -->
                                 <a href="{{ route('detail.index', ['id' => $product->id]) }}">
@@ -170,7 +152,6 @@
 
                 </div>
             </div>
-            <!-- List product Top selling-->
         </div>
 
         <!-- /row -->

@@ -11,37 +11,37 @@
         
                 <div class="form-group">
                     <label>Tên sản phẩm</label>
-                    <input type="text" name="name" class="form-control" value="{{ $product->name }}">
+                    <input type="text" name="name" class="form-control" value="{{ old('name', $product->name) }}">
                 </div>
         
                 <div class="form-group">
                     <label>SKU</label>
-                    <input type="text" name="sku" class="form-control" value="{{ $product->sku }}">
+                    <input type="text" name="sku" class="form-control" value="{{ old('sku', $product->sku) }}">
                 </div>
         
                 <div class="form-group">
                     <label>Giá</label>
-                    <input type="number" name="price" class="form-control" value="{{ $product->price }}">
+                    <input type="number" name="price" class="form-control" value="{{ old('price', $product->price) }}">
                 </div>
         
                 <div class="form-group">
                     <label>Giá sale</label>
-                    <input type="number" name="sell_price" class="form-control" value="{{ $product->sell_price }}">
+                    <input type="number" name="sell_price" class="form-control" value="{{ old('sell_price', $product->sell_price) }}">
                 </div>
         
                 <div class="form-group">
                     <label>Số lượng</label>
-                    <input type="number" name="quantity" class="form-control" value="{{ $product->quantity }}">
+                    <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}">
                 </div>
         
                 <div class="form-group">
                     <label>Mô tả ngắn</label>
-                    <textarea name="short_description" class="form-control">{{ $product->short_description }}</textarea>
+                    <textarea name="short_description" class="form-control">{{ old('short_description', $product->short_description) }}</textarea>
                 </div>
         
                 <div class="form-group">
                     <label>Mô tả chi tiết</label>
-                    <textarea name="description" class="form-control" rows="5">{{ $product->description }}</textarea>
+                    <textarea name="description" class="form-control" rows="5">{{ old('description', $product->description) }}</textarea>
                 </div>
         
                 <div class="form-group">
@@ -64,12 +64,33 @@
                     <label>Ảnh mới (nếu muốn thay)</label>
                     <input type="file" name="thumbnail" class="form-control">
                 </div>
+
+                <!-- Chọn danh mục -->
+                <div class="form-group mt-3">
+                    <label><strong>Chọn danh mục</strong></label>
+                    <div class="row">
+                        @foreach ($categories as $category)
+                            <div class="col-md-4 mt-2">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="categories[]" value="{{ $category->id }}" id="category-{{ $category->id }}" 
+                                           {{ $product->categories->contains($category->id) ? 'checked' : '' }}>
+                                    <label class="form-check-label" for="category-{{ $category->id }}">
+                                        {{ $category->name }}
+                                    </label>
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+        
                 <hr>
                 <button type="submit" class="btn btn-primary">Cập nhật</button>
                 <a href="{{ route('products.index') }}" class="btn btn-secondary">Quay lại</a>
             </form>
         </div>
+    </div>
 </div>
+
 
     <!-- End Page-content -->
 

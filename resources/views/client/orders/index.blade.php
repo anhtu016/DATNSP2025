@@ -40,7 +40,7 @@
                     <td>
                         <a href="{{ route('user.orders.show', $order->id) }}" class="btn btn-sm btn-primary">Xem</a>
                         @if ($order->order_status == 'delivered')
-                       <a href="{{route('orders.review', $order->id)}}" class="btn btn-sm btn-success">
+                       <a href="{{route('orders.review', $order->id)}}" class="btn btn-sm btn-success p-2 mt-2">
                             Đánh giá
                         </a>
                         @endif

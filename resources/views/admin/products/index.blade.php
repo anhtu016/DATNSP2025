@@ -13,6 +13,7 @@
                         <th>Price</th>
                         <th>Color</th>
                         <th>Size</th>
+                        <th>Danh mục</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -47,7 +48,11 @@
                             @endforeach
                         </td>
                     
-                        
+                        <td>
+                            @foreach ($product->categories as $cat)
+                                <span class="badge bg-info">{{ $cat->name}}</span>
+                            @endforeach
+                        </td>
                 
                         <td>
                             <a href="{{ route('Variants', $product->id) }}" class="btn btn-success">Variants</a>

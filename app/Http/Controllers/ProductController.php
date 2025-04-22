@@ -10,6 +10,7 @@ use App\Models\ProductAttribute;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Brand;
+use App\Models\Category;
 class ProductController extends Controller
 {
     /**
@@ -24,8 +25,10 @@ class ProductController extends Controller
     public function index1()
     {
         // Lấy tất cả sản phẩm cùng với các biến thể của chúng
-        $products = Product::with('attributes')->get(); // nếu bạn muốn load thêm variants thì thêm luôn
+        $products = Product::with('attributes')->get();
     
+        $products = Product::with('categories')->get();
+
         // Lấy danh sách attributes + attributeValues để tạo biến thể
         $attributes = Attribute::with('attributeValue')->get();
 
@@ -40,34 +43,30 @@ class ProductController extends Controller
      {
          $attributes = Attribute::with('attributeValue')->get();
          $brands = Brand::all();
-     
-         return view('admin.products.create', compact('attributes', 'brands'));
+         $categories = Category::all();
+         return view('admin.products.create', compact('attributes', 'brands','categories'));
      }
      
  
      public function store(Request $request)
      {
-         // Validate dữ liệu đầu vào
          $request->validate([
              'name' => 'required|string|max:200',
              'sku' => 'required|string|max:150|unique:products',
              'price' => 'required|integer|min:0',
-             'sell_price' => 'nullable|integer|min:0',
              'short_description' => 'required|string',
              'description' => 'required|string',
-             'thumbnail' => 'nullable|image|max:2048', // Kiểm tra thumbnail (hình ảnh)
+             'thumbnail' => 'nullable|image|max:2048',
              'quantity' => 'required|integer|min:0',
              'brand_id' => 'required|exists:brands,id',
+             'categories' => 'required|array',
          ]);
      
-         // Lưu thumbnail nếu có
          $thumbnailPath = null;
          if ($request->hasFile('thumbnail')) {
              $thumbnailPath = $request->file('thumbnail')->store('products', 'public');
          }
      
-     
-         // Tạo sản phẩm mới
          $product = Product::create([
              'name' => $request->name,
              'slug' => Str::slug($request->name),
@@ -76,22 +75,31 @@ class ProductController extends Controller
              'sell_price' => $request->sell_price ?? 0,
              'short_description' => $request->short_description,
              'description' => $request->description,
-             'thumbnail' => $thumbnailPath, // Lưu đường dẫn thumbnail
+             'thumbnail' => $thumbnailPath,
              'quantity' => $request->quantity,
              'brand_id' => $request->brand_id,
          ]);
+     
+         $product->categories()->attach($request->categories);
      
          return redirect()->route('Variants', $product->id)->with('success', 'Tạo sản phẩm thành công!');
      }
      
 
-     public function edit(Product $product)
+     public function edit($id)
      {
-         return view('admin.products.edit', compact('product'));
+      
+         $product = Product::with('categories')->findOrFail($id);
+         $categories = Category::all(); // Tất cả các danh mục
+     
+         return view('admin.products.edit', compact('product', 'categories'));
      }
      
-     public function update(Request $request, Product $product)
+     public function update(Request $request, $id)
      {
+         $product = Product::findOrFail($id);
+     
+         // Validate dữ liệu
          $request->validate([
              'name' => 'required|string|max:200',
              'sku' => 'required|string|max:150|unique:products,sku,' . $product->id,
@@ -102,6 +110,7 @@ class ProductController extends Controller
              'thumbnail' => 'nullable|image|max:2048',
              'quantity' => 'required|integer|min:0',
              'brand_id' => 'required|exists:brands,id',
+             'categories' => 'required|array',
          ]);
      
          if ($request->hasFile('thumbnail')) {
@@ -109,6 +118,7 @@ class ProductController extends Controller
              $product->thumbnail = $thumbnailPath;
          }
      
+
          $product->update([
              'name' => $request->name,
              'slug' => Str::slug($request->name),
@@ -121,10 +131,14 @@ class ProductController extends Controller
              'brand_id' => $request->brand_id,
          ]);
      
+      
+         $product->categories()->sync($request->categories);
+     
          return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
      }
      
      
+     
 
 
 
@@ -141,11 +155,6 @@ class ProductController extends Controller
 
 
 
-
-
-    /**
-     * Display the specified resource.
-     */
     public function show($id)
     {
         
@@ -156,9 +165,6 @@ class ProductController extends Controller
     }
     
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function Variants($id)
 {
     $product = Product::with('variants.attributeValues', 'brand')->findOrFail($id);
@@ -166,15 +172,6 @@ class ProductController extends Controller
 
     return view('admin.products.Variants', compact('product', 'attributes'));
 }
-
-    /**
-     * Update the specified resource in storage.
-     */
-
-    /**
-     * Remove the specified resource from storage.
-     */
-   // ProductController.php
 public function destroy($id)
 {
     $product = Product::findOrFail($id); // Tìm sản phẩm theo ID

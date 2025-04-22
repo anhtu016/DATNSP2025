@@ -18,5 +18,10 @@ class Category extends Model
         'slug',
         'description',
     ];
+    public function products()
+{
+    return $this->belongsToMany(Product::class, 'product_category');
+}
+
 
 }
