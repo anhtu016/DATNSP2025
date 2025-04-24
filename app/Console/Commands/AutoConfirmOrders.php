@@ -5,7 +5,7 @@ use Illuminate\Console\Command;
 use App\Models\Order;
 use Carbon\Carbon;
 
-class AutoCompleteOrders extends Command
+class AutoConfirmOrders extends Command
 {
     protected $signature = 'orders:auto-complete';
     protected $description = 'Tự động đánh dấu đơn hàng là completed sau 7 ngày nếu user không xác nhận';

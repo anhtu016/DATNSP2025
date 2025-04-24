@@ -19,6 +19,8 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\UserOrderController;
 
+use App\Events\OrderStatusUpdated;
+use App\Models\Order;
 use App\Http\Controllers\Client\ProductDetailController;
 /*
 |--------------------------------------------------------------------------
@@ -339,7 +341,15 @@ Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.
 
 
 Route::get('/order-status/{id}', [UserOrderController::class, 'statusPartial'])->name('order.status.partial');
+//yêu cầu cập nh
 
 
+
+
+Route::get('/test-broadcast', function () {
+    $order = Order::find(59); // chọn order bất kỳ để test, nhớ chắc chắn order này có tồn tại
+    event(new OrderStatusUpdated($order));
+    return 'Broadcast done';
+});
 
 

@@ -3,8 +3,10 @@ namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Order;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
+use App\Events\OrderStatusUpdated;
 
 class UserOrderController extends Controller
 {
@@ -78,5 +80,9 @@ public function statusPartial($id)
 
     return view('client.orders.order-status', compact('order', 'daysSinceDelivered'));
 }
+
+
+
+
 
 }

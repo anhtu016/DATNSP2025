@@ -47,7 +47,7 @@
 	@include('client.layout.partials.js')
 	@stack('js')
 </body>
-
+@vite(['resources/css/app.css', 'resources/js/app.js'])
 <!-- Mirrored from www.ansonika.com/allaia/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Thu, 20 Mar 2025 05:24:02 GMT -->
 
 </html>

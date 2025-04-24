@@ -29,16 +29,18 @@
                         <td>{{ $order->phone_number }}</td>
                         <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>
                         <td>
-                            <span class="badge 
-                                @if($order->order_status == 'pending') bg-warning
-                                @elseif($order->order_status == 'processing') bg-primary
-                                @elseif($order->order_status == 'delivering') bg-info 
-                                @elseif($order->order_status == 'shipped') bg-info
-                                @elseif($order->order_status == 'delivered') bg-success
-                                @elseif($order->order_status == 'cancelled') bg-danger
-                                @elseif($order->order_status == 'cancel_requested') bg-dark
-                                @endif">
-                                {{ ucfirst($order->order_status) }}
+                            <span class="badge">
+                                @switch($order->order_status)
+                                @case('pending') Chờ xử lý @break
+                                @case('processing') Đang xử lý đơn hàng @break
+                                @case('delivering') Đang giao hàng @break
+                                @case('shipped') Đã giao hàng @break
+                                @case('delivered') Hoàn tất @break
+                                @case('cancelled') Đã hủy @break
+                                @case('cancel_requested') Yêu cầu hủy @break
+                                @default Không xác định
+                            @endswitch
+
                             </span>
                         </td>
                         <td>{{ number_format($order->total_amount) }}đ</td>

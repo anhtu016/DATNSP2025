@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\OrderDetail;
 use Illuminate\Support\Facades\Log;
 use App\Models\Product;
+use App\Events\OrderStatusUpdated;
+use Illuminate\Support\Facades\Redis;
 class OrderController extends Controller
 {
     
@@ -20,11 +22,9 @@ class OrderController extends Controller
 public function show($orderId)
 {
     $order = Order::with('orderDetail.variant.attributeValues.attribute')->find($orderId);
-
     if (!$order) {
         abort(404, 'Đơn hàng không tồn tại');
     }
-
     return view('admin.orders.show', compact('order'));
 }
 
@@ -49,9 +49,11 @@ public function updateStatus(Request $request, Order $order)
     if ($request->order_status === 'processing') {
         $order->processing_at = now();
     }
-
     $order->save();
+    event(new OrderStatusUpdated($order));
 
+
+    
     return back()->with('success', 'Cập nhật trạng thái thành công.');
 }
 

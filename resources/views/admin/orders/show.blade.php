@@ -11,17 +11,16 @@
                     <p><strong>📍 Địa chỉ:</strong> {{ $order->shipping_address }}</p>
                     <p><strong>⏰ Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
                     <p><strong>📦 Trạng thái:</strong>
-                        <span
-                            class="badge 
-                        @if ($order->order_status == 'pending') bg-warning
-                         @elseif($order->order_status == 'processing') bg-primary
-                          @elseif($order->order_status == 'delivering') bg-secondary 
-                        @elseif($order->order_status == 'shipped') bg-info
-                        @elseif($order->order_status == 'delivered') bg-success
-                        @elseif($order->order_status == 'cancelled') bg-danger
-                         @elseif($order->order_status == 'cancel_requested') bg-dark @endif">
-                            {{ ucfirst($order->order_status) }}
-                        </span>
+                        @switch($order->order_status)
+                        @case('pending') Chờ xử lý @break
+                        @case('processing') Đang xử lý đơn hàng @break
+                        @case('delivering') Đang giao hàng @break
+                        @case('shipped') Đã giao hàng @break
+                        @case('delivered') Hoàn tất @break
+                        @case('cancelled') Đã hủy @break
+                        @case('cancel_requested') Yêu cầu hủy @break
+                        @default Không xác định
+                    @endswitch
                     </p>
 
                 </div>

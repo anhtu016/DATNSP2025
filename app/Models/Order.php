@@ -44,6 +44,19 @@ public function shippingMethod()
 {
     return $this->belongsTo(ShippingMethod::class);
 }
+public function getStatusBadgeClass()
+{
+    switch ($this->order_status) {
+        case 'pending': return 'warning';
+        case 'processing': return 'primary';
+        case 'delivering': return 'secondary';
+        case 'shipped': return 'info';
+        case 'delivered': return 'success';
+        case 'cancelled': return 'danger';
+        case 'cancel_requested': return 'dark';
+        default: return 'secondary';
+    }
+}
 
     
 }

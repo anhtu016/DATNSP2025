@@ -27,30 +27,15 @@
                     <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>
                     <td>
                         @switch($order->order_status)
-                            @case('pending')
-                                <span class="badge bg-warning">Chờ xử lý</span>
-                                @break
-                            @case('processing')
-                                <span class="badge bg-primary">Đang xử lý đơn hàng</span>
-                                @break
-                            @case('delivering')
-                                <span class="badge bg-secondary">Đang giao hàng</span>
-                                @break
-                            @case('shipped')
-                                <span class="badge bg-info">Đã giao hàng</span>
-                                @break
-                            @case('delivered')
-                                <span class="badge bg-success">Hoàn tất</span>
-                                @break
-                            @case('cancelled')
-                                <span class="badge bg-danger">Đã hủy</span>
-                                @break
-                            @case('cancel_requested')
-                                <span class="badge bg-dark">Yêu cầu hủy</span>
-                                @break
-                            @default
-                                <span class="badge bg-secondary">Không xác định</span>
-                        @endswitch
+                        @case('pending') Chờ xử lý @break
+                        @case('processing') Đang xử lý đơn hàng @break
+                        @case('delivering') Đang giao hàng @break
+                        @case('shipped') Đã giao hàng @break
+                        @case('delivered') Hoàn tất @break
+                        @case('cancelled') Đã hủy @break
+                        @case('cancel_requested') Yêu cầu hủy @break
+                        @default Không xác định
+                    @endswitch
                         
                     </td>
                     

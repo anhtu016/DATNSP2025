@@ -11,7 +11,7 @@ class Kernel extends ConsoleKernel
      * Define the application's command schedule.
      */
     protected $commands = [
-        \App\Console\Commands\AutoCompleteOrders::class,
+        \App\Console\Commands\AutoConfirmOrders::class,
     ];
     
     protected function schedule(Schedule $schedule)
