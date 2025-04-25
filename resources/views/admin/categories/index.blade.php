@@ -7,7 +7,8 @@
         <div class="card">
             <div class="card-header">               
             </div><!-- end card header -->
-            <div class="card-body">
+            <div class="card-body">                    
+                <h2>Danh sách danh mục</h2>
                 <div class="listjs-table" id="customerList">
                     <div class="row g-4 mb-3">
                         <div class="col-sm-auto">

@@ -345,11 +345,17 @@ Route::get('/order-status/{id}', [UserOrderController::class, 'statusPartial'])-
 
 
 
+// test realtime
+// Route::get('/test-broadcast', function () {
+//     $order = Order::find(59); // chọn order bất kỳ để test, nhớ chắc chắn order này có tồn tại
+//     event(new OrderStatusUpdated($order));
+//     return 'Broadcast done';
+// });
 
-Route::get('/test-broadcast', function () {
-    $order = Order::find(59); // chọn order bất kỳ để test, nhớ chắc chắn order này có tồn tại
-    event(new OrderStatusUpdated($order));
-    return 'Broadcast done';
-});
+//áp dụng mã giảm giá
+Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
+// Route để hủy mã giảm giá
+Route::post('/coupon/remove', [CartController::class, 'removeCoupon'])->name('coupon.remove');
+
 
 

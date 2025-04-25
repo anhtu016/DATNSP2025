@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Attribute;
 use Illuminate\Http\Request;
+use App\Models\AttributeValue;
 
 class AttributeController extends Controller
 {
@@ -29,54 +30,66 @@ class AttributeController extends Controller
      */
     public function store(Request $request)
     {
-        $newAttribute = [
+        // Validate nếu cần
+        $request->validate([
+            'nameAttribute' => 'required|string|max:255',
+            'selectAttribute' => 'required|string|max:255',
+            'valueAttribute' => 'required|array',
+            'valueAttribute.*' => 'required|string|max:255'
+        ]);
+    
+        // Tạo attribute mới
+        $attribute = Attribute::create([
             'name' => $request->nameAttribute,
             'type' => $request->selectAttribute,
-        ];
-        Attribute::create($newAttribute);
-        return back()
-        ->with('success', 'Added Successfully')
-        ->withResponse(response()->json([
-            'status' => 'success',
-            'message' => 'Data added successfully'
-        ]));;
+        ]);
+    
+        // Lưu từng value vào bảng attribute_values
+        foreach ($request->valueAttribute as $value) {
+            AttributeValue::create([
+                'attribute_id' => $attribute->id,
+                'value' => $value,
+            ]);
+        }
+    
+        return back()->with('success', 'Added Successfully');
     }
+    
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-    }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(Request $request, string $id)
     {
+        // Cập nhật thuộc tính (name và type)
         $newAttribute = [
             'name' => $request->updateAttribute,
             'type' => $request->updateType,
         ];
-         $updateAttribute = Attribute::find($id);
-         $updateAttribute->update($newAttribute);
-        return back()->with('success','Update success');
+    
+        // Tìm và cập nhật thuộc tính
+        $updateAttribute = Attribute::findOrFail($id); // Dùng findOrFail để xử lý khi không tìm thấy bản ghi
+        $updateAttribute->update($newAttribute);
+    
+        // Cập nhật các giá trị (attribute_value)
+        // Xóa các giá trị cũ trước khi thêm mới
+        $updateAttribute->values()->delete();
+    
+        // Thêm các giá trị mới
+        if ($request->updateValue) {
+            foreach ($request->updateValue as $value) {
+                $updateAttribute->values()->create([
+                    'value' => $value,
+                ]);
+            }
+        }
+    
+        // Trả về trang trước với thông báo thành công
+        return back()->with('success', 'Update success');
     }
-
-    /**
-     * Remove the specified resource from storage.
-     */
+    
     public function destroy(string $id)
     {
-        Attribute::find($id)->delete();
+        Attribute::find($id)->forceDelete();
         return back()->with('success','Delete success');
     }
 }

@@ -33,6 +33,7 @@ public function store(Request $request)
         'name' => 'required|string|max:255',
         'email' => 'required|email|unique:users,email|max:255',
         'password' => 'required|string|min:8|confirmed', 
+        'password_confirmation'=> 'required|string|min:8|confirmed', 
     ]);
 
     // Tạo người dùng mới

@@ -43,22 +43,38 @@
                                                         <div>
                                                             <form action="{{ route('attributes.store') }}" method="post">
                                                                 @csrf
-                                                                <label for="nameAttribute" class="form-label">Name
-                                                                    Attribute</label>
-                                                                <input type="text" class="form-control"
-                                                                    name="nameAttribute" id="nameAttribute">
-                                                                <label for="selectAttribute" class="form-label">Type</label>
-                                                                <select id="selectAttribute" name="selectAttribute"
-                                                                    class="form-select mb-3"
-                                                                    aria-label="Default select example">
-                                                                    <option selected>Open this select menu</option>
+                                                                <label for="nameAttribute" class="form-label">Name Attribute</label>
+                                                                <input type="text" class="form-control" name="nameAttribute" id="nameAttribute">
+                                                            
+                                                                <label for="selectAttribute" class="form-label mt-2">Type</label>
+                                                                <select id="selectAttribute" name="selectAttribute" class="form-select mb-3">
+                                                                    <option selected disabled>Choose type</option>
                                                                     <option value="text">Text</option>
                                                                     <option value="image">Image</option>
                                                                     <option value="color">Color</option>
                                                                 </select>
-                                                                <button type="submit"
-                                                                    class="btn btn-success bg-gradient waves-effect waves-light">Success</button>
+                                                                <div id="value-group">
+                                                                    <input type="text" name="valueAttribute[]" class="form-control mb-2" placeholder="Enter value">
+                                                                </div>
+                                                                <button type="button" onclick="addValueInput()" class="btn btn-info">+ Add More Value</button>
+                                                                
+                                                                <script>
+                                                                function addValueInput() {
+                                                                    const container = document.getElementById('value-group');
+                                                                    const input = document.createElement('input');
+                                                                    input.type = 'text';
+                                                                    input.name = 'valueAttribute[]';
+                                                                    input.classList.add('form-control', 'mb-2');
+                                                                    input.placeholder = 'Enter value';
+                                                                    container.appendChild(input);
+                                                                }
+                                                                </script>
+                                                                
+
+                                                            
+                                                                <button type="submit" class="btn btn-success bg-gradient waves-effect waves-light">SAVE</button>
                                                             </form>
+                                                            
                                                         </div>
                                                     </div>
                                                 </div>
@@ -146,38 +162,29 @@
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="id?{{ $attribute->id }}">Update
-                                                            Attribute</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                            aria-label="Close"></button>
+                                                        <h5 class="modal-title" id="id?{{ $attribute->id }}">Update Attribute</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form action="{{ route('attributes.update', $attribute->id) }}"
-                                                            method="post">
+                                                        <form action="{{ route('attributes.update', $attribute->id) }}" method="POST">
                                                             @csrf
-                                                            @method('put')
+                                                            @method('PUT')
                                                             <div class="row g-3">
                                                                 <div class="col-xxl-6">
                                                                     <div>
-                                                                        <label for="firstName" class="form-label">Name
-                                                                            Attribute</label>
-                                                                        <input type="text" class="form-control"
-                                                                            id="firstName" name="updateAttribute"
+                                                                        <label for="firstName" class="form-label">Name Attribute</label>
+                                                                        <input type="text" class="form-control" id="firstName" name="updateAttribute"
                                                                             value="{{ $attribute->name }}">
                                                                     </div>
                                                                 </div><!--end col-->
                                                                 <div class="col-xxl-6">
                                                                     <div>
-                                                                        <label for="selectType"
-                                                                            class="form-label">Type</label>
-                                                                        <select name="updateType" id="selectType"
-                                                                            class="form-select">
-                                                                            <option selected
-                                                                                value="{{ $attribute->type }}">
+                                                                        <label for="selectType" class="form-label">Type</label>
+                                                                        <select name="updateType" id="selectType" class="form-select">
+                                                                            <option selected value="{{ $attribute->type }}">
                                                                                 {{ $attribute->type }}</option>
                                                                             @foreach (['color', 'size', 'image'] as $type)
                                                                                 @if ($type !== $attribute->type)
-                                                                                    <!-- Kiểm tra giá trị hiện tại có trùng không -->
                                                                                     <option value="{{ $type }}">
                                                                                         {{ ucfirst($type) }}</option>
                                                                                 @endif
@@ -185,13 +192,22 @@
                                                                         </select>
                                                                     </div>
                                                                 </div><!--end col-->
-
+                                        
+                                                                <div class="col-12">
+                                                                    <label for="values" class="form-label">Attribute Values</label>
+                                                                    <div id="value-group">
+                                                                        @foreach ($attribute->values as $value)
+                                                                            <input type="text" name="updateValue[]" class="form-control mb-2"
+                                                                                value="{{ $value->value }}">
+                                                                        @endforeach
+                                                                    </div>
+                                                                    <button type="button" class="btn btn-secondary mt-2" onclick="addValueInput()">+ Add More Value</button>
+                                                                </div>
+                                        
                                                                 <div class="col-lg-12">
                                                                     <div class="hstack gap-2 justify-content-end">
-                                                                        <button type="button" class="btn btn-light"
-                                                                            data-bs-dismiss="modal">Close</button>
-                                                                        <button type="submit"
-                                                                            class="btn btn-primary">Update</button>
+                                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+                                                                        <button type="submit" class="btn btn-primary">Update</button>
                                                                     </div>
                                                                 </div><!--end col-->
                                                             </div><!--end row-->
@@ -200,6 +216,19 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        
+                                        <script>
+                                        function addValueInput() {
+                                            const container = document.getElementById('value-group');
+                                            const input = document.createElement('input');
+                                            input.type = 'text';
+                                            input.name = 'updateValue[]';
+                                            input.classList.add('form-control', 'mb-2');
+                                            input.placeholder = 'Enter value';
+                                            container.appendChild(input);
+                                        }
+                                        </script>
+                                        
                                     @endforeach
                                 </tbody>
                             </table>

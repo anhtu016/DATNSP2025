@@ -13,7 +13,7 @@ class Coupon extends Model
   
     protected $fillable = [
         'code', 'type', 'value', 'description', 'min_order_value', 'max_discount_value',
-        'start_date', 'end_date', 'product_id', 'category_id', 'brand_id',   'apply_to_all_products',
+        'start_date', 'end_date', 'product_id', 'category_id', 'brand_id',   'apply_to_all_products','usage_limit'
     ];
     
     public function isValid()

@@ -1,72 +1,140 @@
 @extends('client.layout.default')
 
 @section('content')
+@if (session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
 
-    <div class="cart-table-container">
-        @if (count($cart) > 0)
-            <table class="cart-table">
-                <thead>
-                    <tr>
-                        <th>Ảnh</th>
-                        <th>Sản phẩm</th>
-                        <th>Giá</th>
-                        <th>Số lượng</th>
-                        <th>Size</th>
-                        <th>Màu</th>
-                        <th>Tổng</th>
-                        <th>Hành động</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @php $total = 0; @endphp
-                    @foreach ($cart as $id => $item)
-                        @php $total += $item['price'] * $item['quantity']; @endphp
-                        <tr>
-                            <td>
-                                <img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="{{ $item['name'] }}">
-                            </td>
-                            <td>{{ $item['name'] }}</td>
-                            <td>{{ number_format($item['price']) }} VNĐ</td>
-                            <td>
-                                <form action="{{ route('cart.update', $id) }}" method="POST"
-                                    id="update-form-{{ $id }}">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1">
-                                </form>
-                            </td>
-                            <td>{{ $item['Size'] ?? 'Không chọn' }}</td>
-                            <td>{{ $item['Color'] ?? 'Không chọn' }}</td>
-                            <td>{{ number_format($item['price'] * $item['quantity']) }} VNĐ</td>
-                            <td>
-                                <div class="cart-actions">
-                                    <button type="submit" form="update-form-{{ $id }}"
-                                        class="btn btn-success">Cập nhật</button>
-                                    <form action="{{ route('cart.remove', $id) }}" method="POST">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button class="btn btn-danger">Xóa</button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @endforeach
-                </tbody>
-            </table>
+@if (session('success'))
+    <div class="alert alert-success">{{ session('success') }}</div>
+@endif
 
-            <div class="total-price">Tổng cộng: {{ number_format($total) }} VNĐ</div>
-            <a href="{{ route('checkout.form') }}" class="btn-primary">Tiến hành thanh toán</a>
-        @else
-            <p class="text-center fs-3" >🛒 Giỏ hàng của bạn đang trống.</p>
-        @endif
-    </div>
-    <hr>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
-    <br>
+<div class="cart-table-container">
+    @if (count($cart) > 0)
+        <table class="cart-table table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Ảnh</th>
+                    <th>Sản phẩm</th>
+                    <th>Giá</th>
+                    <th>Số lượng</th>
+                    <th>Size</th>
+                    <th>Màu</th>
+                    <th>Tổng</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+
+        <tbody>            
+            @php
+            $subtotal = 0;
+            $total = 0;
+            $discount = 0;
+            $coupon = session('coupon');
+            $hasValidCoupon = isset($coupon['type'], $coupon['value']);
+            @endphp
+            @foreach ($cart as $id => $item)
+                @php
+                    $itemTotal = $item['price'] * $item['quantity'];
+                    $subtotal += $itemTotal;
+        
+                    $finalItemTotal = $itemTotal;
+        
+                    if ($hasValidCoupon) {
+                        if ($coupon['type'] === 'fixed') {
+                            $discount = $coupon['value'];
+                            $finalItemTotal -= $coupon['value'] / count($cart);
+                        } elseif ($coupon['type'] === 'percentage') {
+                            $discount = $subtotal * $coupon['value'] / 100;
+                            $finalItemTotal -= ($itemTotal * $coupon['value'] / 100);
+                        }
+                    }
+        
+                    $total += max($finalItemTotal, 0);
+                @endphp
+                <tr>
+                    <td><img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="{{ $item['name'] }}" class="img-fluid" style="max-width: 80px;"></td>
+                    <td>{{ $item['name'] }}</td>
+                    <td>{{ number_format($item['price']) }} VNĐ</td>
+                    <td>
+                        <form action="{{ route('cart.update', $id) }}" method="POST" id="update-form-{{ $id }}">
+                            @csrf
+                            @method('PATCH')
+                            <input type="number" name="quantity" value="{{ $item['quantity'] }}" min="1" class="form-control">
+                        </form>
+                    </td>
+                    <td>{{ $item['Size'] ?? 'Không chọn' }}</td>
+                    <td>{{ $item['Color'] ?? 'Không chọn' }}</td>
+                    <td>{{ number_format(max($finalItemTotal, 0)) }} VNĐ</td>
+                    <td>
+                        <div class="cart-actions">
+                            <button type="submit" form="update-form-{{ $id }}" class="btn btn-success">Cập nhật</button>
+                            <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="btn btn-danger">Xóa</button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            @endforeach
+        </tbody>
+        
+        </table>
+        <div class="mt-4">
+            @if ($hasValidCoupon)
+                @php
+                    $expired = isset($coupon['end_date']) && \Carbon\Carbon::parse($coupon['end_date'])->isPast();
+                @endphp
+        
+                @if (!$expired)
+                    <div class="alert alert-success">
+                        ✅ Mã giảm giá đã được áp dụng: <strong>{{ $coupon['code'] }}</strong>
+                    </div>
+                @else
+                    <div class="alert alert-danger">
+                        ❌ Mã giảm giá <strong>{{ $coupon['code'] }}</strong> đã hết hạn và sẽ không được áp dụng.
+                    </div>
+                @endif
+            @else
+                <form action="{{ route('cart.applyCoupon', $id ?? 0) }}" method="POST" class="row">
+                    @csrf
+                    <div class="col-3 mt-4">
+                        <input type="text" name="coupon_code" placeholder="Nhập mã giảm giá" class="form-control">
+                    </div>
+                    <div class="col-3">
+                        <button type="submit" class="btn btn-primary">Áp dụng</button>
+                    </div>
+                </form>
+            @endif
+        
+            <div class="mt-3">
+                @if (session('coupon'))
+                    <form action="{{ route('coupon.remove') }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-danger">Hủy mã giảm giá</button>
+                    </form>
+                @else
+                    <p>Chưa có mã giảm giá nào áp dụng.</p>
+                @endif
+            </div>
+        </div>
+        
+        
+        <div class="cart-totals mt-4">
+            @if ($hasValidCoupon)
+                <p>Giảm giá: -{{ number_format($discount) }} VNĐ</p>
+            @endif
+            <p><strong>Tổng cộng: {{ number_format($total) }} VNĐ</strong></p>
+        </div>
+
+        <a href="{{ route('checkout.form') }}" class="btn btn-success">Tiến hành thanh toán</a>
+    @else
+        <p class="text-center fs-3">🛒 Giỏ hàng của bạn đang trống.</p>
+    @endif
+</div>
+
+
     <!-- css-->
     @push('admin_css')
         <!-- App favicon -->

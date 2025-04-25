@@ -1,37 +1,64 @@
 @extends('admin.layout.default')
 @section('content')
-
-<div class="page-content py-4">
-    <div class="container-fluid">
+<div class="page-content">
+    <div class="container-fluid p-8">
         <h1 class="mb-4 text-center">Tạo mã giảm giá mới</h1>
+        @if ($errors->any())
+<div class="alert alert-danger">
+    <strong>Đã xảy ra lỗi!</strong>
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li>{{ $error }}</li>
+        @endforeach
+    </ul>
+</div>
+@endif
         <form action="{{ route('admin.coupons.store') }}" method="POST" class="form-container">
             @csrf
             <div class="form-group">
                 <label for="code">Mã giảm giá:</label>
-                <input type="text" name="code" id="code" class="form-control" required>
+                <input type="text" name="code" id="code" class="form-control">
+                @error('code')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
             <div class="form-group">
                 <label for="type">Loại:</label>
-                <select name="type" id="type" class="form-control" required>
+                <select name="type" id="type" class="form-control">
                     <option value="percentage">Giảm theo phần trăm</option>
                     <option value="fixed">Giảm giá Cố định</option>
                 </select>
+                @error('type')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
             <div class="form-group">
                 <label for="value">Giá trị:</label>
-                <input type="number" name="value" id="value" class="form-control" required>
+                <input type="number" name="value" id="value" class="form-control">
+                @error('value')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
             <div class="form-group">
                 <label for="min_order_value">Giá trị đơn hàng tối thiểu:</label>
-                <input type="number" name="min_order_value" id="min_order_value" class="form-control" required>
+                <input type="number" name="min_order_value" id="min_order_value" class="form-control">
+                @error('min_order_value')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
             <div class="form-group">
                 <label for="start_date">Ngày bắt đầu:</label>
-                <input type="date" name="start_date" id="start_date" class="form-control" required>
+                <input type="date" name="start_date" id="start_date" class="form-control">
+                @error('start_date')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
             <div class="form-group">
                 <label for="end_date">Ngày kết thúc:</label>
-                <input type="date" name="end_date" id="end_date" class="form-control" required>
+                <input type="date" name="end_date" id="end_date" class="form-control">
+                @error('end_date')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
             <div class="form-group">
                 <label for="product_ids">Chọn sản phẩm áp dụng:</label>
@@ -40,7 +67,18 @@
                         <option value="{{ $product->id }}">{{ $product->name }}</option>
                     @endforeach
                 </select>
+                @error('product_ids')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
             </div>
+            <div class="form-group">
+                <label for="usage_limit">Giới hạn lượt sử dụng:</label>
+                <input type="number" name="usage_limit" id="usage_limit" class="form-control" value="{{ old('usage_limit', $coupon->usage_limit ?? '') }}">
+                @error('usage_limit')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+            </div>
+            
             <br>
             <div class="form-group">
                 <label>
@@ -59,7 +97,7 @@
 
 <style>
     .form-container {
-    min-height: 95vh; /* Chiếm 80% chiều cao của viewport */
+    min-height: 110vh; /* Chiếm 80% chiều cao của viewport */
 }
 
 </style>

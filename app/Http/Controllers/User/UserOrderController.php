@@ -81,8 +81,4 @@ public function statusPartial($id)
     return view('client.orders.order-status', compact('order', 'daysSinceDelivered'));
 }
 
-
-
-
-
 }

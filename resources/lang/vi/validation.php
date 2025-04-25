@@ -83,6 +83,7 @@ return [
     'not_regex'            => 'Định dạng của :attribute không hợp lệ.',
     'numeric'              => ':attribute phải là một số.',
     'password'             => 'Mật khẩu không đúng.',
+    'password_confirmation' => 'Mật khẩu xác nhận không đúng',
     'present'              => 'Trường :attribute phải được cung cấp.',
     'regex'                => 'Định dạng của :attribute không hợp lệ.',
     'required'             => 'Trường :attribute là bắt buộc.',
@@ -118,6 +119,16 @@ return [
     'brand_id' => 'thương hiệu',
     'categories' => 'danh mục',
     'thumbnail' => 'hình đại diện',
+
+
+    'code' => 'mã giảm giá',
+    'type' => 'loại mã giảm giá',
+    'value' => 'giá trị mã giảm giá',
+    'start_date' => 'ngày bắt đầu',
+    'end_date' => 'ngày kết thúc',
+    'usage_limit' => 'giới hạn sử dụng',
+    'min_order_value'=>'giá trị đơn hàng tối thiểu',
+
 ],
 
     'categories' => [
@@ -126,5 +137,17 @@ return [
         'description' => 'mô tả',
     ],
     
+    
+    'order' => [
+        'total_amount' => 'required|numeric|min:1',
+        'shipping_address' => 'required|string|max:255',
+        'order_date' => 'required|date',
+        'shipping_method_id' => 'required|exists:shipping_methods,id',
+        'payment_methods_id' => 'required|exists:payment_methods,id',
+        'customer_id' => 'required|exists:users,id',
+        'order_status' => 'required|in:pending,processing,shipped,delivered,canceled',
+    ],
+
+
 
 ];

@@ -40,10 +40,10 @@
                     </td>
                     
                     <td>{{ number_format($order->total_amount) }}đ</td>
-                    <td>
-                        <a href="{{ route('user.orders.show', $order->id) }}" class="btn btn-sm btn-primary mb-2">Xem</a>
+                    <td class="btn btn-gruop">
+                        <a href="{{ route('user.orders.show', $order->id) }}" class="btn btn-success">Xem</a>
                         @if ($order->order_status == 'delivered')
-                       <a href="{{route('orders.review', $order->id)}}" class="btn btn-sm btn-success p-2 mt-2">
+                       <a href="{{route('orders.review', $order->id)}}" class="btn btn-warning">
                             Đánh giá
                         </a>
                         @endif

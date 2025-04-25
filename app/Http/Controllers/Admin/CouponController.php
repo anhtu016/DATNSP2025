@@ -32,6 +32,7 @@ class CouponController extends Controller
             'apply_to_all_products' => 'nullable|boolean',
             'product_ids' => 'nullable|array',
             'product_ids.*' => 'exists:products,id',
+            'usage_limit' => 'required|integer|min:0',
         ]);
     
         $coupon = Coupon::create([
@@ -42,6 +43,7 @@ class CouponController extends Controller
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
             'apply_to_all_products' => $validated['apply_to_all_products'] ?? false,
+            'usage_limit' => $request->usage_limit,
         ]);
     
         if (!$coupon->apply_to_all_products && !empty($validated['product_ids'])) {
@@ -65,12 +67,13 @@ class CouponController extends Controller
             'code' => 'required|string|unique:coupon,code,' . $coupon->id,
             'type' => 'required|in:percentage,fixed',
             'value' => 'required|numeric',
-            'min_order_value' => 'nullable|numeric',
+            'min_order_value' => 'required|nullable|numeric',
             'start_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:start_date',
             'apply_to_all_products' => 'nullable|boolean',
             'product_ids' => 'nullable|array',
             'product_ids.*' => 'exists:products,id',
+            'usage_limit' => 'required|nullable|integer|min:0',
         ]);
     
         $coupon->update([
@@ -81,6 +84,7 @@ class CouponController extends Controller
             'start_date' => $validated['start_date'],
             'end_date' => $validated['end_date'],
             'apply_to_all_products' => $validated['apply_to_all_products'] ?? false,
+            'usage_limit' => $validated['usage_limit'],
         ]);
     
         if (!$coupon->apply_to_all_products) {

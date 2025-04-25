@@ -2,7 +2,7 @@
 @section('content')
     <div class="page-content">
         <div class="container">
-            <h1>Product List</h1>
+            <h1>Danh sách sản phẩm</h1>
 
             <table class="table table-bordered table-hover">
                 <thead>

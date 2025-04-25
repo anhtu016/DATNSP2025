@@ -1,6 +1,6 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="page-content py-4">
+<div class="page-content">
     <div class="container">
         <h2 class="mb-4">Danh sách mã giảm giá</h2>
         <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary mb-3">Tạo mã giảm giá mới</a>
@@ -14,7 +14,10 @@
                     <th>Ngày bắt đầu</th>
                     <th>Ngày kết thúc</th>
                     <th>Sản phẩm được áp dụng</th>
-                    <th>Hành động</th>
+                    <th>Lượt đã sử dụng</th>
+                    <th>Giới hạn sử dụng</th>
+                    <th>Trạng thái</th>
+                    <th class="text-center">Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,8 +25,20 @@
                     <tr>
                         <td>{{ $coupon->code }}</td>
                         <td>{{ $coupon->type }}</td>
-                        <td>{{ $coupon->value }}</td>
-                        <td>{{ $coupon->min_order_value }}</td>
+                        <td>
+                            @if($coupon->type == 'fixed')
+                              Mã giảm {{ number_format($coupon->value) }}VND
+                            @elseif($coupon->type == 'percentage')
+                            Mã giảm {{ $coupon->value }}%
+                            @endif
+                        </td>
+                        <td>
+                            @if($coupon->min_order_value)
+                                {{ number_format($coupon->min_order_value) }}VND
+                            @else
+                                <span class="text-muted">Không yêu cầu</span>
+                            @endif
+                        </td>
                         <td>{{ \Carbon\Carbon::parse($coupon->start_date)->format('d/m/Y') }}</td>
                         <td>{{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}</td>
                         <td>
@@ -37,21 +52,35 @@
                                 @endforeach
                             @endif
                         </td>
+                        <td>{{ $coupon->usage_count }}</td>
+                        <td>{{ $coupon->usage_limit}}
+                        </td>
+                        
                         <td>
-                            <a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-warning btn-sm">Chỉnh sửa</a>
-                            <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST" style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">Xóa</button>
-                            </form>
+                            @if (\Carbon\Carbon::parse($coupon->end_date)->isPast())
+                                <span class="badge bg-danger">Hết hạn sử dụng</span>
+                            @else
+                                <span class="badge bg-success">Còn hạn sử dụng</span>
+                            @endif
+                        </td>
+                        
+                        <td>
+                            <div class="btn-group">
+                                <a href="{{ route('admin.coupons.edit', $coupon->id) }}" class="btn btn-warning">Sửa</a>
+                                <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">Xóa</button>
+                                </form>
+                              </div>
                         </td>
                     </tr>
                 @endforeach
             </tbody>
         </table>
     </div>
-    
 </div>
+
 
     <!-- End Page-content -->
 

@@ -1,6 +1,6 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="page-content py-4">
+<div class="page-content">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">📦 Danh sách đơn hàng</h2>
@@ -29,7 +29,7 @@
                         <td>{{ $order->phone_number }}</td>
                         <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>
                         <td>
-                            <span class="badge">
+                            <span class="">
                                 @switch($order->order_status)
                                 @case('pending') Chờ xử lý @break
                                 @case('processing') Đang xử lý đơn hàng @break

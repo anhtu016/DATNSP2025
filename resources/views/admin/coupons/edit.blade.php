@@ -1,28 +1,37 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="page-content py-4">
+<div class="page-content">
     <div class="container-fluid">
         <h1 class="mb-4 text-center">Sửa mã giảm</h1>
+        @if ($errors->any())
+        <div class="alert alert-danger">
+            <strong>Đã xảy ra lỗi!</strong>
+            <ul>
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <form action="{{ route('admin.coupons.update', $coupon->id) }}" method="POST" class="form-container">
             @csrf
             @method('PUT')
-        
             <div class="form-group">
                 <label for="code">Mã giảm giá</label>
-                <input type="text" name="code" id="code" class="form-control" value="{{ old('code', $coupon->code) }}" required>
+                <input type="text" name="code" id="code" class="form-control" value="{{ old('code', $coupon->code) }}">
             </div>
         
             <div class="form-group">
                 <label for="type">Loại</label>
-                <select name="type" id="type" class="form-control" required>
+                <select name="type" id="type" class="form-control">
                     <option value="fixed" {{ $coupon->type == 'fixed' ? 'selected' : '' }}>Giảm giá cố định</option>
-                    <option value="percent" {{ $coupon->type == 'percent' ? 'selected' : '' }}>Giảm giá theo phần trăm</option>
+                    <option value="percentage" {{ $coupon->type == 'percentage' ? 'selected' : '' }}>Giảm giá theo phần trăm</option>
                 </select>
             </div>
         
             <div class="form-group">
                 <label for="value">Giá trị</label>
-                <input type="number" name="value" id="value" class="form-control" value="{{ old('value', $coupon->value) }}" required>
+                <input type="number" name="value" id="value" class="form-control" value="{{ old('value', $coupon->value) }}">
             </div>
         
             <div class="form-group">
@@ -32,11 +41,11 @@
         
             <div class="form-group">
                 <label for="start_date">Ngày bắt đầu:</label>
-                <input type="date" name="start_date" id="start_date" class="form-control" required>
+                <input type="date" name="start_date" id="start_date" class="form-control">
             </div>
             <div class="form-group">
                 <label for="end_date">Ngày kết thúc:</label>
-                <input type="date" name="end_date" id="end_date" class="form-control" required>
+                <input type="date" name="end_date" id="end_date" class="form-control">
             </div>
         
             <div class="form-group">
@@ -56,8 +65,13 @@
                     Áp dụng cho tất cả sản phẩm
                 </label>
             </div>
+            <div class="form-group">
+                <label for="usage_limit">Giới hạn số lần sử dụng</label>
+                <input type="number" name="usage_limit" id="usage_limit" class="form-control" value="{{ old('usage_limit', $coupon->usage_limit) }}" min="0">
+            </div>
             
         <br>
+        
             <button type="submit" class="btn btn-primary">Cập nhật</button>
         </form>
         
@@ -66,7 +80,7 @@
 <style>
 
     .form-container {
-    min-height: 97vh;
+    min-height: 110vh;
 }
 </style>
 

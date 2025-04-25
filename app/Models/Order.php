@@ -18,6 +18,8 @@ class Order extends Model
             'phone_number',
             'customer_id',
             'order_status',
+            'coupon_code',      
+            'discount_amount' ,
         ];
     
         public $timestamps = true;
