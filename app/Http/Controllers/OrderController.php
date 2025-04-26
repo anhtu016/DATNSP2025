@@ -123,7 +123,12 @@ public function create()
                 $discountAmount = $couponSession['max_discount_value'];
             }
         }
-    
+
+        // Giới hạn số tiền giảm giá để không vượt quá tổng giỏ hàng
+        if ($discountAmount > $total) {
+            $discountAmount = $total;  // Không thể giảm nhiều hơn tổng giỏ hàng
+        }
+
         // Cập nhật lại vào session (giữ nguyên các giá trị khác)
         $couponSession['discount_amount'] = $discountAmount;
         session(['coupon' => $couponSession]);
@@ -152,6 +157,7 @@ public function create()
     return view('client.order', compact('cart', 'total', 'discountAmount', 'shippingMethods', 'paymentMethods', 'userName'));
 }
 
+
 public function store(Request $request)
 {
     // Kiểm tra giỏ hàng trống
@@ -161,7 +167,6 @@ public function store(Request $request)
     }
 
     $total = 0;
-
     // Tính tổng giá trị giỏ hàng
     foreach ($cart as $item) {
         $total += $item['price'] * $item['quantity'];
@@ -171,7 +176,7 @@ public function store(Request $request)
     $discountAmount = session('coupon')['discount_amount'] ?? 0;
 
     // Trừ tiền giảm giá vào tổng giỏ hàng nếu có mã giảm giá
-    $totalAfterDiscount = $total - $discountAmount; // Trừ số tiền giảm giá
+    $totalAfterDiscount = $total - $discountAmount;
 
     // Nếu tổng sau giảm giá nhỏ hơn 0, set về 0
     $totalAfterDiscount = max($totalAfterDiscount, 0);
@@ -215,14 +220,14 @@ public function store(Request $request)
 
         // Xóa giỏ hàng sau khi đặt
         session()->forget('cart');
+
+        // Xóa thông tin mã giảm giá sau khi hoàn thành đơn hàng
+        session()->forget('coupon');
+
+        return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
     } catch (\Exception $e) {
         return back()->with('error', 'Đặt hàng thất bại: ' . $e->getMessage());
     }
-
-    // Xóa thông tin mã giảm giá sau khi hoàn thành đơn hàng
-    session()->forget('coupon');
-
-    return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
 }
 
 

@@ -34,7 +34,7 @@
                     <tbody>
                         @foreach ($cart as $item)
                             <tr>
-                                <td><img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="Ảnh"></td>
+                                <td><img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="Ảnh" width="100px"></td>
                                 <td>{{ $item['name'] }}</td>
                                 <td>{{ $item['quantity'] }}</td>
                                 <td>{{ number_format($item['price']) }}₫</td>

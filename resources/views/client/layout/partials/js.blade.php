@@ -34,3 +34,32 @@
 
 
 
+{{-- mã giảm giá --}}
+<script>
+    function copyToClipboard(id) {
+        const code = document.getElementById(`code-${id}`).innerText;
+
+        // Cố gắng sao chép mã vào clipboard
+        navigator.clipboard.writeText(code).then(function () {
+            // Hiển thị thông báo thành công bằng SweetAlert2
+            Swal.fire({
+                icon: 'success',
+                title: 'Sao chép thành công!',
+                text: 'Mã giảm giá: ' + code,
+                showConfirmButton: false,
+                timer: 2000 // Thông báo sẽ tự động đóng sau 2 giây
+            });
+        }, function () {
+            // Nếu thất bại, hiển thị thông báo lỗi
+            Swal.fire({
+                icon: 'error',
+                title: 'Lỗi!',
+                text: 'Không thể sao chép mã giảm giá.',
+                showConfirmButton: false,
+                timer: 2000
+            });
+        });
+    }
+</script>
+
+

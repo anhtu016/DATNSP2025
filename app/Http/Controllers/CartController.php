@@ -95,20 +95,22 @@ public function update(Request $request, $id)
     return redirect()->back()->with('error', 'Sản phẩm không tồn tại trong giỏ hàng.');
 }
 // xử lý mã giảm giá trong giỏ hàng
-
 public function applyCoupon(Request $request)
 {
+    // Validate mã giảm giá
     $request->validate([
         'coupon_code' => 'required|string',
     ]);
 
+    // Tìm coupon theo mã
     $coupon = Coupon::where('code', $request->coupon_code)->first();
 
+    // Kiểm tra nếu coupon không tồn tại
     if (!$coupon) {
         return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ.');
     }
 
-    // Kiểm tra hạn sử dụng
+    // Kiểm tra hạn sử dụng của coupon
     if (Carbon::parse($coupon->end_date)->isPast()) {
         return redirect()->back()->with('error', 'Mã giảm giá đã hết hạn.');
     }
@@ -116,36 +118,50 @@ public function applyCoupon(Request $request)
     // Kiểm tra số lượt sử dụng hiện tại
     $usageCount = Order::where('coupon_code', $coupon->code)->count();
 
-    // Kiểm tra giới hạn lượt sử dụng
+    // Kiểm tra nếu coupon đã hết lượt sử dụng
     if ($coupon->usage_limit > 0 && $usageCount >= $coupon->usage_limit) {
         return redirect()->back()->with('error', 'Mã giảm giá đã hết lượt sử dụng.');
     }
 
-    // Lấy tổng giỏ hàng
+    // Lấy tổng giỏ hàng từ session
     $cart = session()->get('cart', []);
     $total = 0;
+
+    // Tính tổng giá trị giỏ hàng
     foreach ($cart as $item) {
         $total += $item['price'] * $item['quantity'];
     }
 
-    $discountAmount = 0;
-
-    // Tính số tiền giảm giá
-    if ($coupon->type == 'percentage') {
-        $discountAmount = ($total * $coupon->value) / 100;
-        if ($coupon->max_discount_value && $discountAmount > $coupon->max_discount_value) {
-            $discountAmount = $coupon->max_discount_value;
-        }
-    } elseif ($coupon->type == 'fixed') {
-        $discountAmount = $coupon->value;
-    }
-
-    // Kiểm tra giá trị đơn hàng
+    // Kiểm tra giá trị đơn hàng có đủ điều kiện sử dụng mã giảm giá
     if ($total < $coupon->min_order_value) {
         return redirect()->back()->with('error', 'Giá trị đơn hàng không đủ để áp dụng mã giảm giá.');
     }
 
-    // Lưu mã giảm giá vào session
+    $discountAmount = 0;
+
+    // Tính toán số tiền giảm giá theo loại coupon
+    if ($coupon->type == 'percentage') {
+        $discountAmount = ($total * $coupon->value) / 100;
+
+        // Giới hạn số tiền giảm giá không vượt quá max_discount_value
+        if ($coupon->max_discount_value && $discountAmount > $coupon->max_discount_value) {
+            $discountAmount = $coupon->max_discount_value;
+        }
+    } elseif ($coupon->type == 'fixed') {
+        // Nếu là giảm giá cố định, kiểm tra nếu coupon không vượt quá tổng giỏ hàng
+        $discountAmount = min($coupon->value, $total);
+    }
+
+    // Đảm bảo tổng giỏ hàng không bị âm sau khi áp dụng mã giảm giá
+    $finalTotal = $total - $discountAmount;
+
+    // Nếu tổng giỏ hàng sau khi giảm giá là âm, điều chỉnh lại giá trị giảm giá
+    if ($finalTotal < 0) {
+        $discountAmount = $total; // Chỉ giảm hết số tiền có trong giỏ hàng
+        $finalTotal = 0; // Đảm bảo tổng giỏ hàng không bị âm
+    }
+
+    // Lưu thông tin mã giảm giá vào session
     session([
         'coupon' => [
             'code' => $coupon->code,
@@ -160,8 +176,12 @@ public function applyCoupon(Request $request)
         ]
     ]);
 
+    // Lưu tổng giỏ hàng đã giảm vào session
+    session(['total' => $finalTotal]);
+
     return redirect()->back()->with('success', 'Áp dụng mã giảm giá thành công!');
 }
+
 
 
 //hủy mã giảm giá 

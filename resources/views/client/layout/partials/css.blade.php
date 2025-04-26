@@ -7,12 +7,20 @@
     href="{{ asset('client/img/apple-touch-icon-114x114-precomposed.png') }}">
 <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
     href="{{ asset('client/img/apple-touch-icon-144x144-precomposed.png') }}">
+<!-- Thêm SweetAlert2 CDN vào head -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <!-- GOOGLE WEB FONT -->
 <link rel="preconnect" href="https://fonts.googleapis.com/">
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
+<!-- Trong <head> -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
+    <!-- Trước </body> -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
 <!-- BASE CSS -->
 <link rel="preload" href="{{ asset('client/css/bootstrap.min.css') }}" as="style">
 <link rel="stylesheet" href="{{ asset('client/css/bootstrap.min.css') }}">
@@ -239,7 +247,7 @@
             }
         
             img {
-                max-width: 50px;
+            
                 border-radius: 5px;
             }
         
@@ -264,4 +272,61 @@
                     flex-direction: column;
                 }
             }
+
+
+  /* mã giảm giá */
+.coupons-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 30px;
+    justify-content: center;
+}
+
+.coupon-card {
+    width: 300px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    background-color: #fffdf4;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    overflow: hidden;
+    margin: 10px;
+    display: block; /* Quan trọng: xếp dọc */
+}
+
+.coupon-image img {
+    width: 100%; /* full chiều rộng */
+    height: 150px;
+    object-fit: cover;
+    display: block;
+}
+
+.coupon-info {
+    padding: 15px;
+}
+
+.coupon-info h3 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+
+.copy-btn {
+    background-color: #f4511e;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.copy-btn:hover {
+    background-color: #d84315;
+}
+
+  
+
         </style>

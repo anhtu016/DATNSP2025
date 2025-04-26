@@ -155,7 +155,8 @@
         </div>
 
         <!-- /row -->
-        </div>
+     
+
 
 
         <div class="bg_gray">
@@ -304,6 +305,10 @@
     </div>
 </div> --}}
     <!--Css-->
+
+
+
+
     @push('css')
         <script>
             ! function(e, n, t) {

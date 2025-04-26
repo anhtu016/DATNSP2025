@@ -18,7 +18,7 @@ use App\Http\Controllers\Admin\CouponController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\User\UserOrderController;
-
+use App\Http\Controllers\PromotionController;
 use App\Events\OrderStatusUpdated;
 use App\Models\Order;
 use App\Http\Controllers\Client\ProductDetailController;
@@ -34,18 +34,15 @@ use App\Http\Controllers\Client\ProductDetailController;
 */
 
 
-// Route::get('/', [ProductController::class, 'index']);
-// Route::group(['prefix' => 'admin'], function () {
-//         Route::resource('attributes', AttributeController::class);
-// });
-// Route::get('/', function () {
-//         return view('client.index');
-//     });
-    Route::get('/home', [HomeController::class, 'index'])->name('home');
+    Route::get('/', [HomeController::class, 'index'])->name('home');
     
     
-    
-    
+    // Home Admin route yêu cầu đăng nhập
+    Route::middleware('auth')->group(function () {
+        Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
+    });
+
+  
     // đăng nhập , đăng xuất , đăng ký
     Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
     Route::post('/login', [AuthController::class, 'login']);
@@ -62,7 +59,6 @@ use App\Http\Controllers\Client\ProductDetailController;
     Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 // Route::get('/',[CategoryController::class,'index']);
-Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
 // Route::get('abc',[CategoryController::class,'list_category']);
 
 Route::get('list-categories',[App\Http\Controllers\CategoriesController::class,'index'])
@@ -164,11 +160,9 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 
 
 // routes/web.php
-Route::get('/', [ProductController::class, 'index']);
+// Route::get('/', [ProductController::class, 'index']);
 // routes/web.php
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
-Route::get('/', [HomeController::class, 'index1']);
-Route::get('/home', [ProductController::class, 'index'])->name('home');
 Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
 
 
@@ -336,26 +330,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     // Xóa mã giảm giá
     Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
 });
-
 Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.store');
-
-
 Route::get('/order-status/{id}', [UserOrderController::class, 'statusPartial'])->name('order.status.partial');
-//yêu cầu cập nh
-
-
-
-// test realtime
-// Route::get('/test-broadcast', function () {
-//     $order = Order::find(59); // chọn order bất kỳ để test, nhớ chắc chắn order này có tồn tại
-//     event(new OrderStatusUpdated($order));
-//     return 'Broadcast done';
-// });
-
 //áp dụng mã giảm giá
 Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
 // Route để hủy mã giảm giá
 Route::post('/coupon/remove', [CartController::class, 'removeCoupon'])->name('coupon.remove');
-
-
-
+Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');

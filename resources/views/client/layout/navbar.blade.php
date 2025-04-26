@@ -54,7 +54,9 @@
                                     @endforeach
                                 </ul>
                             </li>
-                            
+                            <li>
+                                <a href="{{route('promotions.index')}}" class="show-submenu">Ưu đãi</a>
+                            </li>
                             {{-- <li>
                                 <a href="blog.html">Blog</a>
                             </li>
@@ -78,7 +80,6 @@
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="user">
                                      
                                         <li><a class="dropdown-item" href="{{route('user.orders.index')}}"><i class="ti-user"></i> Theo dõi đơn hàng</a></li>
-                                        
                                         <li><hr class="dropdown-divider"></li>
                                         <li>
                                             <form action="{{ route('logout') }}" method="POST">
