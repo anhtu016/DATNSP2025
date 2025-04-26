@@ -13,9 +13,21 @@ class AttributeController extends Controller
      */
     public function index()
     {
-        $dataAttributes = Attribute::with('attributeValue')->latest()->paginate(10);
-        return view('admin.attributes',compact('dataAttributes'));
+        // Lấy tất cả các thuộc tính với giá trị của chúng
+        $dataAttributes = Attribute::with('values')->latest()->paginate(10);
+    
+        // Tạo mảng attributes từ các thuộc tính và giá trị
+        $attributesArray = [];
+    
+        foreach ($dataAttributes as $attribute) {
+            $values = $attribute->values->pluck('value')->toArray(); // Lấy các giá trị thuộc tính
+            $attributesArray[$attribute->name] = $values; // Thêm vào mảng theo tên thuộc tính
+        }
+    
+        // Truyền mảng vào view
+        return view('admin.attributes', compact('attributesArray', 'dataAttributes'));
     }
+    
 
     /**
      * Show the form for creating a new resource.
@@ -28,33 +40,38 @@ class AttributeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        // Validate nếu cần
-        $request->validate([
-            'nameAttribute' => 'required|string|max:255',
-            'selectAttribute' => 'required|string|max:255',
-            'valueAttribute' => 'required|array',
-            'valueAttribute.*' => 'required|string|max:255'
-        ]);
-    
-        // Tạo attribute mới
+// AttributeController.php
+public function store(Request $request)
+{
+    $request->validate([
+        'nameAttribute' => 'required|string|max:255',
+        'selectAttribute' => 'required|string',
+        'valueAttribute' => 'required|array',
+        'valueAttribute.*' => 'required|string',
+    ]);
+
+    // Check nếu attribute đã tồn tại
+    $attribute = Attribute::where('name', $request->nameAttribute)->first();
+
+    if (!$attribute) {
+        // Nếu chưa tồn tại thì tạo mới
         $attribute = Attribute::create([
             'name' => $request->nameAttribute,
             'type' => $request->selectAttribute,
         ]);
-    
-        // Lưu từng value vào bảng attribute_values
-        foreach ($request->valueAttribute as $value) {
-            AttributeValue::create([
-                'attribute_id' => $attribute->id,
-                'value' => $value,
-            ]);
-        }
-    
-        return back()->with('success', 'Added Successfully');
     }
-    
+
+    // Sau đó tạo các valueAttribute
+    foreach ($request->valueAttribute as $value) {
+        AttributeValue::create([
+            'attribute_id' => $attribute->id,
+            'value' => $value,
+        ]);
+    }
+
+    return redirect()->back()->with('success', 'Done');
+}
+
 
 
 

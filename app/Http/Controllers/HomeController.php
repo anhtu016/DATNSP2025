@@ -13,9 +13,9 @@ class HomeController extends Controller
         $user = Auth::user(); // Lấy thông tin người dùng đã đăng nhập
         $data = Product::with('productReview','brand')->get();
         // $coupons = Coupon::where('end_date', '>=', now())->get(); // lấy mã còn hạn
-        $coupons = Coupon::all();
+        // $coupons = Coupon::all();
 
-        return view('client.index', compact('user','data','coupons')); // Truyền dữ liệu sang view
+        return view('client.index', compact('user','data')); // Truyền dữ liệu sang view
         
     }
     public function index1(){

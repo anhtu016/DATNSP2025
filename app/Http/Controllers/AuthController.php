@@ -15,21 +15,17 @@ class AuthController extends Controller
     // đăng nhập
     public function login(Request $request)
     {
-        // Kiểm tra đăng nhập
-        if (Auth::attempt($request->only('email', 'password'))) {
-            $user = Auth::user();
+        $credentials = $request->only('email', 'password');
     
-            // Kiểm tra nếu người dùng có quyền 'admin'
-            if ($user->hasPermission('admin')) {
-                return redirect()->route('homeadmin')->with('success', 'Đăng nhập thành công!');
-            }
-    
-            // Nếu người dùng không phải admin, chuyển hướng về trang chủ
-            return redirect()->route('home')->with('success', 'Đăng nhập thành công!');
+        if (Auth::attempt($credentials)) {
+            return redirect()->intended()->with('success', 'Đăng nhập thành công!');
         }
     
-        return back()->withErrors(['email' => 'Sai tài khoản hoặc mật khẩu'])->withInput();
+        return back()->withErrors([
+            'email' => 'Email hoặc mật khẩu không đúng.',
+        ])->withInput();
     }
+    
     
     public function showRegister()
     {

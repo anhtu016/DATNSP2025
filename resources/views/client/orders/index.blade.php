@@ -9,7 +9,7 @@
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
 
-    <div class="table-responsive">
+    <div class="table-responsive" style="height:90vh;">
         <table class="table table-bordered table-hover text-center align-middle">
             <thead class="table-light">
                 <tr>

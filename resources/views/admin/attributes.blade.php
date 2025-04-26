@@ -49,14 +49,13 @@
                                                                 <label for="selectAttribute" class="form-label mt-2">Type</label>
                                                                 <select id="selectAttribute" name="selectAttribute" class="form-select mb-3">
                                                                     <option selected disabled>Choose type</option>
-                                                                    <option value="text">Text</option>
-                                                                    <option value="image">Image</option>
-                                                                    <option value="color">Color</option>
+                                                                    <option value="size">size</option>
+                                                                    <option value="color">color</option>
+                                    
                                                                 </select>
                                                                 <div id="value-group">
                                                                     <input type="text" name="valueAttribute[]" class="form-control mb-2" placeholder="Enter value">
                                                                 </div>
-                                                                <button type="button" onclick="addValueInput()" class="btn btn-info">+ Add More Value</button>
                                                                 
                                                                 <script>
                                                                 function addValueInput() {

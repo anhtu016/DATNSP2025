@@ -22,6 +22,8 @@ use App\Http\Controllers\PromotionController;
 use App\Events\OrderStatusUpdated;
 use App\Models\Order;
 use App\Http\Controllers\Client\ProductDetailController;
+use App\Http\Controllers\MomoController;
+use App\Http\Controllers\PaymentController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -38,9 +40,6 @@ use App\Http\Controllers\Client\ProductDetailController;
     
     
     // Home Admin route yêu cầu đăng nhập
-    Route::middleware('auth')->group(function () {
-        Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
-    });
 
   
     // đăng nhập , đăng xuất , đăng ký
@@ -136,10 +135,15 @@ Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
 // confirm đơn hàng
 Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm'])->name('user.orders.confirm');
 
-
+   
 
 //route mã giảm giá
 Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
+
+ Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin'); 
+   
+
+
     Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
 
     // Hiển thị form tạo mới mã giảm giá
@@ -163,7 +167,6 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 // Route::get('/', [ProductController::class, 'index']);
 // routes/web.php
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
-Route::get('/homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
 
 
 // ==== Auth: Đăng nhập / Đăng ký / Đăng xuất ====
@@ -337,3 +340,9 @@ Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name(
 // Route để hủy mã giảm giá
 Route::post('/coupon/remove', [CartController::class, 'removeCoupon'])->name('coupon.remove');
 Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
+
+// thanh toán online
+// Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
+// Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
+
+

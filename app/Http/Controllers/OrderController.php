@@ -172,21 +172,121 @@ public function store(Request $request)
         $total += $item['price'] * $item['quantity'];
     }
 
-    // Kiểm tra và lấy tổng giá trị giỏ hàng đã giảm giá
     $discountAmount = session('coupon')['discount_amount'] ?? 0;
 
-    // Trừ tiền giảm giá vào tổng giỏ hàng nếu có mã giảm giá
-    $totalAfterDiscount = $total - $discountAmount;
-
-    // Nếu tổng sau giảm giá nhỏ hơn 0, set về 0
-    $totalAfterDiscount = max($totalAfterDiscount, 0);
+    // Tổng sau giảm giá
+    $totalAfterDiscount = max($total - $discountAmount, 0);
 
     $customerId = Auth::id();
 
     try {
-        // Tạo đơn hàng
+        // Nếu chọn thanh toán Momo
+        if ($request->payment_methods_id == 3) {
+            $order = Order::create([
+                'total_amount' => $totalAfterDiscount,
+                'shipping_address' => $request->shipping_address,
+                'order_date' => now(),
+                'shipping_method_id' => $request->shipping_method_id,
+                'payment_methods_id' => $request->payment_methods_id,
+                'phone_number' => $request->phone_number,
+                'customer_id' => $customerId,
+                'order_status' => 'pending',  // Đặt trạng thái là "chờ thanh toán"
+                'coupon_code' => session('coupon')['code'] ?? null,
+                'discount_amount' => $discountAmount,
+            ]);
+
+            foreach ($cart as $item) {
+                OrderDetail::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item['id'],
+                    'variant_id' => $item['variant_id'],
+                    'quantity' => $item['quantity'],
+                    'price' => $item['price'],
+                    'total' => $item['price'] * $item['quantity'],
+                ]);
+            }
+
+            // Lưu thông tin đơn hàng vào session (để xử lý sau khi thanh toán)
+            session([
+                'pending_order' => [
+                    'order_id' => $order->id,
+                    'shipping_address' => $request->shipping_address,
+                    'shipping_method_id' => $request->shipping_method_id,
+                    'payment_methods_id' => $request->payment_methods_id,
+                    'phone_number' => $request->phone_number,
+                    'total_amount' => $totalAfterDiscount,
+                    'discount_amount' => $discountAmount,
+                    'cart' => $cart,
+                    'coupon_code' => session('coupon')['code'] ?? null,
+                ]
+            ]);
+
+            $endpoint = config('services.momo.endpoint');
+            $partnerCode = config('services.momo.partner_code');
+            $accessKey = config('services.momo.access_key');
+            $secretKey = config('services.momo.secret_key');
+            $redirectUrl = config('services.momo.redirect_url');
+            $ipnUrl = config('services.momo.ipn_url');
+
+            $orderInfo = "Thanh toán đơn hàng qua MoMo";
+            $amount = $totalAfterDiscount;
+            $orderId = time() . ""; // Mã đơn hàng
+            $extraData = '';
+
+            $requestId = time() . "";
+            $requestType = "captureWallet";
+
+            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+            $signature = hash_hmac("sha256", $rawHash, $secretKey);
+
+            $data = [
+                'partnerCode' => $partnerCode,
+                'partnerName' => "MoMo Payment",
+                'storeId' => "MomoTestStore",
+                'requestId' => $requestId,
+                'amount' => $amount,
+                'orderId' => $orderId,
+                'orderInfo' => $orderInfo,
+                'redirectUrl' => $redirectUrl,
+                'ipnUrl' => $ipnUrl,
+                'lang' => 'vi',
+                'extraData' => $extraData,
+                'requestType' => $requestType,
+                'signature' => $signature
+            ];
+
+            $ch = curl_init($endpoint);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_HTTPHEADER, ['Content-Type: application/json']);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+            $result = curl_exec($ch);
+            $result = json_decode($result, true);
+
+            if (isset($result['payUrl'])) {
+                // Lưu tạm đơn hàng chờ thanh toán nếu cần
+                session([
+                    'pending_order' => [
+                        'shipping_address' => $request->shipping_address,
+                        'shipping_method_id' => $request->shipping_method_id,
+                        'payment_methods_id' => $request->payment_methods_id,
+                        'phone_number' => $request->phone_number,
+                        'total_amount' => $totalAfterDiscount,
+                        'discount_amount' => $discountAmount,
+                        'cart' => $cart,
+                        'coupon_code' => session('coupon')['code'] ?? null,
+                    ]
+                ]);
+
+                return redirect($result['payUrl']);
+            } else {
+                return back()->with('error', 'Không kết nối được tới cổng thanh toán Momo.');
+            }
+        }
+
+        // Nếu không phải Momo (COD hoặc chuyển khoản) thì xử lý bình thường
         $order = Order::create([
-            'total_amount' => $totalAfterDiscount,  // Sử dụng tổng đã trừ giảm giá
+            'total_amount' => $totalAfterDiscount,
             'shipping_address' => $request->shipping_address,
             'order_date' => now(),
             'shipping_method_id' => $request->shipping_method_id,
@@ -194,11 +294,10 @@ public function store(Request $request)
             'phone_number' => $request->phone_number,
             'customer_id' => $customerId,
             'order_status' => 'pending',
-            'coupon_code' => session('coupon')['code'] ?? null,  // Lưu mã giảm giá
-            'discount_amount' => $discountAmount,  // Lưu số tiền giảm giá
+            'coupon_code' => session('coupon')['code'] ?? null,
+            'discount_amount' => $discountAmount,
         ]);
 
-        // Lưu chi tiết đơn hàng
         foreach ($cart as $item) {
             OrderDetail::create([
                 'order_id' => $order->id,
@@ -210,18 +309,14 @@ public function store(Request $request)
             ]);
         }
 
-        // Cập nhật số lượt sử dụng của mã giảm giá
-        if ($couponCode = session('coupon')['code']) {
+        if ($couponCode = session('coupon')['code']??null) {
             $coupon = Coupon::where('code', $couponCode)->first();
             if ($coupon) {
                 $coupon->increment('usage_count');
             }
         }
 
-        // Xóa giỏ hàng sau khi đặt
         session()->forget('cart');
-
-        // Xóa thông tin mã giảm giá sau khi hoàn thành đơn hàng
         session()->forget('coupon');
 
         return redirect()->route('home')->with('success', 'Đặt hàng thành công!');

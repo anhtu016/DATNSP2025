@@ -117,7 +117,7 @@
                                     <a href="{{ route('detail.index', $product->id) }}">
                                         <div class="col-md-6">
                                             <img src="{{ asset('storage/' . $product->thumbnail) }}"
-                                                alt="{{ $product->name }}" class="img-fluid">
+                                                alt="{{ $product->name }}" class="img-fluid" width="100px" height="10px">
                                         </div>
                                 </figure>
 
