@@ -98,11 +98,10 @@
             </li>
         </ul>
         <!--/banners_grid -->
-
-        <div class="container margin_60_35">
+        
+        {{-- <div class="container margin_60_35">
             <div class="main_title">
-                <h2>Sản phẩm</h2>
-                <span>Bán chạy nhất</span>
+                <h2>Sản phẩm mới</h2>
             </div>
 
 
@@ -113,19 +112,14 @@
                         <div class="col-6 col-md-4 col-xl-3">
                             <div class="grid_item">
                                 <figure class="text-center">
-                                    <!-- Liên kết đến trang chi tiết sản phẩm -->
-                                    <a href="{{ route('detail.index', $product->id) }}">
-                                        <img src="{{ asset('storage/' . $product->thumbnail) }}"
-                                            alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
+                                    <a href="{{ route('detail.index', ['id' => $product->id]) }}">
+                                        <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
                                     </a>
                                 </figure>
-                                
-
-
-                                <!-- Tên sản phẩm và giá -->
                                 <a href="{{ route('detail.index', ['id' => $product->id]) }}">
                                     <h3>{{ $product->name }}</h3>
                                 </a>
+                                
 
                                 <div class="price_box">
                                     @if ($product->sell_price > 0)
@@ -152,8 +146,100 @@
 
                 </div>
             </div>
+        </div> --}}
+        {{-- tất cả sản phẩm --}}
+        <div class="container margin_60_35">
+            <div class="main_title">
+                <h2>Sản phẩm mới</h2>
+            </div>
+        
+            <!-- List product mới nhất -->
+            <div class="container">
+                <div class="row">
+                    @foreach ($latestProducts as $product)
+                        <div class="col-6 col-md-4 col-xl-3">
+                            <div class="grid_item">
+                                <figure class="text-center">
+                                    <a href="{{ route('detail.index', ['id' => $product->id]) }}">
+                                        <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
+                                    </a>
+                                </figure>
+                                <a href="{{ route('detail.index', ['id' => $product->id]) }}">
+                                    <h3>{{ $product->name }}</h3>
+                                </a>
+        
+                                <div class="price_box">
+                                    @if ($product->sell_price > 0)
+                                        <span class="old_price">{{ number_format($product->sell_price) }} VNĐ</span>
+                                        <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
+                                    @elseif ($product->sell_price == 0)
+                                        <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
+                                    @endif
+                                </div>
+        
+                                <ul>
+                                    <li>
+                                        <a href="#0" class="tooltip-1" data-bs-toggle="tooltip"
+                                            data-bs-placement="left" title="Add to favorites">
+                                            <i class="ti-heart"></i><span>Add to favorites</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <!-- /grid_item -->
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
-
+        
+        {{-- 4 sản phẩm mới --}}
+        <div class="registration-container">  
+            <h1 class="text-white">Đăng ký nhận tin Allaia Stadium</h1>  
+            <p>Hãy đăng ký để nhận tin nhắn nhanh nhất qua email</p>  
+            <input type="email" placeholder="Nhập địa chỉ email của bạn" required />  
+            <button type="submit">ĐĂNG KÝ</button>  
+        </div>  
+        
+        <div class="container margin_60_35">
+            <div class="row">
+                @foreach ($categories as $index => $category)
+                    @if ($category->products->count() > 0)
+                        <div class="container margin_60_35">
+                            <div class="main_title">
+                                <h2>{{ $category->name }}</h2>
+                            </div>
+                
+                            <div class="row">
+                                @foreach ($category->products->take(4) as $product)
+                                    <div class="col-6 col-md-4 col-xl-3">
+                                        <div class="grid_item ">
+                                            <figure class="text-center">
+                                                <a href="{{ route('detail.index', ['id' => $product->id]) }}">
+                                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
+                                                </a>
+                                            </figure>
+                                            <a href="{{ route('detail.index', ['id' => $product->id]) }}">
+                                                <h3>{{ $product->name }}</h3>
+                                            </a>
+                                            <div class="price_box">
+                                                @if ($product->sell_price > 0)
+                                                    <span class="old_price">{{ number_format($product->sell_price) }} VNĐ</span>
+                                                    <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
+                                                @else
+                                                    <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
+                @endforeach
+            </div>
+        </div>
+        
         <!-- /row -->
      
 

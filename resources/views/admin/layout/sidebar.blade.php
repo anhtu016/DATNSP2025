@@ -30,7 +30,7 @@
     
             <!-- Logo trong menu thu gọn -->
             <div id="two-column-menu" class="text-center mb-3">
-                <a href="{{ url('homeadmin') }}">
+                <a href="">
                     <img src="{{ asset('admin/assets/images/logo-sm.png') }}" alt="Mini Logo" height="32">
                 </a>
             </div>
@@ -41,12 +41,6 @@
                 </li>
     
                 <!-- Dashboard -->
-                <li class="nav-item">
-                    <a class="nav-link menu-link d-flex align-items-center" href="{{ url('homeadmin') }}">
-                        <i class="ri-dashboard-2-line me-2"></i> 
-                        <span data-key="t-dashboards">Tổng quan</span>
-                    </a>
-                </li>
     
                 <!-- Users -->
                 <li class="nav-item">

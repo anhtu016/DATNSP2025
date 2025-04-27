@@ -61,5 +61,12 @@
         });
     }
 </script>
+<script>
+    AOS.init({
+    duration: 1200,
+    easing: 'ease-in-out',
+});
+
+</script>
 
 

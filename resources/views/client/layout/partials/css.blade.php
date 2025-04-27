@@ -339,4 +339,66 @@
         color: white;
         opacity: 1;
     }
+    /* hover sản phẩm trong index */
+  
+
+.grid_item figure a {
+    overflow: hidden;
+    display: block;
+    position: relative;
+}
+
+.grid_item figure a img {
+    transition: all 0.5s ease;
+}
+
+.grid_item figure a:hover img {
+    transform: scale(1.1);
+    opacity: 0.9;
+
+}
+/* banner trang chủ */
+.registration-container {  
+    background-color: #2c3e50;  
+    color: white;  
+    text-align: center;  
+    padding: 40px;  
+    border-radius: 8px;  
+    max-width: 100%;  
+    margin: 0 auto;  
+}  
+
+.registration-container h1 {  
+    font-size: 40px;  
+    margin-bottom: 20px;  
+}  
+
+.registration-container p {  
+    margin-bottom: 20px;  
+}  
+
+.registration-container input {  
+    padding: 10px;  
+    border: none;  
+    border-radius: 4px;  
+    width: 20%;  
+    margin-bottom: 20px;  
+}  
+
+.registration-container button {  
+    background-color: #e74c3c;  
+    color: white;  
+    border: none;  
+    padding: 10px 20px;  
+    border-radius: 4px;  
+    cursor: pointer;  
+}  
+
+.registration-container button:hover {  
+    background-color: #c0392b;  
+}  
+
+/* chi tiết sản phẩm */
+
+
 </style>
