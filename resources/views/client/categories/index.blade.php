@@ -1,23 +1,37 @@
 @extends('client.layout.default')
 @section('content')
+<br>
+<br>
 <div class="container">
-    <h2>Sản phẩm trong danh mục: {{ $category->name }}</h2>
+    <h2 class="mb-4">Sản phẩm trong danh mục: {{ $category->name }}</h2>
     <div class="row">
         @foreach ($products as $product)
             <div class="col-md-3 mb-4">
-                <div class="card h-100">
-                    <img src="{{ asset('storage/' . $product->thumbnail) }}" class="card-img-top" alt="{{ $product->name }}">
-                    <div class="card-body">
-                        <h5 class="card-title">{{ $product->name }}</h5>
-                        <p>Giá: {{ number_format($product->price) }} đ</p>
-                        <a href="{{route('detail.index',['id' => $product->id])}}" class="btn btn-primary btn-sm">Chi tiết</a>
+                <div class="card h-100 d-flex flex-column justify-content-between">
+                    <!-- Ảnh sản phẩm căn giữa -->
+                    <div class="text-center p-3">
+                        <img src="{{ asset('storage/' . $product->thumbnail) }}" class="card-img-top img-fluid" style="max-height: 200px; width: auto; margin: 0 auto;" alt="{{ $product->name }}">
+                    </div>
+
+                    <!-- Nội dung sản phẩm -->
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title text-center">{{ $product->name }}</h5>
+                        <p class="text-center">Giá: {{ number_format($product->price) }} đ</p>
+
+                        <!-- Nút chi tiết căn giữa và nằm ở cuối -->
+                        <div class="mt-auto text-center">
+                            <a href="{{ route('detail.index', ['id' => $product->id]) }}" class="btn btn-primary btn-sm">Chi tiết</a>
+                        </div>
                     </div>
                 </div>
             </div>
         @endforeach
     </div>
 
-    {{ $products->links() }}
+    <!-- Phân trang -->
+    <div class="d-flex justify-content-center">
+        {{ $products->links() }}
+    </div>
 </div>
 @push('admin_css')
         <!-- App favicon -->

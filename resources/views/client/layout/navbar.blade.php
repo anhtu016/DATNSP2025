@@ -57,6 +57,9 @@
                             <li>
                                 <a href="{{route('promotions.index')}}" class="show-submenu">Ưu đãi</a>
                             </li>
+                            <li>
+                                <a href="{{ route('order.policy') }}" class="show-submenu">Chính sách đổi trả</a>
+                            </li>
                             {{-- <li>
                                 <a href="blog.html">Blog</a>
                             </li>

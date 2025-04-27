@@ -19,7 +19,9 @@
                 <div class="collapse dont-collapse-sm links" id="collapse_2">
                     <ul>
                         
-                        <li><a href="listing-grid-1-full.html">Giày dép</a></li>
+                        <li><a href="listing-grid-1-full.html">Giày thể thao nam</a></li>
+                        <li><a href="listing-grid-1-full.html">Giày boot</a></li>
+                        <li><a href="listing-grid-1-full.html">Giày thể sneaker nam</a></li>
                        
                     </ul>
                 </div>
@@ -29,21 +31,21 @@
                 <div class="collapse dont-collapse-sm contacts" id="collapse_3">
                     <ul>
                         <li><i class="ti-home"></i>2PWW+2F Bac Tu Liem, Hanoi, Vietnam<br></li>
-                        <li><i class="ti-headphone-alt"></i>0353593918</li>
-                        <li><i class="ti-email"></i><a href="#0">congntph33455</a></li>
+                        <li><i class="ti-headphone-alt"></i>0966237369</li>
+                        <li><i class="ti-email"></i><a href="#0">admin@99746.com</a></li>
                     </ul>
                 </div>
             </div>
             <div class="col-lg-3 col-md-6">
                 <h3 data-bs-target="#collapse_4">Kết nối với chúng tôi</h3>
-                <div class="collapse dont-collapse-sm" id="collapse_4">
+                <div class="" id="collapse_4">
                     <div id="newsletter">
                         <div class="form-group">
                             <input type="email" name="email_newsletter" id="email_newsletter"
                                 class="form-control" placeholder="Email của bạn">
-                            <button type="submit" id="submit-newsletter"><i
-                                    class="ti-angle-double-right"></i></button>
                         </div>
+                      
+                        
                     </div>
                     <div class="follow_us">
                         <h5>Theo dõi chúng tôi</h5>

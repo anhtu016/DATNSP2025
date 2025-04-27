@@ -344,5 +344,11 @@ Route::get('/promotions', [PromotionController::class, 'index'])->name('promotio
 // thanh toán online
 // Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
 // Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
+ 
+// chính sách đổi trả
+// routes/web.php
+Route::get('/order-policy', function () {
+    return view('client.order_policy');
+})->name('order.policy');
 
 

@@ -15,12 +15,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com/" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&amp;display=swap" rel="stylesheet">
 <!-- Trong <head> -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 
-    <!-- Trước </body> -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-    
+<!-- Trước </body> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+
 <!-- BASE CSS -->
 <link rel="preload" href="{{ asset('client/css/bootstrap.min.css') }}" as="style">
 <link rel="stylesheet" href="{{ asset('client/css/bootstrap.min.css') }}">
@@ -68,265 +68,275 @@
         color: #fff;
         border-color: #000;
     }
-/* trang giỏ hàng */
+
+    /* trang giỏ hàng */
+    .cart-table-container {
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        padding: 20px;
+        margin-top: 30px;
+        overflow-x: auto;
+    }
+
+    table.cart-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 15px;
+        min-width: 800px;
+    }
+
+    .cart-table thead {
+        background-color: #f9fafb;
+    }
+
+    .cart-table th,
+    .cart-table td {
+        padding: 15px 12px;
+        text-align: center;
+        vertical-align: middle;
+        border-bottom: 1px solid #e0e0e0;
+    }
+
+    .cart-table img {
+        max-width: 60px;
+        border-radius: 6px;
+    }
+
+    .cart-table td form input[type="number"] {
+        width: 65px;
+        padding: 6px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        text-align: center;
+    }
+
+    .cart-actions {
+        display: flex;
+        justify-content: center;
+        gap: 8px;
+    }
+
+    .cart-actions .btn {
+        padding: 6px 12px;
+        font-size: 14px;
+        border-radius: 6px;
+    }
+
+    .btn-success {
+        background-color: #10b981;
+        border: none;
+        color: white;
+    }
+
+    .btn-success:hover {
+        background-color: #059669;
+    }
+
+    .btn-danger {
+        background-color: #ef4444;
+        border: none;
+        color: white;
+    }
+
+    .btn-danger:hover {
+        background-color: #dc2626;
+    }
+
+    .btn-primary {
+        background-color: #3b82f6;
+        border: none;
+        padding: 12px 20px;
+        font-size: 16px;
+        border-radius: 8px;
+        color: white;
+        display: inline-block;
+        margin-top: 20px;
+        transition: background-color 0.2s ease-in-out;
+    }
+
+    .btn-primary:hover {
+        background-color: #2563eb;
+    }
+
+    .total-price {
+        margin-top: 20px;
+        font-weight: bold;
+        font-size: 18px;
+        color: #111827;
+    }
+
+    @media (max-width: 768px) {
         .cart-table-container {
-            background: #fff;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-            padding: 20px;
-            margin-top: 30px;
-            overflow-x: auto;
-        }
-
-        table.cart-table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 15px;
-            min-width: 800px;
-        }
-
-        .cart-table thead {
-            background-color: #f9fafb;
-        }
-
-        .cart-table th,
-        .cart-table td {
-            padding: 15px 12px;
-            text-align: center;
-            vertical-align: middle;
-            border-bottom: 1px solid #e0e0e0;
-        }
-
-        .cart-table img {
-            max-width: 60px;
-            border-radius: 6px;
-        }
-
-        .cart-table td form input[type="number"] {
-            width: 65px;
-            padding: 6px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            text-align: center;
-        }
-
-        .cart-actions {
-            display: flex;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        .cart-actions .btn {
-            padding: 6px 12px;
-            font-size: 14px;
-            border-radius: 6px;
-        }
-
-        .btn-success {
-            background-color: #10b981;
-            border: none;
-            color: white;
-        }
-
-        .btn-success:hover {
-            background-color: #059669;
-        }
-
-        .btn-danger {
-            background-color: #ef4444;
-            border: none;
-            color: white;
-        }
-
-        .btn-danger:hover {
-            background-color: #dc2626;
+            padding: 15px;
         }
 
         .btn-primary {
-            background-color: #3b82f6;
-            border: none;
-            padding: 12px 20px;
-            font-size: 16px;
-            border-radius: 8px;
-            color: white;
-            display: inline-block;
-            margin-top: 20px;
-            transition: background-color 0.2s ease-in-out;
+            width: 100%;
+            text-align: center;
         }
+    }
 
-        .btn-primary:hover {
-            background-color: #2563eb;
+    /* đặt hàng */
+    .checkout-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding: 30px;
+        gap: 30px;
+        font-family: 'Segoe UI', sans-serif;
+        background-color: #f5f7fa;
+    }
+
+    .card {
+        background: white;
+        border-radius: 10px;
+        padding: 25px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+        flex: 1 1 45%;
+    }
+
+    .card h2 {
+        margin-bottom: 20px;
+        color: #333;
+        font-size: 22px;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    input[type="text"],
+    select {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 6px;
+        font-size: 15px;
+    }
+
+    input[readonly] {
+        background-color: #f0f0f0;
+    }
+
+    .error {
+        color: red;
+        font-size: 13px;
+    }
+
+    .success {
+        color: green;
+        font-weight: bold;
+        margin-bottom: 10px;
+    }
+
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 14px;
+    }
+
+    th,
+    td {
+        border-bottom: 1px solid #ddd;
+        padding: 10px;
+        text-align: center;
+    }
+
+    img {
+
+        border-radius: 5px;
+    }
+
+    button {
+        background-color: #3b82f6;
+        color: white;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+        background-color: #2563eb;
+    }
+
+    @media (max-width: 768px) {
+        .checkout-container {
+            flex-direction: column;
         }
-
-        .total-price {
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-            color: #111827;
-        }
-
-        @media (max-width: 768px) {
-            .cart-table-container {
-                padding: 15px;
-            }
-
-            .btn-primary {
-                width: 100%;
-                text-align: center;
-            }
-        }
-       /* đặt hàng */
-            .checkout-container {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: space-between;
-                padding: 30px;
-                gap: 30px;
-                font-family: 'Segoe UI', sans-serif;
-                background-color: #f5f7fa;
-            }
-        
-            .card {
-                background: white;
-                border-radius: 10px;
-                padding: 25px;
-                box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-                flex: 1 1 45%;
-            }
-        
-            .card h2 {
-                margin-bottom: 20px;
-                color: #333;
-                font-size: 22px;
-            }
-        
-            .form-group {
-                margin-bottom: 15px;
-            }
-        
-            label {
-                display: block;
-                font-weight: 600;
-                margin-bottom: 5px;
-            }
-        
-            input[type="text"],
-            select {
-                width: 100%;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 6px;
-                font-size: 15px;
-            }
-        
-            input[readonly] {
-                background-color: #f0f0f0;
-            }
-        
-            .error {
-                color: red;
-                font-size: 13px;
-            }
-        
-            .success {
-                color: green;
-                font-weight: bold;
-                margin-bottom: 10px;
-            }
-        
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                font-size: 14px;
-            }
-        
-            th, td {
-                border-bottom: 1px solid #ddd;
-                padding: 10px;
-                text-align: center;
-            }
-        
-            img {
-            
-                border-radius: 5px;
-            }
-        
-            button {
-                background-color: #3b82f6;
-                color: white;
-                padding: 12px 20px;
-                border: none;
-                border-radius: 8px;
-                font-size: 16px;
-                cursor: pointer;
-                margin-top: 10px;
-                transition: background-color 0.3s ease;
-            }
-        
-            button:hover {
-                background-color: #2563eb;
-            }
-        
-            @media (max-width: 768px) {
-                .checkout-container {
-                    flex-direction: column;
-                }
-            }
+    }
 
 
-  /* mã giảm giá */
-.coupons-container {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    margin-top: 30px;
-    justify-content: center;
-}
+    /* mã giảm giá */
+    .coupons-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+        margin-top: 30px;
+        justify-content: center;
+    }
 
-.coupon-card {
-    width: 300px;
-    border: 1px solid #ddd;
-    border-radius: 10px;
-    background-color: #fffdf4;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-    overflow: hidden;
-    margin: 10px;
-    display: block; /* Quan trọng: xếp dọc */
-}
+    .coupon-card {
+        width: 300px;
+        border: 1px solid #ddd;
+        border-radius: 10px;
+        background-color: #fffdf4;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        overflow: hidden;
+        margin: 10px;
+        display: block;
+        /* Quan trọng: xếp dọc */
+    }
 
-.coupon-image img {
-    width: 100%; /* full chiều rộng */
-    height: 150px;
-    object-fit: cover;
-    display: block;
-}
+    .coupon-image img {
+        width: 100%;
+        /* full chiều rộng */
+        height: 150px;
+        object-fit: cover;
+        display: block;
+    }
 
-.coupon-info {
-    padding: 15px;
-}
+    .coupon-info {
+        padding: 15px;
+    }
 
-.coupon-info h3 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 18px;
-    margin-bottom: 10px;
-}
+    .coupon-info h3 {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 18px;
+        margin-bottom: 10px;
+    }
 
-.copy-btn {
-    background-color: #f4511e;
-    color: white;
-    border: none;
-    padding: 6px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-}
+    .copy-btn {
+        background-color: #f4511e;
+        color: white;
+        border: none;
+        padding: 6px 10px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+    }
 
-.copy-btn:hover {
-    background-color: #d84315;
-}
+    .copy-btn:hover {
+        background-color: #d84315;
+    }
 
-  
+    /* sửa footer */
 
-        </style>
+    /* Đổi màu placeholder thành trắng */
+    #email_newsletter::placeholder {
+        color: white;
+        opacity: 1;
+    }
+</style>

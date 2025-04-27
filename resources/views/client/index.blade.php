@@ -112,14 +112,14 @@
                     @foreach ($data as $product)
                         <div class="col-6 col-md-4 col-xl-3">
                             <div class="grid_item">
-                                <figure>
+                                <figure class="text-center">
                                     <!-- Liên kết đến trang chi tiết sản phẩm -->
                                     <a href="{{ route('detail.index', $product->id) }}">
-                                        <div class="col-md-6">
-                                            <img src="{{ asset('storage/' . $product->thumbnail) }}"
-                                                alt="{{ $product->name }}" class="img-fluid" width="100px" height="10px">
-                                        </div>
+                                        <img src="{{ asset('storage/' . $product->thumbnail) }}"
+                                            alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
+                                    </a>
                                 </figure>
+                                
 
 
                                 <!-- Tên sản phẩm và giá -->
