@@ -10,7 +10,7 @@ class ReviewController extends Controller
 {
     public function index()
     {
-        $listReviews = ProductReview::query()->get();
+        $listReviews = ProductReview::query()->paginate(10);
         return view('admin.reviews.index', compact('listReviews'));
     }
 

@@ -177,36 +177,37 @@
                             </a>
                         </h5>
                     </div>
+                
                     <div id="collapse-B" class="collapse" role="tabpanel" aria-labelledby="heading-B">
                         <div class="card-body">
                             <div class="row justify-content-between">
+                
                                 <div class="col-lg-6">
                                     @foreach ($loadReviews as $reviews)
-                                    <div class="review_content">
-                                        <div class="clearfix add_bottom_10">
-                                            <span class="rating">                  
-                                                @for($i = 1; $i <= $reviews->rating; $i++)
-                                                    <i class="icon-star filled"></i>
-                                                @endfor
-                                                <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh giá)</em>
-                                            </span>
-                                        </div>
-                                        <h4>{{$reviews->user->name}}</h4>
-                                        <p>{{$reviews->description}}</p>
-                                    
-                                    </div>
+                                        @if($reviews->status == 1) <!-- Chỉ hiển thị nếu status = 1 -->
+                                            <div class="review_content">
+                                                <div class="clearfix add_bottom_10">
+                                                    <span class="rating">
+                                                        @for($i = 1; $i <= $reviews->rating; $i++)
+                                                            <i class="icon-star filled"></i>
+                                                        @endfor
+                                                        <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh giá)</em>
+                                                    </span>
+                                                </div>
+                                                <h4>{{ $reviews->user->name }}</h4>
+                                                <p>{{ $reviews->description }}</p>
+                                            </div>
+                                        @endif
                                     @endforeach
                                 </div>
-
+                
                             </div>
-                            <!-- /row -->
-                            
-                            <!-- /row -->
+                
                             <p class="text-end"><a href="leave-review.html" class="btn_1">Leave a review</a></p>
                         </div>
-                        <!-- /card-body -->
                     </div>
                 </div>
+                
                 <!-- /tab B -->
             </div>
             <!-- /tab-content -->

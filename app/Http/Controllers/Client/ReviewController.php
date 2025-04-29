@@ -36,7 +36,7 @@ class ReviewController extends Controller
                     'user_id' => auth()->id(),
                     'order_id' => $item->order_id
                 ])->first();
-
+                    
                 if (!$existingReview) {
                     // Nếu chưa có đánh giá, tạo mới
                     ProductReview::create([
@@ -46,6 +46,7 @@ class ReviewController extends Controller
                         'rating' => $ratings[$item->id],
                         'description' => $description[$item->id],
                         'status' => 1,
+                        'image'=> $item['image'],
                         'product_id'=> $item->product_id
                     ]);
                     $hasReview = true;
