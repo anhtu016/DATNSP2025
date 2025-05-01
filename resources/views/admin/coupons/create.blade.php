@@ -1,110 +1,153 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="page-content">
-    <div class="container-fluid p-8">
-        <h1 class="mb-4 text-center">Tạo mã giảm giá mới</h1>
-        @if ($errors->any())
-<div class="alert alert-danger">
-    <strong>Đã xảy ra lỗi!</strong>
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
-</div>
-@endif
-@if (session('error'))
-<div class="alert alert-danger">
-    {{ session('error') }}
-</div>
-@endif
+    <div class="page-content">
+        <div class="container-fluid p-8">
+            <h1 class="mb-4 text-center">Tạo mã giảm giá mới</h1>
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <strong>Đã xảy ra lỗi!</strong>
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
 
-@if (session('success'))
-<div class="alert alert-success">
-    {{ session('success') }}
-</div>
-@endif
-        <form action="{{ route('admin.coupons.store') }}" method="POST" class="form-container">
-            @csrf
-            <div class="form-group">
-                <label for="code">Mã giảm giá:</label>
-                <input type="text" name="code" id="code" class="form-control">
-                @error('code')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="type">Loại:</label>
-                <select name="type" id="type" class="form-control">
-                    <option value="percentage">Giảm theo phần trăm</option>
-                    <option value="fixed">Giảm giá Cố định</option>
-                </select>
-                @error('type')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="value">Giá trị:</label>
-                <input type="number" name="value" id="value" class="form-control">
-                @error('value')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="min_order_value">Giá trị đơn hàng tối thiểu:</label>
-                <input type="number" name="min_order_value" id="min_order_value" class="form-control">
-                @error('min_order_value')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="end_date">Ngày kết thúc:</label>
-                <input type="date" name="end_date" id="end_date" class="form-control">
-                @error('end_date')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="product_ids">Chọn sản phẩm áp dụng:</label>
-                <select name="product_ids[]" id="product_ids" class="form-select" multiple>
-                    @foreach($products as $product)
-                        <option value="{{ $product->id }}">{{ $product->name }}</option>
-                    @endforeach
-                </select>
-                @error('product_ids')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="usage_limit">Giới hạn lượt sử dụng:</label>
-                <input type="number" name="usage_limit" id="usage_limit" class="form-control" value="{{ old('usage_limit', $coupon->usage_limit ?? '') }}">
-                @error('usage_limit')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            
-            <br>
-            <div class="form-group">
-                <label>
-                    <input type="checkbox" name="apply_to_all_products" value="1" {{ old('apply_to_all_products', $coupon->apply_to_all_products ?? false) ? 'checked' : '' }}>
-                    Áp dụng cho tất cả sản phẩm
-                </label>
-            </div>
-            
-            <hr>
-            <button type="submit" class="btn btn-primary btn-block">Tạo mã giảm giá</button>
-        </form>
-       
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+            <form action="{{ route('admin.coupons.store') }}" method="POST" class="form-container">
+                @csrf
+                <div class="form-group">
+                    <label for="code">Mã giảm giá:</label>
+                    <input type="text" name="code" id="code" class="form-control">
+                    @error('code')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="type">Loại:</label>
+                    <select name="type" id="type" class="form-control">
+                        <option value="percentage">Giảm theo phần trăm</option>
+                        <option value="fixed">Giảm giá Cố định</option>
+                    </select>
+                    @error('type')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="value">Giá trị:</label>
+                    <input type="text" class="form-control format-currency @error('value') is-invalid @enderror" id="value_display" autocomplete="off" value="{{ old('value') }}">
+                    <input type="hidden" name="value" id="value" value="{{ old('value') }}">
+                    @error('value')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="form-group">
+                    <label for="min_order_value">Giá trị đơn hàng tối thiểu:</label>
+                    <input type="text" class="form-control format-currency @error('min_order_value') is-invalid @enderror" id="min_order_value_display" autocomplete="off" value="{{ old('min_order_value') }}">
+                    <input type="hidden" name="min_order_value" id="min_order_value" value="{{ old('min_order_value') }}">
+                    @error('min_order_value')
+                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                    @enderror
+                </div>
+                
+                <div class="form-group">
+                    <label for="start_date">Ngày bắt đầu:</label>
+                    <input type="date" name="start_date" id="start_date" class="form-control">
+                    @error('start_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="end_date">Ngày kết thúc:</label>
+                    <input type="date" name="end_date" id="end_date" class="form-control">
+                    @error('end_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="product_ids">Chọn sản phẩm áp dụng:</label>
+                    <select name="product_ids[]" id="product_ids" class="form-select" multiple>
+                        @foreach ($products as $product)
+                            <option value="{{ $product->id }}">{{ $product->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('product_ids')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+                <div class="form-group">
+                    <label for="usage_limit">Giới hạn lượt sử dụng:</label>
+                    <input type="number" name="usage_limit" id="usage_limit" class="form-control"
+                        value="{{ old('usage_limit', $coupon->usage_limit ?? '') }}">
+                    @error('usage_limit')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <br>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" name="apply_to_all_products" value="1"
+                            {{ old('apply_to_all_products', $coupon->apply_to_all_products ?? false) ? 'checked' : '' }}>
+                        Áp dụng cho tất cả sản phẩm
+                    </label>
+                </div>
+
+                <hr>
+                <button type="submit" class="btn btn-primary btn-block">Tạo mã giảm giá</button>
+            </form>
+
+        </div>
     </div>
-</div>
 
 
-<style>
-    .form-container {
-    min-height: 110vh; /* Chiếm 80% chiều cao của viewport */
-}
+    <style>
+        .form-container {
+            min-height: 110vh;
+            /* Chiếm 80% chiều cao của viewport */
+        }
+    </style>
+<script>
+    function formatNumber(n) {
+        return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
-</style>
+    function parseNumber(n) {
+        return n.replace(/\./g, "");
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.format-currency').forEach(function(input) {
+            const targetId = input.id.replace('_display', '');
+            const hiddenInput = document.getElementById(targetId);
+
+            // Format ban đầu khi load lại trang (nếu có dữ liệu old)
+            if (input.value) {
+                const raw = parseNumber(input.value);
+                input.value = formatNumber(raw);
+                if (hiddenInput) hiddenInput.value = raw;
+            }
+
+            input.addEventListener('input', function () {
+                const raw = parseNumber(this.value);
+                this.value = formatNumber(raw);
+                if (hiddenInput) hiddenInput.value = raw;
+            });
+        });
+    });
+</script>
+
     <!-- End Page-content -->
 
     <!-- css-->

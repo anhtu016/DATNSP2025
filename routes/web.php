@@ -159,20 +159,22 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 
     // Cập nhật mã giảm giá
     Route::put('coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
+    Route::post('coupons/updateUsage', [CouponController::class, 'updateUsage'])->name('coupons.updateUsage');
 
     // Xóa mã giảm giá
     Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
+    Route::patch('coupons/{coupon}', [CouponController::class, 'toggleStatus'])->name('coupons.toggle');
+    
+
+
 });
 
 
-// routes/web.php
-// Route::get('/', [ProductController::class, 'index']);
-// routes/web.php
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
 
 
 
-// ==== Auth: Đăng nhập / Đăng ký / Đăng xuất ====
+// Auth: Đăng nhập / Đăng ký / Đăng xuất
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
@@ -180,14 +182,14 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
 
-// ==== Quên mật khẩu / Đặt lại mật khẩu ====
+// Quên mật khẩu / Đặt lại mật khẩu
 Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
 
-// ==== Category ====
+// Category
 Route::get('list-categories', [App\Http\Controllers\CategoriesController::class, 'index'])->name('categories.index');
 Route::get('add-categories', [App\Http\Controllers\CategoriesController::class, 'create'])->name('categories.create');
 Route::post('admin-add-categories', [App\Http\Controllers\CategoriesController::class, 'store'])->name('categories.store');
@@ -200,18 +202,18 @@ Route::delete('admin-forceDel-categories/{id}', [App\Http\Controllers\Categories
 
 
 
-// ==== Sản phẩm - Chi tiết sản phẩm ====
+// Sản phẩm - Chi tiết sản phẩm
 Route::get('client-detail/{id}', [App\Http\Controllers\CuaHangController::class, 'index'])->name('detail.index');
 
 
-// ==== Thuộc tính sản phẩm (attributes) ====
+// Thuộc tính sản phẩm (attributes)
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
 Route::group(['prefix' => 'admin'], function () {
     Route::resource('attributes', AttributeController::class);
 });
 
 
-// ==== Quản lý người dùng (admin/users) ====
+// Quản lý người dùng (admin/users)
 Route::get('admin/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
 Route::get('admin/users/create', [App\Http\Controllers\UserController::class, 'create'])->name('users.create');
 Route::post('admin/users', [App\Http\Controllers\UserController::class, 'store'])->name('users.store');
@@ -310,30 +312,28 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth'])->prefix('user')->name('user.')->group(function () {
     Route::put('/orders/{id}/cancel', [OrderController::class, 'requestCancel'])->name('orders.cancel');
 });
-// confirm đơn hàng
+
 Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm'])->name('user.orders.confirm');
 
-// đánh giá đơn hàng
+
 Route::get('/user/orders/{order}/review', [UserOrderController::class, 'review'])->name('user.orders.review');
 
-//route mã giảm giá
+
 Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
-    // Hiển thị danh sách mã giảm giá
+
     Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
 
-    // Hiển thị form tạo mới mã giảm giá
+
     Route::get('coupons/create', [CouponController::class, 'create'])->name('coupons.create');
 
-    // Lưu mã giảm giá mới
+
     Route::post('coupons', [CouponController::class, 'store'])->name('coupons.store');
 
-    // Hiển thị form chỉnh sửa mã giảm giá
+
     Route::get('coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
 
-    // Cập nhật mã giảm giá
     Route::put('coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
 
-    // Xóa mã giảm giá
     Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
 });
 Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.store');
@@ -344,12 +344,7 @@ Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name(
 Route::post('/coupon/remove', [CartController::class, 'removeCoupon'])->name('coupon.remove');
 Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
 
-// thanh toán online
-// Route::get('/payment/return', [PaymentController::class, 'paymentReturn'])->name('payment.return');
-// Route::post('/payment/notify', [PaymentController::class, 'paymentNotify'])->name('payment.notify');
- 
-// chính sách đổi trả
-// routes/web.php
+
 Route::get('/order-policy', function () {
     return view('client.order_policy');
 })->name('order.policy');

@@ -44,7 +44,7 @@
                             @endif
                         </div>
                         <div class="col-md-2">
-                            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled']))
+                            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled','delivered']))
                                 <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
                             @endif
 

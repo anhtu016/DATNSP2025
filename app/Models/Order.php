@@ -59,6 +59,11 @@ public function getStatusBadgeClass()
         default: return 'secondary';
     }
 }
+public function coupon()
+{
+    return $this->belongsTo(Coupon::class);
+}
+
 
     
 }

@@ -25,6 +25,11 @@ public function products()
 {
     return $this->belongsToMany(Product::class, 'coupon_product');
 }
+public function orders()
+{
+    return $this->hasMany(Order::class);
+}
+
 
 
 }

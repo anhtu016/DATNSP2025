@@ -89,6 +89,7 @@ public function requestCancel($id)
         ->where('order_status', 'pending')
         ->firstOrFail();
 
+        
     $order->order_status = 'cancel_requested';
     $order->save();
 
@@ -148,8 +149,7 @@ public function create()
 
     $paymentMethods = [
         1 => 'Thanh toán khi nhận hàng',
-        2 => 'Chuyển khoản ngân hàng',
-        3 => 'Momo',
+        2 => 'Momo',
     ];
 
     $userName = Auth::user()?->name ?? 'Khách'; 
@@ -192,7 +192,7 @@ public function store(Request $request)
     $customerId = Auth::id();
 
     try {
-        if ($request->payment_methods_id == 3) {
+        if ($request->payment_methods_id == 2) {
             $order = Order::create([
                 'total_amount' => $totalAfterDiscount,
                 'shipping_address' => $request->shipping_address,

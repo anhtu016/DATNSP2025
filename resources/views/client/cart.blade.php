@@ -123,6 +123,8 @@
                                                     <li><strong>Giảm tối đa:</strong> {{ number_format($coupon->max_discount_value, 0, ',', '.') }}₫</li>
                                                 @endif
                                                 <li><strong>Hạn dùng:</strong> {{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}</li>
+                                                <li><strong>Đã sử dụng: </strong>{{ $coupon->usage_count ?? 0 }} / {{ $coupon->usage_limit ?? '∞' }}</li>
+                                                <li><strong>Còn lại: </strong>{{ isset($coupon->usage_limit) ? max(0, $coupon->usage_limit - ($coupon->usage_count ?? 0)) : '∞' }}</li>
                                             </ul>
                                         </div>
                                     </div>

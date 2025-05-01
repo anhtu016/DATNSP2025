@@ -32,13 +32,18 @@
         
                 <div class="form-group">
                     <label>Giá</label>
-                    <input type="number" name="price" class="form-control" value="{{ old('price', $product->price) }}">
+                    <input type="text" name="price_display" id="price_display" class="form-control format-currency"
+                           value="{{ number_format(old('price', $product->price), 0, ',', '.') }}">
+                    <input type="hidden" name="price" id="price" value="{{ old('price', $product->price) }}">
                 </div>
-        
+                
                 <div class="form-group">
                     <label>Giá sale</label>
-                    <input type="number" name="sell_price" class="form-control" value="{{ old('sell_price', $product->sell_price) }}">
+                    <input type="text" name="sell_price_display" id="sell_price_display" class="form-control format-currency"
+                           value="{{ number_format(old('sell_price', $product->sell_price), 0, ',', '.') }}">
+                    <input type="hidden" name="sell_price" id="sell_price" value="{{ old('sell_price', $product->sell_price) }}">
                 </div>
+                
         
                 <div class="form-group">
                     <label>Số lượng</label>
@@ -102,7 +107,26 @@
     </div>
 </div>
 
+<script>
+    function formatNumber(n) {
+        return n.replace(/\D/g, "")
+                .replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    }
 
+    function parseNumber(n) {
+        return n.replace(/\./g, "");
+    }
+
+    document.querySelectorAll('.format-currency').forEach(function(input) {
+        input.addEventListener('input', function(e) {
+            const rawValue = parseNumber(this.value);
+            this.value = formatNumber(rawValue);
+
+            const target = this.id.replace('_display', '');
+            document.getElementById(target).value = parseFloat(rawValue) || 0;
+        });
+    });
+</script>
     <!-- End Page-content -->
 
     <!-- css-->

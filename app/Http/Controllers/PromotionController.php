@@ -11,9 +11,17 @@ class PromotionController extends Controller
 
     public function index()
     {
-        $coupons = Coupon::orderBy('end_date', 'asc')->get(); // Lấy tất cả, kể cả hết hạn
+        $now = now();
+    
+        $coupons = Coupon::where('is_active', true)
+            ->whereDate('start_date', '<=', $now)
+            ->whereDate('end_date', '>=', $now)
+            ->orderBy('end_date', 'asc')
+            ->get();
+    
         return view('client.promotions', compact('coupons'));
     }
+    
 
 
 }

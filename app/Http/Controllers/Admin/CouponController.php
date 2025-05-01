@@ -4,15 +4,35 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Coupon;
 use App\Models\Product;
+use App\Models\Order;
 use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
     public function index()
     {
+        // Lấy tất cả các mã giảm giá với phân trang
         $coupons = Coupon::paginate(10); // 10 mã mỗi trang
+    
+        // Kiểm tra các đơn hàng đã bị hủy và có sử dụng mã giảm giá
+        $orders = Order::where('order_status', 'canceled')->get(); // Lấy các đơn hàng đã hủy
+    
+        foreach ($orders as $order) {
+            // Kiểm tra nếu đơn hàng có mã giảm giá
+            if ($order->coupon) {
+                $coupon = Coupon::find($order->coupon_id);
+                if ($coupon) {
+                    // Giảm số lượt sử dụng mã giảm giá
+                    $coupon->usage_count--;
+                    $coupon->save();
+                }
+            }
+        }
+    
+        // Trả về danh sách mã giảm giá
         return view('admin.coupons.index', compact('coupons'));
     }
+    
 
     public function create()
     {
@@ -25,24 +45,24 @@ class CouponController extends Controller
         // Validate dữ liệu từ request
         $validated = $request->validate([
             'code' => 'required|string|unique:coupon,code',
-            'type' => 'required|in:percentage,fixed', // Kiểm tra loại mã giảm giá
-            'value' => 'required|numeric',  // Kiểm tra giá trị giảm giá
+            'type' => 'required|in:percentage,fixed',
+            'value' => 'required|numeric',
             'min_order_value' => 'nullable|numeric',
-            'end_date' => 'required|date|after_or_equal:today', // Kiểm tra end_date
+            'start_date' => 'required|date|after_or_equal:today', // Validate start_date
+            'end_date' => 'required|date|after_or_equal:start_date', // end_date >= start_date
             'apply_to_all_products' => 'nullable|boolean',
             'product_ids' => 'nullable|array',
             'product_ids.*' => 'exists:products,id',
             'usage_limit' => 'required|integer|min:0',
+            'is_active' => 'nullable|boolean', 
         ]);
     
         // Kiểm tra nếu type là 'percentage'
         if ($validated['type'] === 'percentage') {
-            // Nếu là percentage, giá trị phải trong khoảng từ 0 đến 100 và là số nguyên
             if ($validated['value'] < 0 || $validated['value'] > 100) {
                 return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "percentage" phải trong khoảng 0 đến 100%.');
             }
     
-            // Kiểm tra xem giá trị có phải là số nguyên không
             if (floor($validated['value']) != $validated['value']) {
                 return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "percentage" phải là số nguyên.');
             }
@@ -50,7 +70,6 @@ class CouponController extends Controller
     
         // Kiểm tra nếu type là 'fixed'
         if ($validated['type'] === 'fixed') {
-            // Nếu là fixed, giá trị phải là số nguyên và phải lớn hơn 0
             if (floor($validated['value']) != $validated['value']) {
                 return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "fixed" phải là số nguyên.');
             }
@@ -60,8 +79,8 @@ class CouponController extends Controller
             }
         }
     
-        // Lấy ngày hôm nay làm start_date (không cần nhập)
-        $today = now()->toDateString(); // start_date mặc định là hôm nay
+        // Lưu start_date và end_date
+        $startDate = \Carbon\Carbon::parse($validated['start_date'])->toDateString();
         $endDate = \Carbon\Carbon::parse($validated['end_date'])->toDateString();
     
         // Tạo mã giảm giá
@@ -70,10 +89,11 @@ class CouponController extends Controller
             'type' => $validated['type'],
             'value' => $validated['value'],
             'min_order_value' => $validated['min_order_value'] ?? null,
-            'start_date' => $today,
+            'start_date' => $startDate,
             'end_date' => $endDate,
             'apply_to_all_products' => $validated['apply_to_all_products'] ?? false,
             'usage_limit' => $validated['usage_limit'],
+            'is_active' => $validated['is_active'] ?? true, 
         ]);
     
         // Gắn sản phẩm nếu có
@@ -87,7 +107,8 @@ class CouponController extends Controller
     
     
     
-
+    
+    //sửa
     public function edit(Coupon $coupon)
     {
         $products = Product::all();
@@ -96,7 +117,7 @@ class CouponController extends Controller
 
     public function update(Request $request, Coupon $coupon)
     {
-        // Không cho phép sửa nếu mã đã được sử dụng ít nhất 1 lần hoặc đã hết hạn
+        // Kiểm tra xem mã đã được sử dụng ít nhất 1 lần hoặc đã hết hạn chưa
         if ($coupon->usage_count > 0 || $coupon->end_date < now()) {
             return redirect()->back()->with('error', 'Không thể sửa mã giảm giá đã có lượt sử dụng hoặc đã hết hạn sử dụng.');
         }
@@ -105,15 +126,17 @@ class CouponController extends Controller
             'code' => 'required|string|unique:coupon,code,' . $coupon->id,
             'type' => 'required|in:percentage,fixed',
             'value' => 'required|numeric',
-            'min_order_value' => 'required|nullable|numeric',
-            'start_date' => 'required|date',
+            'min_order_value' => 'nullable|numeric',
+            'start_date' => 'required|date|after_or_equal:today',
             'end_date' => 'required|date|after_or_equal:start_date',
             'apply_to_all_products' => 'nullable|boolean',
             'product_ids' => 'nullable|array',
             'product_ids.*' => 'exists:products,id',
-            'usage_limit' => 'required|nullable|integer|min:0',
+            'usage_limit' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|boolean', 
         ]);
     
+        // Cập nhật thông tin mã giảm giá
         $coupon->update([
             'code' => $validated['code'],
             'type' => $validated['type'],
@@ -123,6 +146,7 @@ class CouponController extends Controller
             'end_date' => $validated['end_date'],
             'apply_to_all_products' => $validated['apply_to_all_products'] ?? false,
             'usage_limit' => $validated['usage_limit'],
+            'is_active' => $validated['is_active'] ?? true, 
         ]);
     
         if (!$coupon->apply_to_all_products) {
@@ -135,6 +159,7 @@ class CouponController extends Controller
     }
     
     
+    //xóa
     public function destroy(Coupon $coupon)
     {
         $now = now();
@@ -151,5 +176,41 @@ class CouponController extends Controller
         $coupon->delete();
         return redirect()->route('admin.coupons.index')->with('success', 'Mã giảm giá đã xóa thành công.');
     }
-    
+    // ẩn và hiện
+    public function toggleStatus(Coupon $coupon)
+{
+    $coupon->is_active = !$coupon->is_active;
+    $coupon->save();
+
+    return redirect()->back()->with('success', 'Cập nhật trạng thái mã giảm giá thành công!');
+}
+// cập nhật mã giảm giá 
+public function updateUsage(Request $request)
+{
+    // Lấy tất cả các mã giảm giá từ bảng coupon
+    $coupons = Coupon::all();
+
+    foreach ($coupons as $coupon) {
+        // Đếm số lượng đơn hàng đã hủy và sử dụng mã giảm giá này (dùng coupon_code thay vì coupon_id)
+        $cancelledOrders = Order::where('coupon_code', $coupon->code) // Dùng coupon_code để kiểm tra
+                                ->where('order_status', 'cancelled') // Đảm bảo trạng thái là 'cancelled'
+                                ->count();
+
+        // Kiểm tra và giảm usage_count nếu có đơn hàng đã hủy
+        if ($cancelledOrders > 0) {
+            // Giảm số lượt sử dụng của mã giảm giá theo số lượng đơn hàng hủy
+            $coupon->usage_count -= $cancelledOrders;
+            
+            // Đảm bảo usage_count không bao giờ âm
+            $coupon->usage_count = max(0, $coupon->usage_count);
+            $coupon->save();
+        }
+    }
+
+    return redirect()->route('admin.coupons.index')->with('success', 'Đã cập nhật lượt sử dụng mã giảm giá.');
+}
+
+
+
+
 }

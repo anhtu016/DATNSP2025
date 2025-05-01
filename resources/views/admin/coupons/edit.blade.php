@@ -42,13 +42,16 @@
         
             <div class="form-group">
                 <label for="value">Giá trị</label>
-                <input type="number" name="value" id="value" class="form-control" value="{{ old('value', $coupon->value) }}">
+                <input type="hidden" name="value" id="value" value="{{ old('value', $coupon->value) }}">
+                <input type="text" id="value_display" class="form-control format-currency" value="{{ number_format(old('value', $coupon->value), 0, ',', '.') }}">
             </div>
-        
+            
             <div class="form-group">
                 <label for="min_order_value">Giá trị đơn hàng tối thiểu</label>
-                <input type="number" name="min_order_value" id="min_order_value" class="form-control" value="{{ old('min_order_value', $coupon->min_order_value) }}">
+                <input type="hidden" name="min_order_value" id="min_order_value" value="{{ old('min_order_value', $coupon->min_order_value) }}">
+                <input type="text" id="min_order_value_display" class="form-control format-currency" value="{{ number_format(old('min_order_value', $coupon->min_order_value), 0, ',', '.') }}">
             </div>
+            
         
             <div class="form-group">
                 <label for="start_date">Ngày bắt đầu:</label>
@@ -87,7 +90,26 @@
         </form>
         
     </div>
-
+    <script>
+        function formatNumber(n) {
+            return n.replace(/\D/g, "").replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        }
+    
+        function parseNumber(n) {
+            return n.replace(/\./g, "");
+        }
+    
+        document.querySelectorAll('.format-currency').forEach(function(input) {
+            input.addEventListener('input', function () {
+                const rawValue = parseNumber(this.value);
+                this.value = formatNumber(rawValue);
+    
+                const target = this.id.replace('_display', '');
+                document.getElementById(target).value = parseFloat(rawValue) || 0;
+            });
+        });
+    </script>
+    
 <style>
 
     .form-container {
