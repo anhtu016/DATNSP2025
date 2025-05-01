@@ -2,6 +2,17 @@
 @section('content')
 <div class="page-content">
     <div class="container">
+        @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h2 class="mb-0">📦 Danh sách đơn hàng</h2>
         </div>
@@ -10,7 +21,7 @@
             <table class="table table-hover align-middle table-bordered">
                 <thead class="table-light text-center">
                     <tr>
-                        <th>ID</th>
+                        <th>STT</th>
                         <th>Khách hàng</th>
                         <th>Số điện thoại</th>
                         <th>Ngày đặt</th>
@@ -24,7 +35,7 @@
                 <tbody class="text-center">
                     @forelse($orders as $order)
                     <tr>
-                        <td>#{{ $order->id }}</td>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $order->customer->name ?? 'N/A' }}</td>
                         <td>{{ $order->phone_number }}</td>
                         <td>{{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y') }}</td>

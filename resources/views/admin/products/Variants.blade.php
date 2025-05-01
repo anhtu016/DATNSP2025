@@ -1,30 +1,50 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="page-content">
-    <div class="container mt-4">
-        <h4>Tạo Biến Thể cho: {{ $product->name }}</h4>
+    <div style="min-height: 200vh">
+        <div class="page-content">
 
-        <form action="{{ route('products.variants.store', $product->id) }}" method="POST">
-            @csrf
+            <div class="container mt-4">
+                <h4>Tạo Biến Thể cho: {{ $product->name }}</h4>
+                @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+    
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+                <form action="{{ route('products.variants.store', $product->id) }}" method="POST">
+                    @csrf
 
-            <div class="row">
-                @foreach ($attributes as $attribute)
-                    <div class="col-md-4 mt-3">
-                        <label><strong>{{ ucfirst($attribute->name) }}</strong></label>
-                        <select name="attributes[{{ $attribute->id }}]" class="form-select" required>
-                            <option value="">-- Chọn {{ strtolower($attribute->name) }} --</option>
-                            @foreach ($attribute->attributeValue as $value)
-                                <option value="{{ $value->id }}">{{ $value->value }}</option>
-                            @endforeach
-                        </select>
+                    <div class="row">
+                        @foreach ($attributes as $attribute)
+                            <div class="col-md-4 mt-3">
+                                <label><strong>{{ ucfirst($attribute->name) }}</strong></label>
+                                <select name="attributes[{{ $attribute->id }}]" class="form-select" required>
+                                    <option value="">-- Chọn {{ strtolower($attribute->name) }} --</option>
+                                    @foreach ($attribute->attributeValue as $value)
+                                        <option value="{{ $value->id }}">{{ $value->value }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @endforeach
                     </div>
-                @endforeach
-            </div>
 
-            <button type="submit" class="btn btn-primary mt-4">Tạo Biến Thể</button>
-        </form>
+                    <button type="submit" class="btn btn-primary mt-4">Tạo Biến Thể</button>
+                </form>
+            </div>
+        </div>
+        <div class="container">
+
+        <!-- Phân trang -->
+
     </div>
-</div>
+
+
+
 
 
 

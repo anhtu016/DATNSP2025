@@ -7,7 +7,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                        <h4 class="mb-sm-0">Products</h4>
+                       
 
                         <div class="page-title-right">
                             <ol class="breadcrumb m-0">
@@ -28,15 +28,26 @@
                                 <div class="row g-4">
                                     <div class="col-sm-auto">
                                         <div>
+                                            <h4 class="mb-sm-0">Danh sách biến thể</h4>
                                             <!-- Horizontal Collapse -->
-                                            <div class="mb-3">
+                                            {{-- <div class="mb-3">
                                                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#collapseWidthExample" aria-expanded="true"
                                                     aria-controls="collapseWidthExample">
                                                     <i class="ri-add-line align-bottom me-1"> Add Attribute</i>
                                                 </button>
+                                            </div> --}}
+                                            @if (session('error'))
+                                            <div class="alert alert-danger">
+                                                {{ session('error') }}
                                             </div>
-
+                                        @endif
+                            
+                                        @if (session('success'))
+                                            <div class="alert alert-success">
+                                                {{ session('success') }}
+                                            </div>
+                                        @endif
                                             <div>
                                                 <div class="collapse collapse-horizontal hiden" id="collapseWidthExample">
                                                     <div class="card card-body mb-0" style="width: 300px;">
@@ -104,7 +115,7 @@
                                         <th scope="col">Attribute</th>
                                         <th scope="col">Type</th>
                                         <th scope="col">Value</th>
-                                        <th scope="col">Action</th>
+                                        {{-- <th scope="col">Action</th> --}}
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -123,7 +134,7 @@
                                                     {{ $value->value }}
                                                 @endforeach
                                             </td>
-                                            <td>
+                                            {{-- <td>
                                                 <div class="dropdown">
                                                     <a href="#" role="button" id="dropdownMenuLink"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -131,9 +142,6 @@
                                                     </a>
                                                     <ul class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                                                         <li>
-                                                            {{-- <a class="dropdown-item" >Edit</a> --}}
-                                                            <!-- Horizontal Collapse -->
-                                                            <!-- Grids in modals -->
                                                             <button type="button" class="btn dropdown-item"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#{{ $attribute->name }}">
@@ -147,14 +155,13 @@
                                                                 method="post">
                                                                 @csrf
                                                                 @method('delete')
-                                                                {{-- <a class="btn dropdown-item" href="{{ route('attributes.destroy')}}">Delete</a> --}}
                                                             </form>
                                                             <button class="btn dropdown-item"
                                                                 onclick="confirmDelete({{ $attribute->id }})">Delete</button>
                                                         </li>
                                                     </ul>
                                                 </div>
-                                            </td>
+                                            </td> --}}
                                         </tr>
                                         <div class="modal fade" id="{{ $attribute->name }}" tabindex="-1"
                                             aria-labelledby="id?{{ $attribute->id }}" aria-modal="true">

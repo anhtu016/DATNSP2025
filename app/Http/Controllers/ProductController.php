@@ -11,6 +11,7 @@ use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Brand;
 use App\Models\Category;
+use App\Models\OrderDetail;
 class ProductController extends Controller
 {
     /**
@@ -18,25 +19,25 @@ class ProductController extends Controller
      */
     public function index()
     {
+        
         $data = Product::with('productReview','brand')->get();
         return view('client.index',compact('data'));
     }
     // danh sách sản phẩm
     public function index1()
     {
-        // Lấy tất cả sản phẩm cùng với các biến thể của chúng
-        $products = Product::with('attributes')->get();
+        // Lấy sản phẩm + attributes + categories + paginate 10 sp/trang
+        $products = Product::with(['attributes', 'categories'])->paginate(10);
     
-        $products = Product::with('categories')->get();
-
         // Lấy danh sách attributes + attributeValues để tạo biến thể
         $attributes = Attribute::with('attributeValue')->get();
-
+    
         // Tạo các kết hợp từ các giá trị thuộc tính
         $combinations = $this->generateCombinations($attributes);
     
         return view('admin.products.index', compact('products', 'attributes'));
     }
+    
      // Hiển thị trang tạo sản phẩm
      public function create()
      {
@@ -104,6 +105,11 @@ class ProductController extends Controller
      {
          $product = Product::findOrFail($id);
      
+         // Không cho cập nhật nếu sản phẩm có trong đơn hàng
+         if ($product->orderDetails()->exists()) {
+             return redirect()->back()->with('error', 'Không thể cập nhật sản phẩm vì đã có trong đơn hàng.');
+         }
+     
          $request->validate([
              'name' => 'required|string|max:200',
              'sku' => 'required|string|max:150|unique:products,sku,' . $product->id,
@@ -149,6 +155,7 @@ class ProductController extends Controller
      
          return redirect()->route('products.index')->with('success', 'Cập nhật sản phẩm thành công.');
      }
+     
 
   
 
@@ -164,21 +171,63 @@ class ProductController extends Controller
     
 
     public function Variants($id)
-{
-    $product = Product::with('variants.attributeValues', 'brand')->findOrFail($id);
-    $attributes = Attribute::with('attributeValue')->get(); // Lấy tất cả thuộc tính và giá trị
+    {
+        // Lấy sản phẩm với các biến thể và các giá trị thuộc tính đi kèm
+        $product = Product::with('variants.attributeValues', 'brand')->findOrFail($id);
+        
+        // Lấy danh sách các biến thể của sản phẩm và phân trang
+        $variants = $product->variants()
+                            ->with('attributeValues.attribute') // Lấy các giá trị thuộc tính
+                            ->paginate(10); // Phân trang 10 biến thể mỗi trang
+        
+        // Lấy tất cả thuộc tính và giá trị của các thuộc tính
+        $attributes = Attribute::with('attributeValue')->get();
+    
+        // Trả về view với dữ liệu cần thiết
+        return view('admin.products.Variants', compact('product', 'attributes', 'variants'));
+    }
+    // app/Http/Controllers/VariantController.php
 
-    return view('admin.products.Variants', compact('product', 'attributes'));
+public function destroyVariant($id)
+{
+    // Tìm biến thể theo ID
+    $variant = Variant::findOrFail($id);
+    
+    // Xóa biến thể
+    $variant->delete();
+
+    // Quay lại trang trước với thông báo thành công
+    return redirect()->back()->with('success', 'Biến thể đã được xóa thành công!');
 }
+
+    
 public function destroy($id)
 {
-    $product = Product::findOrFail($id); // Tìm sản phẩm theo ID
-    
+    // Tìm sản phẩm theo ID
+    $product = Product::findOrFail($id);
+
+    // Kiểm tra xem sản phẩm có tồn tại trong các đơn hàng có trạng thái 'pending' không
+    $orderDetail = OrderDetail::where('product_id', $id)
+                               ->whereHas('order', function($query) {
+                                   $query->where('order_status', 'pending'); // Kiểm tra trạng thái 'pending'
+                               })
+                               ->first();
+
+    // Nếu sản phẩm đã có trong đơn hàng có trạng thái 'pending', không cho phép xóa
+    if ($orderDetail) {
+        return redirect()->route('products.index')
+                         ->with('error', 'Không thể xóa sản phẩm này vì nó đã có trong đơn hàng đang chờ xử lý.');
+    }
+
     // Xóa sản phẩm
-    $product->delete();
-    
-    return redirect()->route('products.index')->with('success', 'Sản phẩm đã được xóa thành công!');
+    try {
+        $product->delete();
+        return redirect()->route('products.index')->with('success', 'Sản phẩm đã được xóa thành công!');
+    } catch (\Exception $e) {
+        return redirect()->route('products.index')->with('error', 'Xóa sản phẩm không thành công do sản phẩm đã được bày bán');
+    }
 }
+
 
     
 
@@ -209,37 +258,46 @@ public function destroy($id)
     return view('products.variants.create', compact('product', 'combinations'));
 }
 
-    public function showVariants($id)
-{
-    $product = Product::findOrFail($id);
-    return view('products.variants.index', compact('product'));
-}
+
 
 public function storeVariants(Request $request, $id)
 {
-    $product = Product::findOrFail($id);
+    // Load đầy đủ product và các attributeValues của variants
+    $product = Product::with('variants.attributeValues')->findOrFail($id);
 
-    // Nhận dữ liệu từ form gửi lên
     $attributes = $request->input('attributes', []);
+    $inputValueIds = collect($attributes)->values()->sort()->values()->toArray();
 
-    // Tạo SKU (hoặc bạn có thể logic tạo SKU theo ý muốn)
+    foreach ($product->variants as $variant) {
+        $existingValueIds = $variant->attributeValues->pluck('id')->sort()->values()->toArray();
+
+        if ($existingValueIds == $inputValueIds) {
+            return back()->with('error','Biến thể với tổ hợp thuộc tính này đã tồn tại.');
+        }
+    }
+
+    // Nếu chưa trùng thì tiến hành tạo
     $sku = Str::uuid();
 
-    // Lưu biến thể vào bảng variants
     $variant = new Variant();
     $variant->product_id = $product->id;
     $variant->sku = $sku;
     $variant->save();
 
-    // Gắn các giá trị thuộc tính cho biến thể này
     foreach ($attributes as $attributeId => $valueId) {
-        $variant->attributeValues()->attach($valueId); // Gắn các attributeValue vào variant
+        $variant->attributeValues()->attach($valueId);
     }
 
     return back()->with('success', 'Tạo biến thể thành công!');
 }
 
 
+
+    public function showVariants($id)
+{
+    $product = Product::findOrFail($id);
+    return view('products.variants.index', compact('product'));
+}
 
 
 

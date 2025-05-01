@@ -9,6 +9,17 @@
             </div><!-- end card header -->
             <div class="card-body">                    
                 <h2>Danh sách danh mục</h2>
+                @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
+            @endif
+
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
                 <div class="listjs-table" id="customerList">
                     <div class="row g-4 mb-3">
                         <div class="col-sm-auto">
@@ -31,7 +42,7 @@
                         <table class="table align-middle table-nowrap" id="customerTable">
                             <thead class="table-light">
                                 <tr>                                   
-                                    <th class="sort" data-sort="customer_name">ID</th>
+                                    <th class="sort" data-sort="customer_name">STT</th>
                                     <th class="sort" data-sort="email">Tên Danh Mục</th>
                                     <th class="sort" data-sort="phone">SLUG</th>
                                     <th class="sort" data-sort="date">Mô tả</th>
@@ -41,7 +52,7 @@
                             @foreach ($listCategory as $ct)
                             <tbody class="list form-check-all">
                                 <tr>
-                                    <td>{{$ct->id}}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{$ct->name}}</td>
                                     <td>{{$ct->slug}}</td>
                                     <td>{{$ct->description}}</td>

@@ -24,6 +24,8 @@ use App\Models\Order;
 use App\Http\Controllers\Client\ProductDetailController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\turnoverController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -167,6 +169,7 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(
 // Route::get('/', [ProductController::class, 'index']);
 // routes/web.php
 Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
+
 
 
 // ==== Auth: Đăng nhập / Đăng ký / Đăng xuất ====
@@ -351,4 +354,11 @@ Route::get('/order-policy', function () {
     return view('client.order_policy');
 })->name('order.policy');
 
+
+
+Route::delete('/variant/{id}', [ProductController::class, 'destroyVariant'])->name('variant.delete');
+
+Route::get('/turnover', [turnoverController::class, 'index'])->name('turnover.index');
+Route::get('/turnover/filter', [turnoverController::class, 'filter'])->name('turnover.filter');
+Route::post('/momo-callback', [PaymentController::class, 'momoCallback'])->name('momo.callback');
 

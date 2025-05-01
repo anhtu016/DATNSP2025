@@ -13,6 +13,17 @@
     </ul>
 </div>
 @endif
+@if (session('error'))
+<div class="alert alert-danger">
+    {{ session('error') }}
+</div>
+@endif
+
+@if (session('success'))
+<div class="alert alert-success">
+    {{ session('success') }}
+</div>
+@endif
         <form action="{{ route('admin.coupons.store') }}" method="POST" class="form-container">
             @csrf
             <div class="form-group">
@@ -43,13 +54,6 @@
                 <label for="min_order_value">Giá trị đơn hàng tối thiểu:</label>
                 <input type="number" name="min_order_value" id="min_order_value" class="form-control">
                 @error('min_order_value')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-            </div>
-            <div class="form-group">
-                <label for="start_date">Ngày bắt đầu:</label>
-                <input type="date" name="start_date" id="start_date" class="form-control">
-                @error('start_date')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
             </div>

@@ -2,69 +2,71 @@
 @section('content')
 <h2>abc</h2>
 <h2>abc</h2>
-<form action="{{ route('categories.store') }}" method="post" enctype="multipart/form-data">
-  @csrf
-  <div class="">
-      <div class="card">
-          <div class="card-header">
-              <h4>Thêm mới danh mục</h4>
-              @if ($errors->any())
-              <div class="alert alert-danger">
-                  <strong>Đã xảy ra lỗi!</strong>
-                  <ul>
-                      @foreach ($errors->all() as $error)
-                          <li>{{ $error }}</li>
-                      @endforeach
-                  </ul>
-              </div>
-          @endif
-          </div>
-
-          <div class="card-body">
-              <div class="form-group">
-                  <label>ID Danh mục</label>
-                  <input type="text" name="id" class="form-control" disabled>
-              </div>
-          </div>
-
-          <div class="card-body">
-              <div class="form-group">
-                  <label>Tên danh mục</label>
-                  <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
-                  @error('name')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                  @enderror
-              </div>
-          </div>
-
-          <div class="card-body">
-              <div class="form-group">
-                  <label>SLUG</label>
-                  <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}">
-                  @error('slug')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                  @enderror
-              </div>
-          </div>
-
-          <div class="card-body">
-              <div class="form-group">
-                  <label>Mô tả</label>
-                  <input type="text" name="description" class="form-control @error('description') is-invalid @enderror" value="{{ old('description') }}">
-                  @error('description')
-                      <div class="invalid-feedback">{{ $message }}</div>
-                  @enderror
-              </div>
-          </div>
-      </div>
-
-      <div class="text-center mt-3">
-          <input name="submit" class="btn btn-success" type="submit" value="Thêm mới">
-          <input class="btn btn-danger" type="reset" value="Xóa">
-          <a class="btn btn-info" href="#">Quay lại</a>
-      </div>
-  </div>
-</form>
+<div class="container" style="min-height: 110vh;" >
+    <form action="{{ route('categories.store') }}" method="post" enctype="multipart/form-data">
+        @csrf
+        <div class="">
+            <div class="card">
+                <div class="card-header">
+                    <h4>Thêm mới danh mục</h4>
+                    @if ($errors->any())
+                    <div class="alert alert-danger">
+                        <strong>Đã xảy ra lỗi!</strong>
+                        <ul>
+                            @foreach ($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+                </div>
+      
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>ID Danh mục</label>
+                        <input type="text" name="id" class="form-control" disabled>
+                    </div>
+                </div>
+      
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Tên danh mục</label>
+                        <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}">
+                        @error('name')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+      
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>SLUG</label>
+                        <input type="text" name="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}">
+                        @error('slug')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+      
+                <div class="card-body">
+                    <div class="form-group">
+                        <label>Mô tả</label>
+                        <input type="text" name="description" class="form-control @error('description') is-invalid @enderror" value="{{ old('description') }}">
+                        @error('description')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+      
+            <div class="text-center mt-3">
+                <input name="submit" class="btn btn-success" type="submit" value="Thêm mới">
+                <input class="btn btn-danger" type="reset" value="Xóa">
+                <a class="btn btn-info" href="#">Quay lại</a>
+            </div>
+        </div>
+      </form>
+</div>
 
 
 @endsection

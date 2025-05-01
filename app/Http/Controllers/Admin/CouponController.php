@@ -10,7 +10,7 @@ class CouponController extends Controller
 {
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::paginate(10); // 10 mã mỗi trang
         return view('admin.coupons.index', compact('coupons'));
     }
 
@@ -22,36 +22,69 @@ class CouponController extends Controller
     }
     public function store(Request $request)
     {
+        // Validate dữ liệu từ request
         $validated = $request->validate([
             'code' => 'required|string|unique:coupon,code',
-            'type' => 'required|in:percentage,fixed',
-            'value' => 'required|numeric',
+            'type' => 'required|in:percentage,fixed', // Kiểm tra loại mã giảm giá
+            'value' => 'required|numeric',  // Kiểm tra giá trị giảm giá
             'min_order_value' => 'nullable|numeric',
-            'start_date' => 'required|date',
-            'end_date' => 'required|date|after_or_equal:start_date',
+            'end_date' => 'required|date|after_or_equal:today', // Kiểm tra end_date
             'apply_to_all_products' => 'nullable|boolean',
             'product_ids' => 'nullable|array',
             'product_ids.*' => 'exists:products,id',
             'usage_limit' => 'required|integer|min:0',
         ]);
     
+        // Kiểm tra nếu type là 'percentage'
+        if ($validated['type'] === 'percentage') {
+            // Nếu là percentage, giá trị phải trong khoảng từ 0 đến 100 và là số nguyên
+            if ($validated['value'] < 0 || $validated['value'] > 100) {
+                return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "percentage" phải trong khoảng 0 đến 100%.');
+            }
+    
+            // Kiểm tra xem giá trị có phải là số nguyên không
+            if (floor($validated['value']) != $validated['value']) {
+                return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "percentage" phải là số nguyên.');
+            }
+        }
+    
+        // Kiểm tra nếu type là 'fixed'
+        if ($validated['type'] === 'fixed') {
+            // Nếu là fixed, giá trị phải là số nguyên và phải lớn hơn 0
+            if (floor($validated['value']) != $validated['value']) {
+                return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "fixed" phải là số nguyên.');
+            }
+    
+            if ($validated['value'] <= 0) {
+                return redirect()->back()->withInput()->with('error', 'Giá trị giảm giá cho loại "fixed" phải lớn hơn 0.');
+            }
+        }
+    
+        // Lấy ngày hôm nay làm start_date (không cần nhập)
+        $today = now()->toDateString(); // start_date mặc định là hôm nay
+        $endDate = \Carbon\Carbon::parse($validated['end_date'])->toDateString();
+    
+        // Tạo mã giảm giá
         $coupon = Coupon::create([
             'code' => $validated['code'],
             'type' => $validated['type'],
             'value' => $validated['value'],
             'min_order_value' => $validated['min_order_value'] ?? null,
-            'start_date' => $validated['start_date'],
-            'end_date' => $validated['end_date'],
+            'start_date' => $today,
+            'end_date' => $endDate,
             'apply_to_all_products' => $validated['apply_to_all_products'] ?? false,
-            'usage_limit' => $request->usage_limit,
+            'usage_limit' => $validated['usage_limit'],
         ]);
     
+        // Gắn sản phẩm nếu có
         if (!$coupon->apply_to_all_products && !empty($validated['product_ids'])) {
             $coupon->products()->attach($validated['product_ids']);
         }
     
         return redirect()->route('admin.coupons.index')->with('success', 'Tạo mã giảm giá thành công!');
     }
+    
+    
     
     
 
@@ -63,6 +96,11 @@ class CouponController extends Controller
 
     public function update(Request $request, Coupon $coupon)
     {
+        // Không cho phép sửa nếu mã đã được sử dụng ít nhất 1 lần hoặc đã hết hạn
+        if ($coupon->usage_count > 0 || $coupon->end_date < now()) {
+            return redirect()->back()->with('error', 'Không thể sửa mã giảm giá đã có lượt sử dụng hoặc đã hết hạn sử dụng.');
+        }
+    
         $validated = $request->validate([
             'code' => 'required|string|unique:coupon,code,' . $coupon->id,
             'type' => 'required|in:percentage,fixed',
@@ -96,10 +134,22 @@ class CouponController extends Controller
         return redirect()->route('admin.coupons.index')->with('success', 'Cập nhật mã giảm giá thành công!');
     }
     
-
+    
     public function destroy(Coupon $coupon)
     {
+        $now = now();
+    
+        // Không cho phép xóa nếu mã còn hạn hoặc còn lượt sử dụng
+        
+        $usageRemaining = is_null($coupon->usage_limit) || $coupon->usage_limit <= $coupon->usage_count;
+        $isExpired = $coupon->end_date < $now;
+        if (!($isExpired || $usageRemaining)) {
+            return redirect()->back()->with('error', 'Chỉ được xóa mã giảm giá khi đã hết hạn hoặc đã hết lượt sử dụng.');
+        }
+        
+    
         $coupon->delete();
-        return redirect()->route('admin.coupons.index')->with('success', 'Mã giảm giá đã được xóa.');
+        return redirect()->route('admin.coupons.index')->with('success', 'Mã giảm giá đã xóa thành công.');
     }
+    
 }

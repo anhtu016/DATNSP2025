@@ -7,10 +7,10 @@
             <table class="table table-bordered table-striped">
                 <thead>
                     <tr>
-                        <th>ID</th>
+                        <th>STT</th>
                         <th>Tên</th>
                         <th>Email</th>
-                        <th>Email xác thực</th>
+                        {{-- <th>Email xác thực</th> --}}
                         <th>Quyền</th>
                         <th>Ngày tạo</th>
                         <th>Hành động</th>
@@ -19,16 +19,16 @@
                 <tbody>
                     @foreach ($users as $user)
                         <tr>
-                            <td>{{ $user->id }}</td>
+                            <td>{{ $loop->iteration }}</td>
                             <td>{{ $user->name }}</td>
                             <td>{{ $user->email }}</td>
-                            <td>
+                            {{-- <td>
                                 @if ($user->email_verified_at)
                                     {{ $user->email_verified_at }}
                                 @else
                                     <span class="text-danger">Chưa xác thực</span>
                                 @endif
-                            </td>
+                            </td> --}}
                             <td>
                                 @if ($user->permissions && $user->permissions->count())
                                     @foreach ($user->permissions as $permission)

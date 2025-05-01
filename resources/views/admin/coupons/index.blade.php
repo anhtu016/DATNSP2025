@@ -3,10 +3,22 @@
 <div class="page-content">
     <div class="container">
         <h2 class="mb-4">Danh sách mã giảm giá</h2>
+        @if (session('error'))
+        <div class="alert alert-danger">
+            {{ session('error') }}
+        </div>
+    @endif
+
+    @if (session('success'))
+        <div class="alert alert-success">
+            {{ session('success') }}
+        </div>
+    @endif
         <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary mb-3">Tạo mã giảm giá mới</a>
         <table class="table table-striped table-bordered table-hover">
             <thead>
                 <tr>
+                    <th>STT</th>
                     <th>Mã</th>
                     <th>Loại</th>
                     <th>Giá trị</th>
@@ -23,6 +35,7 @@
             <tbody>
                 @foreach ($coupons as $coupon)
                     <tr>
+                        <td>{{ $loop->iteration }}</td>
                         <td>{{ $coupon->code }}</td>
                         <td>{{ $coupon->type }}</td>
                         <td>
@@ -57,12 +70,13 @@
                         </td>
                         
                         <td>
-                            @if (\Carbon\Carbon::parse($coupon->end_date)->isPast())
+                            @if (\Carbon\Carbon::parse($coupon->end_date)->endOfDay()->isPast())
                                 <span class="badge bg-danger">Hết hạn sử dụng</span>
                             @else
                                 <span class="badge bg-success">Còn hạn sử dụng</span>
                             @endif
                         </td>
+                        
                         
                         <td>
                             <div class="btn-group">
@@ -78,6 +92,9 @@
                 @endforeach
             </tbody>
         </table>
+        <div class="">
+            {{ $coupons->links('pagination::bootstrap-5') }}
+        </div>
     </div>
 </div>
 

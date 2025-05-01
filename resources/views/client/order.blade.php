@@ -57,29 +57,33 @@
             </div>
 
             <!-- Thông tin đặt hàng -->
-            <div class="card">
-                <h2>📦 Thông tin đặt hàng</h2>
-
+            <div class="card shadow p-4 rounded border">
+                <h2 class="mb-4 fw-bold text-primary">
+                    📦 Thông tin đặt hàng
+                </h2>
+            
                 @if (session('success'))
-                    <div class="success">{{ session('success') }}</div>
+                    <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
-
+            
                 <form method="POST" action="{{ route('checkout.store') }}">
                     @csrf
-
+            
                     <div class="mb-3">
-                        <label class="form-label">Địa chỉ giao hàng:</label>
+                        <label class="form-label fw-semibold">Địa chỉ giao hàng:</label>
                         <input type="text" name="shipping_address" class="form-control"
+                            placeholder="Nhập địa chỉ giao hàng"
                             value="{{ old('shipping_address') }}">
                         @error('shipping_address')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-
+            
                     <div class="row">
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Phương thức giao hàng:</label>
+                            <label class="form-label fw-semibold">Phương thức giao hàng:</label>
                             <select name="shipping_method_id" class="form-select">
+                                <option value="">-- Chọn phương thức giao hàng --</option>
                                 @foreach ($shippingMethods as $id => $name)
                                     <option value="{{ $id }}"
                                         {{ old('shipping_method_id') == $id ? 'selected' : '' }}>
@@ -91,10 +95,11 @@
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-
+            
                         <div class="mb-3 col-md-6">
-                            <label class="form-label">Phương thức thanh toán:</label>
+                            <label class="form-label fw-semibold">Phương thức thanh toán:</label>
                             <select name="payment_methods_id" class="form-select">
+                                <option value="">-- Chọn phương thức thanh toán --</option>
                                 @foreach ($paymentMethods as $id => $name)
                                     <option value="{{ $id }}"
                                         {{ old('payment_methods_id') == $id ? 'selected' : '' }}>
@@ -107,36 +112,28 @@
                             @enderror
                         </div>
                     </div>
+            
                     <div class="mb-3">
-                        <label class="form-label">Tên khách hàng:</label>
-                        <p class="form-control-plaintext">{{ $userName }}</p>
+                        <label class="form-label fw-semibold">Tên khách hàng:</label>
+                        <p class="form-control-plaintext mb-0">{{ $userName }}</p>
                     </div>
-
-                    <div class="row">
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Số điện thoại:</label>
-                            <input type="text" name="phone_number" class="form-control"
-                                value="{{ old('phone_number') }}">
-                            @error('phone_number')
-                                <div class="text-danger mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <div class="mb-3 col-md-6">
-                            <label class="form-label">Ngày đặt hàng:</label>
-                            <input type="date" name="order_date" class="form-control" value="{{ old('order_date') }}">
-                            @error('order_date')
-                                <div class="text-danger mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
+            
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Số điện thoại:</label>
+                        <input type="text" name="phone_number" class="form-control"
+                            placeholder="Nhập số điện thoại"
+                            value="{{ old('phone_number') }}">
+                        @error('phone_number')
+                            <div class="text-danger mt-1">{{ $message }}</div>
+                        @enderror
                     </div>
-
-                    <button type="submit" class="btn btn-primary w-100 mt-3">
+            
+                    <button type="submit" class="btn btn-success w-100 mt-3">
                         ✅ Xác nhận đặt hàng
                     </button>
                 </form>
-
             </div>
+            
         </div>
 
     </main>

@@ -10,12 +10,37 @@ use Carbon\Carbon;
 use App\Models\Order;
 class CartController extends Controller
 {
-    public function viewCart()
-{
-    $cart = session()->get('cart', []);
-    return view('client.cart', compact('cart'));
-}
 
+    public function viewCart()
+    {
+        $cart = session()->get('cart', []);
+        
+        // Tính tổng giá trị giỏ hàng
+        $cartTotal = 0;
+        foreach ($cart as $item) {
+            $cartTotal += $item['price'] * $item['quantity'];
+        }
+    
+        // Lấy 3 mã giảm giá tối ưu nhất (dựa trên tổng giỏ hàng)
+        $now = now();
+    
+        $coupons = Coupon::where('start_date', '<=', $now)
+                    ->where('end_date', '>=', $now)
+                    ->where(function($query) use ($cartTotal) {
+                        $query->where('min_order_value', '<=', $cartTotal)
+                              ->orWhereNull('min_order_value');
+                    })
+                    ->where(function($query) {
+                        $query->whereColumn('usage_count', '<', 'usage_limit')
+                              ->orWhereNull('usage_limit');
+                    })
+                    ->orderBy('value', 'desc') // Coupon giá trị giảm cao hơn ưu tiên trước
+                    ->take(3)
+                    ->get();
+    
+        return view('client.cart', compact('cart', 'coupons'));
+    }
+    
 
 
 public function addToCart(Request $request, $id)

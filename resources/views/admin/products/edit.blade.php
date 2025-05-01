@@ -3,6 +3,17 @@
 <div class="page-content">
     <div class="container mt-4">
         <div class="container">
+            @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+    
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
             <h1>Chỉnh sửa sản phẩm</h1>
         
             <form action="{{ route('products.update', $product->id) }}" method="POST" enctype="multipart/form-data">

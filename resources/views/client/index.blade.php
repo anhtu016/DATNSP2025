@@ -98,7 +98,7 @@
             </li>
         </ul>
         <!--/banners_grid -->
-        
+
         {{-- <div class="container margin_60_35">
             <div class="main_title">
                 <h2>Sản phẩm mới</h2>
@@ -152,7 +152,7 @@
             <div class="main_title">
                 <h2>Sản phẩm mới</h2>
             </div>
-        
+
             <!-- List product mới nhất -->
             <div class="container">
                 <div class="row">
@@ -161,13 +161,14 @@
                             <div class="grid_item">
                                 <figure class="text-center">
                                     <a href="{{ route('detail.index', ['id' => $product->id]) }}">
-                                        <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
+                                        <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}"
+                                            class="img-fluid" style="max-width: 160px;">
                                     </a>
                                 </figure>
                                 <a href="{{ route('detail.index', ['id' => $product->id]) }}">
                                     <h3>{{ $product->name }}</h3>
                                 </a>
-        
+
                                 <div class="price_box">
                                     @if ($product->sell_price > 0)
                                         <span class="old_price">{{ number_format($product->sell_price) }} VNĐ</span>
@@ -176,7 +177,7 @@
                                         <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
                                     @endif
                                 </div>
-        
+
                                 <ul>
                                     <li>
                                         <a href="#0" class="tooltip-1" data-bs-toggle="tooltip"
@@ -192,15 +193,14 @@
                 </div>
             </div>
         </div>
-        
         {{-- 4 sản phẩm mới --}}
-        <div class="registration-container">  
-            <h1 class="text-white">Đăng ký nhận tin Allaia Stadium</h1>  
-            <p>Hãy đăng ký để nhận tin nhắn nhanh nhất qua email</p>  
-            <input type="email" placeholder="Nhập địa chỉ email của bạn" required />  
-            <button type="submit">ĐĂNG KÝ</button>  
-        </div>  
-        
+        <div class="registration-container">
+            <h1 class="text-white">Đăng ký nhận tin Allaia Stadium</h1>
+            <p>Hãy đăng ký để nhận tin nhắn nhanh nhất qua email</p>
+            <input type="email" placeholder="Nhập địa chỉ email của bạn" required />
+            <button type="submit">ĐĂNG KÝ</button>
+        </div>
+
         <div class="container margin_60_35">
             <div class="row">
                 @foreach ($categories as $index => $category)
@@ -209,14 +209,16 @@
                             <div class="main_title">
                                 <h2>{{ $category->name }}</h2>
                             </div>
-                
+
                             <div class="row">
                                 @foreach ($category->products->take(4) as $product)
                                     <div class="col-6 col-md-4 col-xl-3">
                                         <div class="grid_item ">
                                             <figure class="text-center">
                                                 <a href="{{ route('detail.index', ['id' => $product->id]) }}">
-                                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}" class="img-fluid" style="max-width: 160px;">
+                                                    <img src="{{ asset('storage/' . $product->thumbnail) }}"
+                                                        alt="{{ $product->name }}" class="img-fluid"
+                                                        style="max-width: 160px;">
                                                 </a>
                                             </figure>
                                             <a href="{{ route('detail.index', ['id' => $product->id]) }}">
@@ -224,10 +226,13 @@
                                             </a>
                                             <div class="price_box">
                                                 @if ($product->sell_price > 0)
-                                                    <span class="old_price">{{ number_format($product->sell_price) }} VNĐ</span>
-                                                    <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
+                                                    <span class="old_price">{{ number_format($product->sell_price) }}
+                                                        VNĐ</span>
+                                                    <span class="new_price">{{ number_format($product->price) }}
+                                                        VNĐ</span>
                                                 @else
-                                                    <span class="new_price">{{ number_format($product->price) }} VNĐ</span>
+                                                    <span class="new_price">{{ number_format($product->price) }}
+                                                        VNĐ</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -239,9 +244,9 @@
                 @endforeach
             </div>
         </div>
-        
+
         <!-- /row -->
-     
+
 
 
 

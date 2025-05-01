@@ -157,40 +157,51 @@ public function create()
     return view('client.order', compact('cart', 'total', 'discountAmount', 'shippingMethods', 'paymentMethods', 'userName'));
 }
 
-
 public function store(Request $request)
 {
-    // Kiểm tra giỏ hàng trống
+    $validated = $request->validate([
+        'shipping_address' => 'required|string|max:255',
+        'phone_number' => 'required|regex:/^([0-9]{10})$/',
+        // 'payment_methods_id' => 'required|exists:payment_methods,id',
+        // 'shipping_method_id' => 'required|exists:shipping_methods,id',
+    ], [
+        'shipping_address.required' => 'Địa chỉ giao hàng là bắt buộc.',
+        'shipping_address.max' => 'Địa chỉ giao hàng không quá 255 ký tự.',
+        'phone_number.required' => 'Số điện thoại là bắt buộc.',
+        'phone_number.regex' => 'Số điện thoại không hợp lệ.',
+        // 'payment_methods_id.required' => 'Phương thức thanh toán là bắt buộc.',
+        // 'payment_methods_id.exists' => 'Phương thức thanh toán không hợp lệ.',
+        // 'shipping_method_id.required' => 'Phương thức giao hàng là bắt buộc.',
+        // 'shipping_method_id.exists' => 'Phương thức giao hàng không hợp lệ.',
+    ]);
+
     $cart = session()->get('cart', []);
     if (empty($cart)) {
         return back()->with('error', 'Giỏ hàng của bạn không có sản phẩm.');
     }
 
+    $orderDate = now(); // Lấy ngày giờ hiện tại
+
     $total = 0;
-    // Tính tổng giá trị giỏ hàng
     foreach ($cart as $item) {
         $total += $item['price'] * $item['quantity'];
     }
 
     $discountAmount = session('coupon')['discount_amount'] ?? 0;
-
-    // Tổng sau giảm giá
     $totalAfterDiscount = max($total - $discountAmount, 0);
-
     $customerId = Auth::id();
 
     try {
-        // Nếu chọn thanh toán Momo
         if ($request->payment_methods_id == 3) {
             $order = Order::create([
                 'total_amount' => $totalAfterDiscount,
                 'shipping_address' => $request->shipping_address,
-                'order_date' => now(),
+                'order_date' => $orderDate,
                 'shipping_method_id' => $request->shipping_method_id,
                 'payment_methods_id' => $request->payment_methods_id,
                 'phone_number' => $request->phone_number,
                 'customer_id' => $customerId,
-                'order_status' => 'pending',  // Đặt trạng thái là "chờ thanh toán"
+                'order_status' => 'pending',
                 'coupon_code' => session('coupon')['code'] ?? null,
                 'discount_amount' => $discountAmount,
             ]);
@@ -206,7 +217,6 @@ public function store(Request $request)
                 ]);
             }
 
-            // Lưu thông tin đơn hàng vào session (để xử lý sau khi thanh toán)
             session([
                 'pending_order' => [
                     'order_id' => $order->id,
@@ -230,13 +240,16 @@ public function store(Request $request)
 
             $orderInfo = "Thanh toán đơn hàng qua MoMo";
             $amount = $totalAfterDiscount;
-            $orderId = time() . ""; // Mã đơn hàng
+            $orderId = time() . "";
             $extraData = '';
-
             $requestId = time() . "";
             $requestType = "captureWallet";
 
-            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+            $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData .
+                "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo .
+                "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl .
+                "&requestId=" . $requestId . "&requestType=" . $requestType;
+
             $signature = hash_hmac("sha256", $rawHash, $secretKey);
 
             $data = [
@@ -264,31 +277,17 @@ public function store(Request $request)
             $result = json_decode($result, true);
 
             if (isset($result['payUrl'])) {
-                // Lưu tạm đơn hàng chờ thanh toán nếu cần
-                session([
-                    'pending_order' => [
-                        'shipping_address' => $request->shipping_address,
-                        'shipping_method_id' => $request->shipping_method_id,
-                        'payment_methods_id' => $request->payment_methods_id,
-                        'phone_number' => $request->phone_number,
-                        'total_amount' => $totalAfterDiscount,
-                        'discount_amount' => $discountAmount,
-                        'cart' => $cart,
-                        'coupon_code' => session('coupon')['code'] ?? null,
-                    ]
-                ]);
-
                 return redirect($result['payUrl']);
             } else {
-                return back()->with('error', 'Không kết nối được tới cổng thanh toán Momo.');
+                return back()->with('error', 'Không kết nối được tới cổng thanh toán MoMo.');
             }
         }
 
-        // Nếu không phải Momo (COD hoặc chuyển khoản) thì xử lý bình thường
+        // Xử lý nếu không phải thanh toán qua MoMo
         $order = Order::create([
             'total_amount' => $totalAfterDiscount,
             'shipping_address' => $request->shipping_address,
-            'order_date' => now(),
+            'order_date' => $orderDate,
             'shipping_method_id' => $request->shipping_method_id,
             'payment_methods_id' => $request->payment_methods_id,
             'phone_number' => $request->phone_number,
@@ -309,7 +308,7 @@ public function store(Request $request)
             ]);
         }
 
-        if ($couponCode = session('coupon')['code']??null) {
+        if ($couponCode = session('coupon')['code'] ?? null) {
             $coupon = Coupon::where('code', $couponCode)->first();
             if ($coupon) {
                 $coupon->increment('usage_count');
@@ -328,10 +327,13 @@ public function store(Request $request)
 
 
 
+
+
+
     public function destroy($id)
 {
     $order = Order::findOrFail($id);
-    if (in_array($order->order_status, ['pending', 'cancelled'])) {
+    if (in_array($order->order_status, ['cancelled'])) {
     $order = Order::find($id);
     $order->orderDetails()->delete();
     $order->delete();
@@ -339,7 +341,7 @@ public function store(Request $request)
         return redirect()->back()->with('success', 'Đã xoá đơn hàng thành công.');
     }
 
-    return redirect()->back()->with('error', 'Chỉ được xoá đơn hàng chưa xử lý hoặc đã hủy.');
+    return redirect()->back()->with('error', 'Chỉ được xoá đơn hàng đã hủy.');
 }
 
     

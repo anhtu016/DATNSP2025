@@ -1,11 +1,10 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use App\Models\Category;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Str;
+
 class CategoriesController extends Controller
 {
     public function index()
@@ -55,7 +54,10 @@ class CategoriesController extends Controller
         ]);
     
         $category = Category::findOrFail($id);
-    
+        
+        if ($category->products()->count() > 0) {
+            return redirect()->route('categories.index')->with('error', 'Không thể sửa danh mục này vì có sản phẩm liên kết đã được bán.');
+        }
         $slug = $request->slug ? Str::slug($request->slug) : Str::slug($request->name);
     
         $category->update([
@@ -70,6 +72,13 @@ class CategoriesController extends Controller
     public function destroy(string $id)
     {
         $delCategory = Category::findOrFail($id);
+
+        // Kiểm tra xem danh mục có sản phẩm liên kết hay không
+        if ($delCategory->products()->count() > 0) {
+            return redirect()->route('categories.index')->with('error', 'Không thể xóa danh mục này vì có sản phẩm liên kết đã được bán.');
+        }
+
+        // Xóa danh mục
         $delCategory->delete();
 
         return redirect()->route('categories.index')->with('success', 'Danh mục đã được đưa vào thùng rác');
@@ -94,10 +103,10 @@ class CategoriesController extends Controller
     }
 
     public function showProducts($slug)
-{
-    $category = Category::where('slug', $slug)->firstOrFail();
-    $products = $category->products()->paginate(12);
+    {
+        $category = Category::where('slug', $slug)->firstOrFail();
+        $products = $category->products()->paginate(12);
 
-    return view('client.categories.index', compact('category', 'products'));
-}
+        return view('client.categories.index', compact('category', 'products'));
+    }
 }

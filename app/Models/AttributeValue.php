@@ -18,4 +18,5 @@ class AttributeValue extends Model
     return $this->belongsToMany(Variant::class, 'variant_attribute_value');
 }
 
+
 }
