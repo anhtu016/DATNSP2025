@@ -10,14 +10,21 @@
             </div>
             <div class="col-md-6 p-5 d-flex flex-column justify-content-center" style="min-height: 500px;">
                 <div class="text-center mb-4">
+                    @if (session('error'))
+                    <div class="alert alert-danger">
+                        {{ session('error') }}
+                    </div>
+                @endif
+        
+                <!-- Thông báo thành công -->
+                @if (session('success'))
+                    <div class="alert alert-success">
+                        {{ session('success') }}
+                    </div>
+                @endif
                     <h3 class="fw-bold text-primary">🔐 Đăng nhập</h3>
                     <p class="text-muted">Vui lòng nhập thông tin tài khoản của bạn</p>
                 </div>
-
-                @if (session('error'))
-                    <div class="alert alert-danger">{{ session('error') }}</div>
-                @endif
-
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
                     <div class="mb-3">

@@ -3,6 +3,18 @@
     <div class="page-content">
         <div class="container-fluid">
             <h2 class="mb-4">Chỉnh sửa người dùng</h2>
+            @if (session('error'))
+            <div class="alert alert-danger">
+                {{ session('error') }}
+            </div>
+        @endif
+
+        <!-- Thông báo thành công -->
+        @if (session('success'))
+            <div class="alert alert-success">
+                {{ session('success') }}
+            </div>
+        @endif
             <form action="{{ route('users.update', $user->id) }}" method="POST">
                 @csrf
                 @method('PUT')

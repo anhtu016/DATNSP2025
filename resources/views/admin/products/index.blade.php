@@ -20,13 +20,13 @@
             <thead>
                 <tr>
                     <th>STT</th>
-                    <th>Name</th>
-                    <th>Image</th>
-                    <th>Price</th>
-                    <th>Color</th>
-                    <th>Size</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Ảnh sản phẩm</th>
+                    <th>Giá sản phẩm</th>
+                    <th>Màu sắc</th>
+                    <th>Kích cỡ</th>
                     <th>Danh mục</th>
-                    <th>Actions</th>
+                    <th>Thao tác</th>
                 </tr>
             </thead>
             <tbody> <!-- ✅ chỉ mở 1 lần thôi -->

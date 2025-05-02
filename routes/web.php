@@ -220,6 +220,8 @@ Route::post('admin/users', [App\Http\Controllers\UserController::class, 'store']
 Route::get('admin/users/{id}/edit', [App\Http\Controllers\UserController::class, 'edit'])->name('users.edit');
 Route::put('admin/users/{id}', [App\Http\Controllers\UserController::class, 'update'])->name('users.update');
 Route::delete('admin/users/{id}', [App\Http\Controllers\UserController::class, 'destroy'])->name('users.destroy');
+Route::patch('/users/{id}/toggle-status', [UserController::class, 'toggleStatus'])->name('users.toggleStatus');
+
 //giở hàng
 Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
 

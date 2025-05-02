@@ -111,10 +111,10 @@
                             <table class="table table-bordered table-nowrap">
                                 <thead>
                                     <tr>
-                                        <th scope="col">Index</th>
-                                        <th scope="col">Attribute</th>
-                                        <th scope="col">Type</th>
-                                        <th scope="col">Value</th>
+                                        <th scope="col">STT</th>
+                                        <th scope="col">Thuộc tính</th>
+                                        <th scope="col">Thể loại</th>
+                                        <th scope="col">Giá trị</th>
                                         {{-- <th scope="col">Action</th> --}}
                                     </tr>
                                 </thead>

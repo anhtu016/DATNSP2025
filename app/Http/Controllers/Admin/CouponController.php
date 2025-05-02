@@ -187,28 +187,21 @@ class CouponController extends Controller
 // cập nhật mã giảm giá 
 public function updateUsage(Request $request)
 {
-    // Lấy tất cả các mã giảm giá từ bảng coupon
     $coupons = Coupon::all();
 
     foreach ($coupons as $coupon) {
-        // Đếm số lượng đơn hàng đã hủy và sử dụng mã giảm giá này (dùng coupon_code thay vì coupon_id)
-        $cancelledOrders = Order::where('coupon_code', $coupon->code) // Dùng coupon_code để kiểm tra
-                                ->where('order_status', 'cancelled') // Đảm bảo trạng thái là 'cancelled'
-                                ->count();
+        // Tính lại usage_count: tổng số đơn hàng dùng mã này và KHÔNG bị hủy
+        $usageCount = Order::where('coupon_code', $coupon->code)
+                            ->where('order_status', '!=', 'cancelled')
+                            ->count();
 
-        // Kiểm tra và giảm usage_count nếu có đơn hàng đã hủy
-        if ($cancelledOrders > 0) {
-            // Giảm số lượt sử dụng của mã giảm giá theo số lượng đơn hàng hủy
-            $coupon->usage_count -= $cancelledOrders;
-            
-            // Đảm bảo usage_count không bao giờ âm
-            $coupon->usage_count = max(0, $coupon->usage_count);
-            $coupon->save();
-        }
+        $coupon->usage_count = $usageCount;
+        $coupon->save();
     }
 
     return redirect()->route('admin.coupons.index')->with('success', 'Đã cập nhật lượt sử dụng mã giảm giá.');
 }
+
 
 
 

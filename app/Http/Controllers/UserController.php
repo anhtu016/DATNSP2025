@@ -24,33 +24,48 @@ class UserController extends Controller
       return view('admin.users.create', compact('permissions'));  
   }
   
-
-
-public function store(Request $request)
-{
+  public function store(Request $request)
+  {
     
-    $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email|max:255',
-        'password' => 'required|string|min:8|confirmed', 
-        'password_confirmation'=> 'required|string|min:8|confirmed', 
-    ]);
-
-    // Tạo người dùng mới
-    $user = User::create([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-        'password' => bcrypt($validated['password']), 
-    ]);
-
- 
-    if (isset($validated['permissions'])) {
-        $user->permissions()->attach($validated['permissions']);  
-    }
-
-
-    return redirect()->route('users.index')->with('success', 'Người dùng đã được thêm thành công');
-}
+      $validated = $request->validate([
+          'name' => 'required|string|max:255',
+          'email' => 'required|email|unique:users,email|max:255',
+          'password' => 'required|string|min:8|confirmed', 
+          'password_confirmation'=> 'required|string|min:8|confirmed', 
+      ]);
+      
+      // Tạo người dùng mới
+      $user = User::create([
+          'name' => $validated['name'],
+          'email' => $validated['email'],
+          'password' => bcrypt($validated['password']), 
+      ]);
+  
+      // Quyền mặc định là 'user' với id = 2
+      $defaultPermissionIds = [2];
+  
+      // Kiểm tra nếu quyền được chọn trong form
+      if (isset($request->permissions)) {
+          $permissions = $request->permissions;
+  
+          // Nếu quyền mặc định chưa được chọn thì thêm vào
+          foreach ($defaultPermissionIds as $defaultPermissionId) {
+              if (!in_array($defaultPermissionId, $permissions)) {
+                  $permissions[] = $defaultPermissionId;
+              }
+          }
+  
+          // Gán quyền cho người dùng
+          $user->permissions()->attach($permissions);
+      } else {
+          // Nếu không chọn gì, gán quyền mặc định
+          $user->permissions()->attach($defaultPermissionIds);
+      }
+  
+      return redirect()->route('users.index')->with('success', 'Người dùng đã được thêm thành công');
+  }
+  
+  
 
 
 public function edit($id)
@@ -71,27 +86,30 @@ public function edit($id)
 
 public function update(Request $request, $id)
 {
-
     $user = User::findOrFail($id);
 
+    // Kiểm tra xem người dùng có phải là admin không
+    if ($user->isAdmin()) {
+        return back()->with(['error' => 'Không thể sửa thông tin tài khoản admin.']);
+    }
+
+    // Validate dữ liệu nhập vào
     $validated = $request->validate([
         'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,' . $id,  
-        'permissions' => 'array|nullable',  
+        'email' => 'required|email|unique:users,email,' . $id,
+        'permissions' => 'array|nullable',
     ]);
-    
 
+    // Cập nhật thông tin người dùng
     $user->update([
         'name' => $validated['name'],
         'email' => $validated['email'],
     ]);
-    
 
+    // Cập nhật quyền nếu có
     if (isset($validated['permissions'])) {
-
         $user->permissions()->sync($validated['permissions']);
     } else {
-
         $user->permissions()->detach();
     }
 
@@ -99,18 +117,48 @@ public function update(Request $request, $id)
 }
 
 
+
  
-    public function destroy($id)
-    {
-   
-        $user = User::findOrFail($id);
-        
-        DB::table('users_permissions')->where('user_id', $id)->delete();
-        
-        $user->delete();
-        
-        return redirect()->route('users.index')->with('success', 'Người dùng và quyền đã được xóa!');
+
+public function toggleStatus($id)
+{
+    $user = User::findOrFail($id);
+
+    // Kiểm tra xem người dùng có phải là admin không
+    if ($user->isAdmin()) {
+        return back()->with(['error' => 'Không thể khóa tài khoản admin.']);
     }
-    
+
+    // Đảo trạng thái tài khoản (kích hoạt / khóa)
+    $user->is_active = !$user->is_active;
+    $user->save();
+
+    return redirect()->back()->with('success', 'Trạng thái tài khoản đã được cập nhật!');
+}
+
+
+public function destroy($id)
+{
+    $user = User::findOrFail($id);
+
+    // Kiểm tra đơn hàng đang xử lý
+    $hasProcessingOrders = DB::table('order')
+        ->where('user_id', $id)
+        ->where('order_status', 'pending') 
+        ->exists();
+
+    if ($hasProcessingOrders) {
+        return redirect()->route('users.index')
+            ->with('error', 'Không thể xóa người dùng đang có đơn hàng đang xử lý!');
+    }
+
+    // Xóa quyền người dùng
+    DB::table('users_permissions')->where('user_id', $id)->delete();
+
+    // Xóa người dùng
+    $user->delete();
+
+    return redirect()->route('users.index')->with('success', 'Người dùng và quyền đã được xóa!');
+}
     
 }

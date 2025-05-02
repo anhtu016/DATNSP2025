@@ -25,20 +25,20 @@
                         <table class="table align-middle table-nowrap" id="customerTable">
                             <thead class="table-light">
                                 <tr>                                   
+                                    <th class="sort" data-sort="date">STT</th>
                                     <th class="sort" data-sort="date">Mã sản phẩm</th>
-                                    <th class="sort" data-sort="date">Product</th>
-                                    <th class="sort" data-sort="date">User</th>
-                                    <th class="sort" data-sort="date">Description</th>
-                                    <th class="sort" data-sort="email">Rating</th>
-                                    <th class="sort" data-sort="phone">Image</th>
+                                    <th class="sort" data-sort="date">Người dùng</th>
+                                    <th class="sort" data-sort="date">Mô tả</th>
+                                    <th class="sort" data-sort="email">Xếp hạng</th>
+                                    <th class="sort" data-sort="phone">Ảnh</th>
                                     <th class="sort" data-sort="date">Video</th> 
-                                    <th class="sort" data-sort="action">Action</th>
+                                    <th class="sort" data-sort="action">Thao tác</th>
                                 </tr>
                             </thead>
                             @foreach ($listReviews as $ct)
                             <tbody class="list form-check-all">
                                 <tr>                                    
-                                    <td>{{$ct->id}}</td>
+                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{$ct->user_id}}</td>                                   
                                     <td>{{$ct->product_id}}</td>
                                     <td>{{$ct->description}}</td>

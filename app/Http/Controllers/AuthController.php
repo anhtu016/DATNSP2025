@@ -15,16 +15,29 @@ class AuthController extends Controller
     // đăng nhập
     public function login(Request $request)
     {
+        // Lấy thông tin email và mật khẩu từ request
         $credentials = $request->only('email', 'password');
+        
+        // Kiểm tra xem người dùng có tồn tại không và tài khoản có bị khóa không
+        $user = User::where('email', $request->email)->first();
     
+        if ($user && !$user->is_active) {
+            // Nếu người dùng bị khóa, trả về thông báo lỗi
+            return back()->withErrors(['email' => 'Tài khoản của bạn đã bị khóa.'])->withInput();
+        }
+    
+        // Kiểm tra thông tin đăng nhập của người dùng
         if (Auth::attempt($credentials)) {
+            // Nếu đăng nhập thành công, chuyển hướng đến trang đã yêu cầu
             return redirect()->intended()->with('success', 'Đăng nhập thành công!');
         }
     
+        // Nếu thông tin đăng nhập không chính xác, trả về thông báo lỗi
         return back()->withErrors([
             'email' => 'Email hoặc mật khẩu không đúng.',
         ])->withInput();
     }
+    
     
     
     public function showRegister()

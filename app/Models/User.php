@@ -12,7 +12,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    
     /**
+     * 
      * The attributes that are mass assignable.
      *
      * @var array<int, string>
@@ -41,6 +43,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_active' => 'boolean',
     ];
     public function productReview(){
         return $this->hasMany(ProductReview::class);
@@ -57,5 +60,14 @@ class User extends Authenticatable
             return $this->permissions()
                         ->where('permissions.permission_name', $permissionName) // Lọc theo tên quyền
                         ->exists(); // Kiểm tra xem có quyền này không
-        }
+        }    
+
+        public function isAdmin()
+{
+    return $this->permissions->contains(function ($permission) {
+        return $permission->permission_name === 'admin';
+    });
+}
     }
+
+    
