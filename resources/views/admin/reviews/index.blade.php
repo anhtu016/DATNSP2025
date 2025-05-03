@@ -25,14 +25,14 @@
                         <table class="table align-middle table-nowrap" id="customerTable">
                             <thead class="table-light">
                                 <tr>                                   
-                                    <th class="sort" data-sort="date">Mã sản phẩm</th>
-                                    <th class="sort" data-sort="date">Product</th>
-                                    <th class="sort" data-sort="date">User</th>
-                                    <th class="sort" data-sort="date">Description</th>
-                                    <th class="sort" data-sort="email">Rating</th>
-                                    <th class="sort" data-sort="phone">Image</th>
-                                    <th class="sort" data-sort="date">Video</th> 
-                                    <th class="sort" data-sort="action">Action</th>
+                                    <th class="" >Mã sản phẩm</th>
+                                    <th class="" >Product</th>
+                                    <th class="" >User</th>
+                                    <th class="" >Description</th>
+                                    <th class="" >Rating</th>
+                                    <th class="" >Image</th>
+                                    
+                                    <th class="" data-sort="action">Action</th>
                                 </tr>
                             </thead>
                             @foreach ($listReviews as $ct)
@@ -43,8 +43,8 @@
                                     <td>{{$ct->product_id}}</td>
                                     <td>{{$ct->description}}</td>
                                     <td>{{$ct->rating}}</td>
-                                    <td>{{$ct->image}}</td>
-                                    <td>{{$ct->video}}</td>
+                                    <td> <img src="{{ asset('storage/' . $ct->image) }}" alt="Ảnh đánh giá" width="150px"></td>
+                                 
                                     <td>
                                         <div class="d-flex gap-2">                                       
                                             <div class="remove">
@@ -62,7 +62,9 @@
                             </tbody>
                             @endforeach
                         </table>
-                        {{-- {!! $listReviews -> links() !!} --}}
+                        <div class="d-flex justify-content-end mt-3">
+                            {{ $listReviews->links('pagination::bootstrap-5') }}
+                        </div>
                        
                     </div>
 

@@ -14,7 +14,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     /**
@@ -27,18 +27,24 @@ class ReviewController extends Controller
         $hasReview = false;
         $hasError = false;
 
+        $images = $request->file('image');
+
         foreach ($order->orderDetails as $item) {
-            // dd($item);
             if (isset($ratings[$item->id]) && isset($description[$item->id])) {
-                // Kiểm tra xem đã có đánh giá cho sản phẩm này trong đơn hàng này chưa
                 $existingReview = ProductReview::where([
                     'variants_id' => $item->variant_id,
                     'user_id' => auth()->id(),
                     'order_id' => $item->order_id
                 ])->first();
-                    
+
                 if (!$existingReview) {
-                    // Nếu chưa có đánh giá, tạo mới
+                    // Xử lý ảnh nếu có upload
+                    $imagePath = null;
+                    if (isset($images[$item->id])) {
+                        $imagePath = $images[$item->id]->store('reviews', 'public');
+                    }
+
+                    // Tạo đánh giá
                     ProductReview::create([
                         'variants_id' => $item->variant_id,
                         'user_id' => auth()->id(),
@@ -46,8 +52,8 @@ class ReviewController extends Controller
                         'rating' => $ratings[$item->id],
                         'description' => $description[$item->id],
                         'status' => 1,
-                        'image'=> $item['image'],
-                        'product_id'=> $item->product_id
+                        'product_id' => $item->product_id,
+                        'image' => $imagePath, 
                     ]);
                     $hasReview = true;
                 } else {
@@ -55,6 +61,7 @@ class ReviewController extends Controller
                 }
             }
         }
+
 
         if ($hasReview) {
             return redirect()->route('orders.review', $order->id)
@@ -75,7 +82,7 @@ class ReviewController extends Controller
      */
     public function store(Request $request)
     {
-        
+
     }
 
     /**
@@ -85,8 +92,8 @@ class ReviewController extends Controller
     {
         // dd(1);
         $order = Order::where('id', $id)
-        ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
-        ->firstOrFail();
+            ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
+            ->firstOrFail();
         // dd($order->orderDetails,$order);
         return view('client.orders.review', compact('order'));
     }

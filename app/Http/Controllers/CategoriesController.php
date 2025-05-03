@@ -10,7 +10,7 @@ class CategoriesController extends Controller
 {
     public function index()
     {
-        $listCategory = Category::query()->get();
+        $listCategory = Category::query()->paginate(10);
         return view('admin.categories.index', compact('listCategory'));
     }
 
