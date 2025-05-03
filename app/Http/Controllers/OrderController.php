@@ -277,7 +277,10 @@ public function store(Request $request)
             $result = json_decode($result, true);
 
             if (isset($result['payUrl'])) {
+                session()->forget('cart');
+                session()->forget('coupon');
                 return redirect($result['payUrl']);
+                
             } else {
                 return back()->with('error', 'Không kết nối được tới cổng thanh toán MoMo.');
             }

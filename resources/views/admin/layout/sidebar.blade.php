@@ -1,24 +1,11 @@
 <div class="app-menu navbar-menu">
     <!-- LOGO -->
     <div class="navbar-brand-box">
-        <!-- Dark Logo-->
-        <a href="{{ url('homeadmin') }}" class="logo logo-dark">
-            <span class="logo-sm">
-                <img src="{{ asset('admin/assets/images/logo-sm.png') }}" alt="" height="22">
-            </span>
-            <span class="logo-lg">
-                <img src="{{ asset('admin/assets/images/logo-dark.png') }}" alt="" height="17">
-            </span>
-        </a>
+        <br>
+                <a href="" class="">
+                    <img src="{{asset('client/img/logo.svg')}}" alt="" width="100" height="35">
+                </a>
         <!-- Light Logo-->
-        <a href="{{ url('homeadmin') }}" class="logo logo-light">
-            <span class="logo-sm">
-                <img src="{{ asset('admin/assets/images/logo-sm.png') }}" alt="" height="22">
-            </span>
-            <span class="logo-lg">
-                <img src="{{ asset('admin/assets/images/logo-light.png') }}" alt="" height="17">
-            </span>
-        </a>
         <button type="button" class="btn btn-sm p-0 fs-20 header-item float-end btn-vertical-sm-hover"
             id="vertical-hover">
             <i class="ri-record-circle-line"></i>
@@ -30,11 +17,6 @@
         <div class="container-fluid">
 
             <!-- Logo trong menu thu gọn -->
-            <div id="two-column-menu" class="text-center mb-3">
-                <a href="">
-                    <img src="{{ asset('admin/assets/images/logo-sm.png') }}" alt="Mini Logo" height="32">
-                </a>
-            </div>
 
             <ul class="navbar-nav" id="navbar-nav">
                 <li class="menu-title">
