@@ -32,16 +32,7 @@
                                     <th class="sort" data-sort="date">Mô tả</th>
                                     <th class="sort" data-sort="email">Xếp hạng</th>
                                     <th class="sort" data-sort="phone">Ảnh</th>
-                                    <th class="sort" data-sort="date">Video</th> 
                                     <th class="sort" data-sort="action">Thao tác</th>
-                                    <th class="" >Mã sản phẩm</th>
-                                    <th class="" >Product</th>
-                                    <th class="" >User</th>
-                                    <th class="" >Description</th>
-                                    <th class="" >Rating</th>
-                                    <th class="" >Image</th>
-                                    
-                                    <th class="" data-sort="action">Action</th>
                                 </tr>
                             </thead>
                             @foreach ($listReviews as $ct)
