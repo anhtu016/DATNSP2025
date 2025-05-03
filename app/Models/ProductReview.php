@@ -11,7 +11,7 @@ class ProductReview extends Model
     use HasFactory;
 
     protected $table  = 'product_review';
-    protected $fillable = ['status', 'variants_id', 'user_id', 'rating', 'description','order_id','product_id'];
+    protected $fillable = ['status', 'variants_id', 'user_id', 'rating', 'description','order_id','product_id','image'];
     
     public function product(){
         return $this->belongsTo(Product::class);

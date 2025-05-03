@@ -102,6 +102,71 @@
 
 
         <!-- /row -->
+
+    </div>
+    <!-- /container -->
+
+    <div class="tabs_product">
+        <div class="container">
+            <ul class="nav nav-tabs" role="tablist">
+                
+                <li class="nav-item">
+                    <a id="tab-B" href="#pane-B" class="nav-link" data-bs-toggle="tab" role="tab">Reviews</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- /tabs_product -->
+    <div class="tab_content_wrapper">
+        <div class="container">
+            <div class="tab-content" role="tablist">
+                
+                <!-- /TAB A -->
+                <div id="pane-B" class="card tab-pane fade" role="tabpanel" aria-labelledby="tab-B">
+                    <div class="card-header" role="tab" id="heading-B">
+                        <h5 class="mb-0">
+                            <a class="collapsed" data-bs-toggle="collapse" href="#collapse-B" aria-expanded="false"
+                                aria-controls="collapse-B">
+                                Reviews
+                            </a>
+                        </h5>
+                    </div>
+                
+                    <div id="collapse-B" class="collapse" role="tabpanel" aria-labelledby="heading-B">
+                        <div class="card-body">
+                            <div class="row justify-content-between">
+                
+                                <div class="col-lg-6">
+                                    @foreach ($loadReviews as $reviews)
+                                        @if($reviews->status == 1) <!-- Chỉ hiển thị nếu status = 1 -->
+                                            <div class="review_content">
+                                                <div class="clearfix add_bottom_10">
+                                                    <span class="rating">
+                                                        @for($i = 1; $i <= $reviews->rating; $i++)
+                                                            <i class="icon-star filled"></i>
+                                                        @endfor
+                                                        <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh giá)</em>
+                                                    </span>
+                                                </div>
+                                                <h4>{{ $reviews->user->name }}</h4>
+                                                <p>{{ $reviews->description }}</p>
+                                                <img src="{{ asset('storage/' . $reviews->image) }}" alt="Ảnh đánh giá" width="150px">
+
+                                            </div>
+                                        @endif
+                                    @endforeach
+                                </div>
+                
+                            </div>
+                
+                            
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- /tab B -->
+            </div>
+            <!-- /tab-content -->
         </div>
         <!-- /container -->
 
@@ -177,6 +242,18 @@
                                     </div>
                                 </div>
                             </div>
+    
+    <!-- /container -->
+
+    <div class="feat">
+        <div class="container">
+            <ul>
+                <li>
+                    <div class="box">
+                        <i class="ti-gift"></i>
+                        <div class="justify-content-center">
+                            <h3>Free Shipping</h3>
+                            <p>For all oders over $99</p>
                         </div>
                     </div>
                     <!-- /TAB A -->

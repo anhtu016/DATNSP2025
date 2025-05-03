@@ -90,6 +90,11 @@
                                                             resize: none;"
                                                             
                                                             placeholder="Nhập bình luận của bạn về sản phẩm này..."></textarea>
+                                                            <div class="mt-3">
+                                                                <label for="" class="form-label">Tải ảnh đánh giá (nếu có):</label>
+                                                                <input type="file" name="image[{{ $item->id }}]">
+
+                                                            </div>
                                                        
                                                     </div>
                                                 </div>

@@ -25,6 +25,7 @@
                         <table class="table align-middle table-nowrap" id="customerTable">
                             <thead class="table-light">
                                 <tr>                                   
+
                                     <th class="sort" data-sort="date">STT</th>
                                     <th class="sort" data-sort="date">Mã sản phẩm</th>
                                     <th class="sort" data-sort="date">Người dùng</th>
@@ -33,6 +34,14 @@
                                     <th class="sort" data-sort="phone">Ảnh</th>
                                     <th class="sort" data-sort="date">Video</th> 
                                     <th class="sort" data-sort="action">Thao tác</th>
+                                    <th class="" >Mã sản phẩm</th>
+                                    <th class="" >Product</th>
+                                    <th class="" >User</th>
+                                    <th class="" >Description</th>
+                                    <th class="" >Rating</th>
+                                    <th class="" >Image</th>
+                                    
+                                    <th class="" data-sort="action">Action</th>
                                 </tr>
                             </thead>
                             @foreach ($listReviews as $ct)
@@ -43,8 +52,8 @@
                                     <td>{{$ct->product_id}}</td>
                                     <td>{{$ct->description}}</td>
                                     <td>{{$ct->rating}}</td>
-                                    <td>{{$ct->image}}</td>
-                                    <td>{{$ct->video}}</td>
+                                    <td> <img src="{{ asset('storage/' . $ct->image) }}" alt="Ảnh đánh giá" width="150px"></td>
+                                 
                                     <td>
                                         <div class="d-flex gap-2">                                       
                                             <div class="remove">
@@ -62,27 +71,13 @@
                             </tbody>
                             @endforeach
                         </table>
-                       
-                        <div class="noresult" style="display: none">
-                            <div class="text-center">
-                                <lord-icon src="https://cdn.lordicon.com/msoeawqm.json" trigger="loop" colors="primary:#121331,secondary:#08a88a" style="width:75px;height:75px"></lord-icon>
-                                <h5 class="mt-2">Sorry! No Result Found</h5>
-                                <p class="text-muted mb-0">We've searched more than 150+ Orders We did not find any orders for you search.</p>
-                            </div>
+                        <div class="d-flex justify-content-end mt-3">
+                            {{ $listReviews->links('pagination::bootstrap-5') }}
                         </div>
+                       
                     </div>
 
-                    <div class="d-flex justify-content-end">
-                        <div class="pagination-wrap hstack gap-2">
-                            <a class="page-item pagination-prev disabled" href="javascript:void(0);">
-                                Previous
-                            </a>
-                            <ul class="pagination listjs-pagination mb-0"></ul>
-                            <a class="page-item pagination-next" href="javascript:void(0);">
-                                Next
-                            </a>
-                        </div>
-                    </div>
+                    
                 </div>
             </div><!-- end card -->
         </div>
