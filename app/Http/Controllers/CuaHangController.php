@@ -6,6 +6,9 @@ use App\Models\Product;
 use App\Models\ProductImage;
 use Illuminate\Http\Request;
 use App\Models\ProductReview;
+use App\Models\Variant;
+use App\Models\Attribute;
+
 use Illuminate\Support\Facades\DB;
 
 class CuaHangController extends Controller
@@ -28,23 +31,22 @@ class CuaHangController extends Controller
         // Lấy sản phẩm và các thuộc tính của nó
         $product = Product::with('variants.attributeValues.attribute')->findOrFail($id);
         $attributes = [];
-        $detailProduct = Product::query()->find($id);
-        $imageProduct = ProductImage::query()->where('product_id',$id)->get();
-        $loadReviews = ProductReview::with(['product', 'user'])
-        ->where('product_id', $id)->get();
-        
+        $detailProduct = Product::find($id);
+        $imageProduct = ProductImage::where('product_id', $id)->get();
+        $loadReviews = ProductReview::with(['product', 'user'])->where('product_id', $id)->get();
+    
         $isLowStock = $product->quantity <= 5;
-        // Duyệt qua tất cả các biến thể của sản phẩm
+    
         foreach ($product->variants as $variant) {
             foreach ($variant->attributeValues as $attrValue) {
                 $attrName = $attrValue->attribute->name;
     
-                // Ánh xạ màu sắc nếu thuộc tính là màu sắc
-                if ($attrName == 'color') {
-                    $attrValue->colorHex = $colorMap[$attrValue->value] ?? '#FFFFFF';  // Gán màu sắc tương ứng, mặc định là trắng nếu không tìm thấy
+                // Ánh xạ màu sắc nếu thuộc tính là màu
+                if ($attrName === 'color') {
+                    $attrValue->colorHex = $colorMap[$attrValue->value] ?? '#FFFFFF';
                 }
     
-                // Đảm bảo không trùng lặp giá trị thuộc tính
+                // Gom nhóm thuộc tính
                 if (!isset($attributes[$attrName])) {
                     $attributes[$attrName] = [];
                 }
@@ -55,8 +57,81 @@ class CuaHangController extends Controller
             }
         }
     
-        // Trả về view với sản phẩm và các thuộc tính đã ánh xạ
-        return view('client.detail-product', compact('product', 'attributes','detailProduct','imageProduct','loadReviews','isLowStock'));
+        // Tính tổng tồn kho
+        $totalQuantity = $product->variants->sum('quantity_variant');
+        $product->quantity = $totalQuantity;
+    
+        // Tính tồn kho theo tổ hợp thuộc tính
+        $variantStock = [];
+        foreach ($product->variants as $variant) {
+            $attributeOrder = array_keys($attributes); // ['color', 'size', ...]
+            $values = [];
+    
+            foreach ($attributeOrder as $attrName) {
+                $attr = Attribute::where('name', $attrName)->first();
+                if ($attr) {
+                    $value = $variant->attributeValues->firstWhere('attribute_id', $attr->id);
+                    $values[] = $value ? $value->id : '';
+                }
+            }
+    
+            $key = implode('-', $values);
+            $variantStock[$key] = $variant->quantity_variant;
+        }
+    
+        // 🔥 Dữ liệu biến thể cho JavaScript: dùng để đổi ảnh theo màu
+        $variantsData = $product->variants->map(function ($variant) use ($product) {
+            return [
+                'id' => $variant->id,
+                'image' => $variant->image_variant 
+                    ? asset('storage/' . $variant->image_variant)
+                    : asset('storage/' . $product->thumbnail),
+                'attributes' => $variant->attributeValues->pluck('id')->sort()->values()->toArray(),
+                'quantity' => $variant->quantity_variant,
+            ];
+        });
+    
+        return view('client.detail-product', compact(
+            'product', 'attributes', 'detailProduct', 'imageProduct', 'loadReviews',
+            'isLowStock', 'variantStock', 'variantsData'
+        ));
     }
+    
+    
+    public function getVariantStock(Request $request)
+    {
+        // Lấy các thuộc tính và giá trị đã chọn từ request
+        $attributes = $request->input('attributes');
+        
+        // Kiểm tra nếu mảng attributes không rỗng
+        if (empty($attributes)) {
+            return response()->json(['stock' => 0]);
+        }
+    
+        // Tạo điều kiện where cho các thuộc tính
+        $query = Variant::query();
+        foreach ($attributes as $attributeId => $valueId) {
+            $query->whereHas('attributeValues', function ($query) use ($attributeId, $valueId) {
+                $query->where('attribute_id', $attributeId)
+                      ->where('attribute_value_id', $valueId);
+            });
+        }
+    
+        // Tìm biến thể sản phẩm dựa trên các thuộc tính đã chọn
+        $variant = $query->first();
+    
+        // Kiểm tra số lượng tồn kho của biến thể
+        if ($variant) {
+            return response()->json([
+                'stock' => $variant->quantity_variant,
+            ]);
+        }
+    
+        return response()->json([
+            'stock' => 0,
+        ]);
+    }
+    
+
     
 }

@@ -38,13 +38,13 @@
       </div>
       
 
-    <div class="mb-4">
-        <h3>Doanh thu theo tháng</h3>
+      <div class="mb-4">
+        <h3>Doanh thu theo tháng và năm</h3>
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
-         
                     <th>Tháng</th>
+                    <th>Năm</th>
                     <th>Doanh thu</th>
                 </tr>
             </thead>
@@ -52,25 +52,6 @@
                 @foreach($monthlyRevenue as $revenue)
                     <tr>
                         <td>{{ $revenue->month }}</td>
-                        <td>{{ number_format($revenue->revenue, 0, ',', '.') }} VNĐ</td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
-    </div>
-
-    <div class="mb-4">
-        <h3>Doanh thu theo năm</h3>
-        <table class="table table-striped table-bordered">
-            <thead>
-                <tr>
-                    <th>Năm</th>
-                    <th>Doanh thu</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach($annualRevenue as $revenue)
-                    <tr>
                         <td>{{ $revenue->year }}</td>
                         <td>{{ number_format($revenue->revenue, 0, ',', '.') }} VNĐ</td>
                     </tr>
@@ -78,6 +59,7 @@
             </tbody>
         </table>
     </div>
+    
 
     <div class="card shadow-sm mb-4">
         <div class="card-body">

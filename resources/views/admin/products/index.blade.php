@@ -1,7 +1,7 @@
 @extends('admin.layout.default')
 @section('content')
 <div class="page-content">
-    <div class="container">
+    <div class="">
         <h1>Danh sách sản phẩm</h1>
 
         @if (session('error'))
@@ -16,7 +16,7 @@
             </div>
         @endif
 
-        <table class="table table-bordered table-hover">
+        <table class="table table-bordered table-hover text-center">
             <thead>
                 <tr>
                     <th>STT</th>
@@ -26,6 +26,7 @@
                     <th>Màu sắc</th>
                     <th>Kích cỡ</th>
                     <th>Danh mục</th>
+                    <th>Tổng số lượng sản phẩm</th>
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -63,23 +64,26 @@
                                 <div>{{ $sizes }}</div>
                             @endforeach
                         </td>
-                        
+                            
                         <td>
                             @foreach ($product->categories as $cat)
                                 <span class="badge bg-info">{{ $cat->name }}</span>
                             @endforeach
                         </td>
+                        <td>{{$product->quantity}}</td>
                         <td>
-                            <a href="{{ route('Variants', $product->id) }}" class="btn btn-success">Variants</a>
+                            <div class="btn btn-gruop">
+                                <a href="{{ route('Variants', $product->id) }}" class="btn btn-sm btn-success">Variants</a>
 
-                            <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                style="display:inline;">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-danger">Delete</button>
-                            </form>
-
-                            <a href="{{ route('products.edit', $product->id) }}" class="btn btn-warning">Edit</a>
+                                <form action="{{ route('products.destroy', $product->id) }}" method="POST"
+                                    style="display:inline;">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-sm  btn-danger">xóa</button>
+                                </form>
+    
+                                <a href="{{ route('products.edit', $product->id) }}" class="btn btn-sm  btn-warning">Sửa</a>
+                            </div>
                         </td>
                     </tr>
                 @endforeach

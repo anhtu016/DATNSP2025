@@ -27,16 +27,30 @@ class ProductController extends Controller
     public function index1()
     {
         // Lấy sản phẩm + attributes + categories + paginate 10 sp/trang
-        $products = Product::with(['attributes', 'categories'])->paginate(10);
+        $products = Product::with(['attributes', 'categories'])
+            ->paginate(10);
+    
+        // Tính tổng số lượng tồn kho cho mỗi sản phẩm
+        $products->getCollection()->each(function ($product) {
+            $totalQuantity = 0;
+            
+            // Lấy tất cả các biến thể của sản phẩm này và tính tổng số lượng
+            $variants = $product->variants;  // Giả sử sản phẩm có quan hệ `variants`
+            
+            foreach ($variants as $variant) {
+                $totalQuantity += $variant->quantity_variant;  // Cộng dồn số lượng biến thể
+            }
+            
+            // Cập nhật số lượng tổng cho sản phẩm
+            $product->quantity = $totalQuantity;
+        });
     
         // Lấy danh sách attributes + attributeValues để tạo biến thể
         $attributes = Attribute::with('attributeValue')->get();
     
-        // Tạo các kết hợp từ các giá trị thuộc tính
-        $combinations = $this->generateCombinations($attributes);
-    
         return view('admin.products.index', compact('products', 'attributes'));
     }
+    
     
      // Hiển thị trang tạo sản phẩm
      public function create()
@@ -57,7 +71,7 @@ class ProductController extends Controller
              'short_description' => 'required|string',
              'description' => 'required|string',
              'thumbnail' => 'required|nullable|image|max:2048',
-             'quantity' => 'required|integer|min:1',
+             // ❌ Bỏ validate quantity vì sẽ tự tính sau
              'brand_id' => 'required|exists:brands,id',
              'categories' => 'required|array',
          ]);
@@ -67,15 +81,15 @@ class ProductController extends Controller
              $thumbnailPath = $request->file('thumbnail')->store('products', 'public');
          }
      
-         // Tạo slug và kiểm tra trùng lặp
+         // Tạo slug duy nhất
          $slug = Str::slug($request->name);
          $originalSlug = $slug;
          $count = 1;
-
          while (Product::where('slug', $slug)->exists()) {
              $slug = $originalSlug . '-' . $count++;
          }
      
+
          $product = Product::create([
              'name' => $request->name,
              'slug' => $slug,
@@ -85,14 +99,16 @@ class ProductController extends Controller
              'short_description' => $request->short_description,
              'description' => $request->description,
              'thumbnail' => $thumbnailPath,
-             'quantity' => $request->quantity,
+             'quantity' => 0, // sẽ tính sau khi có biến thể
              'brand_id' => $request->brand_id,
          ]);
      
          $product->categories()->attach($request->categories);
      
-         return redirect()->route('Variants', $product->id)->with('success', 'Tạo sản phẩm thành công!');
+         return redirect()->route('Variants', $product->id)
+                          ->with('success', 'Tạo sản phẩm thành công! Hãy thêm biến thể.');
      }
+     
      
      public function edit($id)
      {
@@ -262,7 +278,6 @@ public function destroy($id)
 
 public function storeVariants(Request $request, $id)
 {
-    // Load đầy đủ product và các attributeValues của variants
     $product = Product::with('variants.attributeValues')->findOrFail($id);
 
     $attributes = $request->input('attributes', []);
@@ -270,26 +285,45 @@ public function storeVariants(Request $request, $id)
 
     foreach ($product->variants as $variant) {
         $existingValueIds = $variant->attributeValues->pluck('id')->sort()->values()->toArray();
-
         if ($existingValueIds == $inputValueIds) {
             return back()->with('error','Biến thể với tổ hợp thuộc tính này đã tồn tại.');
         }
     }
 
-    // Nếu chưa trùng thì tiến hành tạo
+    // Validate
+    $request->validate([
+        'quantity_variant' => 'required|integer|min:0',
+        'image_variant' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048', // validate ảnh
+    ]);
+
     $sku = Str::uuid();
+
+    $imagePath = null;
+    if ($request->hasFile('image_variant')) {
+        $imagePath = $request->file('image_variant')->store('variants', 'public'); // lưu vào storage/app/public/variants
+    }
 
     $variant = new Variant();
     $variant->product_id = $product->id;
     $variant->sku = $sku;
+    $variant->quantity_variant = $request->input('quantity_variant');
+    $variant->image_variant = $imagePath; // gán path ảnh đã upload
     $variant->save();
 
+    // Gắn thuộc tính cho biến thể
     foreach ($attributes as $attributeId => $valueId) {
         $variant->attributeValues()->attach($valueId);
     }
 
+    // Cập nhật lại số lượng tổng cho sản phẩm
+    $product->quantity = $product->variants()->sum('quantity_variant');
+    $product->save();
+
     return back()->with('success', 'Tạo biến thể thành công!');
 }
+
+
+
 
 
 
@@ -301,25 +335,6 @@ public function storeVariants(Request $request, $id)
 
 
 
-
-
-// Hàm tạo các kết hợp (combinations) từ các giá trị thuộc tính
-private function generateCombinations($attributes)
-{
-    $combinations = [[]]; // Khởi tạo mảng các kết hợp
-
-    foreach ($attributes as $attribute) {
-        $temp = [];
-        foreach ($attribute->attributeValue as $value) {
-            foreach ($combinations as $combination) {
-                $temp[] = array_merge($combination, [$value->id]);
-            }
-        }
-        $combinations = $temp;
-    }
-
-    return $combinations;
-}
 
 
 }

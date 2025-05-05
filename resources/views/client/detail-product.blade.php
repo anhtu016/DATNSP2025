@@ -6,7 +6,7 @@
                 <!-- Ảnh sản phẩm -->
                 <div class="col-md-6 d-flex align-items-center justify-content-center">
                     <div class="border rounded shadow-sm p-3 bg-white">
-                        <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}"
+                        <img  id="product-image" src="{{ asset('storage/' . $product->thumbnail) }}" alt="{{ $product->name }}"
                             class="img-fluid rounded" style="max-height: 400px; object-fit: contain;">
                     </div>
                 </div>
@@ -28,56 +28,28 @@
                                         <label class="form-label">{{ ucfirst($attrName) }}:</label>
                                         <div class="d-flex flex-wrap gap-2">
                                             @foreach ($values as $value)
-                                                @php
-                                                    $colorName = strtolower(trim($value->value));
-                                                    $colorMap = [
-                                                        'red' => '#FF0000',
-                                                        'blue' => '#0000FF',
-                                                        'green' => '#00FF00',
-                                                        'black' => '#000000',
-                                                        'white' => '#FFFFFF',
-                                                        'yellow' => '#FFFF00',
-                                                        'gray' => '#808080',
-                                                        'xanh' => '#0000FF',
-                                                        'đỏ' => '#FF0000',
-                                                        'đen' => '#000000',
-                                                        'trắng' => '#FFFFFF',
-                                                        'vàng' => '#FFFF00',
-                                                    ];
-                                                    $colorCode = $colorMap[$colorName] ?? '#ccc';
-                                                    $isColor = strtolower($attrName) === 'color';
-                                                @endphp
-
                                                 <input type="radio" class="btn-check" name="attributes[{{ $attrName }}]"
                                                     id="{{ $attrName }}_{{ $value->id }}" value="{{ $value->id }}"
                                                     required>
-
-                                                <label class="btn {{ $isColor ? 'color-swatch' : 'btn-outline-dark' }}"
-                                                    for="{{ $attrName }}_{{ $value->id }}"
-                                                    @if ($isColor) style="background-color: {{ $colorCode }}" @endif>
-                                                    @unless ($isColor)
-                                                        {{ $value->value }}
-                                                    @endunless
+                                                <label class="btn btn-outline-dark"
+                                                    for="{{ $attrName }}_{{ $value->id }}">
+                                                    {{ $value->value }}
                                                 </label>
                                             @endforeach
                                         </div>
                                     </div>
                                 @endforeach
-                                <div class="mb-3">
-                                    <p>Số lượng có sẵn:
-                                        <span class="quantity">
-                                            {{ $product->quantity }} sản phẩm
-                                        </span>
-                                    </p>
-                                    {{-- cảnh báo sắp hết --}}
-                                    @if (isset($isLowStock) && $isLowStock)
-                                        <div class="alert alert-warning">
-                                            <strong>Cảnh báo:</strong> Sản phẩm này gần hết hàng ! Chỉ còn
-                                            {{ $detailProduct->quantity }} sản phẩm.
-                                        </div>
-                                    @endif
 
+                                <div class="mb-3">
+                                    <p class="text-success fw-semibold">
+                                        Tổng số sản phẩm còn : <span id="total-stock">{{ $product->quantity }}</span> sản phẩm
+                                    </p>
+                                    <p id="variant-info" style="display:none;">
+                                        Số lượng: <span id="variant-stock"></span> sản phẩm
+                                    </p>
                                 </div>
+
+
                                 <div class="mb-3">
                                     <label for="quantity">Số lượng:</label>
                                     <input type="number" name="quantity" class="form-control" value="1" min="1"
@@ -96,6 +68,16 @@
                         @endauth
                     </div>
                 </div>
+
+
+
+
+
+
+
+
+
+
 
             </div>
         </div>
@@ -185,56 +167,55 @@
 
                                 <div class="feat">
                                     <div class="container">
-                                       
-                           
-                                                <!-- /TAB A -->
-                                                <div id="pane-B" class="card tab-pane fade" role="tabpanel"
-                                                    aria-labelledby="tab-B">
-                                                    <div class="card-header" role="tab" id="heading-B">
-                                                        <h5 class="mb-0">
-                                                            <a class="collapsed" data-bs-toggle="collapse"
-                                                                href="#collapse-B" aria-expanded="false"
-                                                                aria-controls="collapse-B">
-                                                                Reviews
-                                                            </a>
-                                                        </h5>
-                                                    </div>
-                                                    <div id="collapse-B" class="collapse" role="tabpanel"
-                                                        aria-labelledby="heading-B">
-                                                        <div class="card-body">
-                                                            <div class="row justify-content-between">
-                                                                <div class="col-lg-6">
-                                                                    @foreach ($loadReviews as $reviews)
-                                                                        <div class="review_content">
-                                                                            <div class="clearfix add_bottom_10">
-                                                                                <span class="rating">
-                                                                                    @for ($i = 1; $i <= $reviews->rating; $i++)
-                                                                                        <i class="icon-star filled"></i>
-                                                                                    @endfor
-                                                                                    <em>{{ number_format($reviews->rating, 1) }}/5.0
-                                                                                        (đánh giá)
-                                                                                    </em>
-                                                                                </span>
-                                                                            </div>
-                                                                            <h4>{{ $reviews->user->name }}</h4>
-                                                                            <p>{{ $reviews->description }}</p>
 
-                                                                        </div>
-                                                                    @endforeach
+
+                                        <!-- /TAB A -->
+                                        <div id="pane-B" class="card tab-pane fade" role="tabpanel"
+                                            aria-labelledby="tab-B">
+                                            <div class="card-header" role="tab" id="heading-B">
+                                                <h5 class="mb-0">
+                                                    <a class="collapsed" data-bs-toggle="collapse" href="#collapse-B"
+                                                        aria-expanded="false" aria-controls="collapse-B">
+                                                        Reviews
+                                                    </a>
+                                                </h5>
+                                            </div>
+                                            <div id="collapse-B" class="collapse" role="tabpanel"
+                                                aria-labelledby="heading-B">
+                                                <div class="card-body">
+                                                    <div class="row justify-content-between">
+                                                        <div class="col-lg-6">
+                                                            @foreach ($loadReviews as $reviews)
+                                                                <div class="review_content">
+                                                                    <div class="clearfix add_bottom_10">
+                                                                        <span class="rating">
+                                                                            @for ($i = 1; $i <= $reviews->rating; $i++)
+                                                                                <i class="icon-star filled"></i>
+                                                                            @endfor
+                                                                            <em>{{ number_format($reviews->rating, 1) }}/5.0
+                                                                                (đánh giá)
+                                                                            </em>
+                                                                        </span>
+                                                                    </div>
+                                                                    <h4>{{ $reviews->user->name }}</h4>
+                                                                    <p>{{ $reviews->description }}</p>
+
                                                                 </div>
-
-                                                            </div>
-                                                            <!-- /row -->
-
-                                                            <!-- /row -->
-                                                            <p class="text-end"><a href="leave-review.html"
-                                                                    class="btn_1">Leave a review</a></p>
+                                                            @endforeach
                                                         </div>
-                                                        <!-- /card-body -->
+
                                                     </div>
+                                                    <!-- /row -->
+
+                                                    <!-- /row -->
+                                                    <p class="text-end"><a href="leave-review.html" class="btn_1">Leave
+                                                            a review</a></p>
                                                 </div>
-                                        
-                                        
+                                                <!-- /card-body -->
+                                            </div>
+                                        </div>
+
+
                                     </div>
                                     <!-- /tab-content -->
                                 </div>
@@ -247,6 +228,134 @@
 
 
     </main>
+    <script>
+        const variants = @json($variantsData);
+    </script>
+    
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const variantInfo = document.getElementById('variant-info');
+            const variantStock = document.getElementById('variant-stock');
+            const totalStock = document.getElementById('total-stock');
+
+            const variantStockData = @json($variantStock);
+
+            // Bắt sự kiện click trên tất cả các label
+            document.querySelectorAll('label.btn-outline-dark').forEach(label => {
+                label.addEventListener('click', function() {
+                    // Delay 1 chút để đảm bảo input được chọn sau khi label được click
+                    setTimeout(() => {
+                        let selectedAttributes = {};
+
+                        document.querySelectorAll(
+                                'input[type="radio"][name^="attributes"]:checked')
+                            .forEach(checked => {
+                                const name = checked.name.replace('attributes[', '')
+                                    .replace(']', '');
+                                selectedAttributes[name] = checked.value;
+                            });
+
+                        // Nếu đã chọn đủ tất cả thuộc tính
+                        if (Object.keys(selectedAttributes).length ===
+                            {{ count($attributes) }}) {
+                            const attributeOrder = {!! json_encode(array_keys($attributes)) !!};
+                            const key = attributeOrder.map(attr => selectedAttributes[attr])
+                                .join('-');
+
+
+                            if (variantStockData[key] !== undefined) {
+                                variantStock.textContent = variantStockData[key];
+                                variantInfo.style.display = 'block';
+                            } else {
+                                variantStock.textContent = '0';
+                                variantInfo.style.display = 'block';
+                            }
+                        } else {
+                            variantInfo.style.display = 'none';
+                        }
+                    }, 50); // Delay ngắn để chờ radio được checked
+                });
+            });
+        });
+    </script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const variantImage = document.getElementById('product-image');
+        const variantStock = document.getElementById('variant-stock');
+        const variantInfo = document.getElementById('variant-info');
+        const totalStock = document.getElementById('total-stock');
+
+        const attributeInputs = document.querySelectorAll('input[type=radio][name^="attributes"]');
+        const selectedColorInput = document.querySelectorAll('input[type=radio][name="attributes[color]"]'); // Chọn các input màu sắc
+
+        // Lắng nghe sự kiện thay đổi cho màu sắc
+        selectedColorInput.forEach(input => {
+            input.addEventListener('change', handleColorChange);
+        });
+
+        // Lắng nghe sự kiện thay đổi các thuộc tính khác
+        attributeInputs.forEach(input => {
+            input.addEventListener('change', handleVariantChange);
+        });
+
+        function handleColorChange() {
+            const selectedColorId = [...document.querySelectorAll('input[type=radio][name="attributes[color]"]:checked')]
+                .map(input => input.value)[0];
+
+            if (selectedColorId) {
+                const variantWithColor = variants.find(v => v.attributes.includes(parseInt(selectedColorId)));
+                if (variantWithColor) {
+                    variantImage.src = variantWithColor.image;
+                    variantStock.textContent = variantWithColor.quantity;
+                    variantInfo.style.display = 'block';
+                }
+            }
+        }
+
+        function handleVariantChange() {
+            const selectedInputs = [...document.querySelectorAll('input[type=radio][name^="attributes"]:checked')];
+            const selectedIds = selectedInputs.map(input => parseInt(input.value)).sort((a, b) => a - b);
+
+            // Tìm biến thể khớp toàn bộ tổ hợp (để hiện stock)
+            let matchedVariant = null;
+
+            for (const variant of variants) {
+                const attrs = variant.attributes.slice().sort((a, b) => a - b);
+                if (JSON.stringify(attrs) === JSON.stringify(selectedIds)) {
+                    matchedVariant = variant;
+                    break;
+                }
+            }
+
+            // Nếu có tổ hợp đầy đủ => cập nhật ảnh và số lượng
+            if (matchedVariant) {
+                variantImage.src = matchedVariant.image;
+                variantStock.textContent = matchedVariant.quantity;
+                variantInfo.style.display = 'block';
+                return;
+            }
+
+            // Nếu chưa chọn đầy đủ nhưng chọn màu, sẽ cập nhật ảnh màu đầu tiên khớp
+            const selectedColorId = selectedInputs.find(input => input.name.includes('color'))?.value;
+
+            if (selectedColorId) {
+                const variantWithColor = variants.find(v => v.attributes.includes(parseInt(selectedColorId)));
+                if (variantWithColor) {
+                    variantImage.src = variantWithColor.image;
+                }
+            } else {
+                // Nếu chưa chọn gì thì dùng thumbnail mặc định
+                variantImage.src = "{{ asset('storage/' . $product->thumbnail) }}";
+            }
+
+            variantInfo.style.display = 'none'; // Ẩn stock nếu chưa chọn đủ tổ hợp
+        }
+    });
+</script>
+
+
+    
     <!--Css-->
     @push('css')
         <script>

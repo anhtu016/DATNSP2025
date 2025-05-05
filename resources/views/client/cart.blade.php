@@ -54,8 +54,11 @@
                                 $total += max($finalItemTotal, 0);
                             @endphp
                             <tr>
-                                <td><img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="{{ $item['name'] }}"
-                                        class="img-fluid" style="max-width: 80px;"></td>
+                                <td>
+                                    <img src="{{ asset('storage/' . ($item['variant_image'] ?? $item['thumbnail'])) }}" alt="{{ $item['name'] }}"
+                                        class="img-fluid" style="max-width: 80px;">
+                                </td>
+                                
                                 <td>{{ $item['name'] }}</td>
                                 <td>{{ number_format($item['price']) }} VNĐ</td>
                                 <td class="align-middle text-center">

@@ -43,7 +43,7 @@ class CartController extends Controller
     
 
 
-public function addToCart(Request $request, $id)
+  public function addToCart(Request $request, $id)
 {
     $product = Product::findOrFail($id);
     $attributes = $request->input('attributes', []);
@@ -63,19 +63,36 @@ public function addToCart(Request $request, $id)
         return redirect()->back()->with('error', 'Thuộc tính không hợp lệ.');
     }
 
-    // Kiểm tra biến thể sản phẩm
+    // Tìm biến thể đúng với color và size
     $variant = Variant::where('product_id', $id)
         ->whereHas('attributeValues', function ($query) use ($colorId, $sizeId) {
             $query->whereIn('attribute_value_id', [$colorId, $sizeId]);
         }, '=', 2)
         ->first();
 
-    // Gán variant_id nếu tìm thấy biến thể
+    if (!$variant) {
+        return redirect()->back()->with('error', 'Không tìm thấy biến thể phù hợp.');
+    }
+
+    // Kiểm tra tồn kho của biến thể
+    if (!is_numeric($variant->quantity_variant) || $variant->quantity_variant < $quantity) {
+        return redirect()->back()->with('error', 'Số lượng tồn kho không đủ.');
+    }
+
+    // Lấy ảnh của biến thể (image_variant)
+    $variantImage = $variant->image_variant ?? $product->thumbnail ?? 'client/img/default.png';
+
     $cartItemId = $id . '-' . $colorId . '-' . $sizeId;
     $cart = session()->get('cart', []);
 
     if (isset($cart[$cartItemId])) {
-        $cart[$cartItemId]['quantity'] += $quantity;
+        $newQuantity = $cart[$cartItemId]['quantity'] + $quantity;
+
+        if ($variant->quantity_variant < $newQuantity) {
+            return redirect()->back()->with('error', 'Số lượng tồn kho không đủ để thêm tiếp.');
+        }
+
+        $cart[$cartItemId]['quantity'] = $newQuantity;
     } else {
         $cart[$cartItemId] = [
             'id' => $product->id,
@@ -84,8 +101,8 @@ public function addToCart(Request $request, $id)
             'quantity' => $quantity,
             'Color' => $color->value,
             'Size' => $size->value,
-            'thumbnail' => $product->thumbnail ?? 'client/img/default.png',
-            'variant_id' => $variant->id ?? null, // Thêm variant_id vào giỏ hàng
+            'thumbnail' => $variantImage,  // Lưu ảnh của biến thể
+            'variant_id' => $variant->id,
         ];
     }
 
@@ -93,6 +110,8 @@ public function addToCart(Request $request, $id)
 
     return redirect()->back()->with('success', 'Đã thêm vào giỏ hàng');
 }
+
+    
 
 
 public function removeFromCart($id)

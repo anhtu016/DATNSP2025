@@ -22,9 +22,11 @@ use App\Http\Controllers\PromotionController;
 use App\Events\OrderStatusUpdated;
 use App\Models\Order;
 use App\Http\Controllers\Client\ProductDetailController;
+use App\Http\Controllers\CuaHangController;
 use App\Http\Controllers\MomoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\turnoverController;
+use App\Http\Controllers\User\checkoutController;
 
 /*
 |--------------------------------------------------------------------------
@@ -358,4 +360,11 @@ Route::delete('/variant/{id}', [ProductController::class, 'destroyVariant'])->na
 Route::get('/turnover', [turnoverController::class, 'index'])->name('turnover.index');
 Route::get('/turnover/filter', [turnoverController::class, 'filter'])->name('turnover.filter');
 Route::post('/momo-callback', [PaymentController::class, 'momoCallback'])->name('momo.callback');
+
+Route::post('/get-variant-stock', [CuaHangController::class, 'getVariantStock'])->name('getVariantStock');
+
+//chọn sản phẩm thanh toán 
+Route::patch('/checkout/select-products', [checkoutController::class, 'selectProducts'])->name('checkout.selectProducts');
+
+
 

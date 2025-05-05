@@ -5,6 +5,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Variant extends model{
+    protected $casts = [
+        'quantity_variant' => 'integer',
+    ];
+    
 public function product()
 {
     return $this->belongsTo(Product::class);

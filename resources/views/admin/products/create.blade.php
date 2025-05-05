@@ -40,8 +40,8 @@
 
             {{-- Giá bán --}}
             <div class="mb-3">
-                <label for="price">Giá bán</label>
-                <input type="text" class="form-control format-currency @error('price') is-invalid @enderror" id="price_display" autocomplete="off" value="{{ old('price') }}">
+                <label for="price">Giá sale</label>
+                <input type="text" class="form-control format-currency @error('price') is-invalid @enderror" id="price_display" autocomplete="off" value="{{ old('price', 0) }}">
                 <input type="hidden" name="price" id="price" value="{{ old('price') }}">
                 @error('price')
                     <div class="invalid-feedback d-block">{{ $message }}</div>
@@ -50,7 +50,7 @@
 
             {{-- Giá sale --}}
             <div class="mb-3">
-                <label for="sell_price">Giá sale</label>
+                <label for="sell_price">Giá gốc</label>
                 <input type="text" class="form-control format-currency @error('sell_price') is-invalid @enderror" id="sell_price_display" autocomplete="off" value="{{ old('sell_price', 0) }}">
                 <input type="hidden" name="sell_price" id="sell_price" value="{{ old('sell_price') }}">
                 @error('sell_price')
@@ -72,15 +72,6 @@
                 <label for="description">Mô tả chi tiết</label>
                 <textarea name="description" class="form-control @error('description') is-invalid @enderror">{{ old('description') }}</textarea>
                 @error('description')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
-
-            {{-- Số lượng --}}
-            <div class="mb-3">
-                <label for="quantity">Số lượng</label>
-                <input type="number" name="quantity" class="form-control @error('quantity') is-invalid @enderror" value="{{ old('quantity', 0) }}">
-                @error('quantity')
                     <div class="invalid-feedback">{{ $message }}</div>
                 @enderror
             </div>

@@ -2,7 +2,7 @@
 @section('content')
 <br>
 <br>
-<div class="container">
+<div class="container" style="height: 100vh">
     <h2 class="mb-4">Sản phẩm trong danh mục: {{ $category->name }}</h2>
     <div class="row">
         @foreach ($products as $product)

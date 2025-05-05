@@ -26,6 +26,8 @@
                         <tr>
                             <th>Ảnh</th>
                             <th>Tên</th>
+                            <th>kích cỡ</th>
+                            <th>Màu sắc</th>
                             <th>Số lượng</th>
                             <th>Giá</th>
                             <th>Tổng</th>
@@ -34,9 +36,12 @@
                     <tbody>
                         @foreach ($cart as $item)
                             <tr>
-                                <td><img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="Ảnh" width="100px"></td>
-                                <td>{{ $item['name'] }}</td>
-                                <td>{{ $item['quantity'] }}</td>
+                                <td><img src="{{ asset('storage/' . $item['thumbnail']) }}" alt="Ảnh" width="100px">
+                                </td>
+                                <td>{{ $item['name'] }} <!-- hiển thị tên biến thể -->
+                                <td>{{ $item['Size'] ?? 'Không chọn' }}</td>
+                                <td>{{ $item['Color'] ?? 'Không chọn' }}</td>
+                                <td>{{ $item['quantity'] }}</td> <!-- số lượng biến thể -->
                                 <td>{{ number_format($item['price']) }}₫</td>
                                 <td>
                                     @if ($item['discount_amount'] > 0)
@@ -56,29 +61,29 @@
                 <p class="text-danger">Tổng sau giảm: {{ number_format($total - session('coupon.discount_amount')) }}đ</p>
             </div>
 
+
             <!-- Thông tin đặt hàng -->
             <div class="card shadow p-4 rounded border">
                 <h2 class="mb-4 fw-bold text-primary">
                     📦 Thông tin đặt hàng
                 </h2>
-            
+
                 @if (session('success'))
                     <div class="alert alert-success">{{ session('success') }}</div>
                 @endif
-            
+
                 <form method="POST" action="{{ route('checkout.store') }}">
                     @csrf
-            
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Địa chỉ giao hàng:</label>
                         <input type="text" name="shipping_address" class="form-control"
-                            placeholder="Nhập địa chỉ giao hàng"
-                            value="{{ old('shipping_address') }}">
+                            placeholder="Nhập địa chỉ giao hàng" value="{{ old('shipping_address') }}">
                         @error('shipping_address')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-            
+
                     <div class="row">
                         <div class="mb-3 col-md-6">
                             <label class="form-label fw-semibold">Phương thức giao hàng:</label>
@@ -95,7 +100,7 @@
                                 <div class="text-danger mt-1">{{ $message }}</div>
                             @enderror
                         </div>
-            
+
                         <div class="mb-3 col-md-6">
                             <label class="form-label fw-semibold">Phương thức thanh toán:</label>
                             <select name="payment_methods_id" class="form-select">
@@ -112,28 +117,27 @@
                             @enderror
                         </div>
                     </div>
-            
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Tên khách hàng:</label>
                         <p class="form-control-plaintext mb-0">{{ $userName }}</p>
                     </div>
-            
+
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Số điện thoại:</label>
-                        <input type="text" name="phone_number" class="form-control"
-                            placeholder="Nhập số điện thoại"
+                        <input type="text" name="phone_number" class="form-control" placeholder="Nhập số điện thoại"
                             value="{{ old('phone_number') }}">
                         @error('phone_number')
                             <div class="text-danger mt-1">{{ $message }}</div>
                         @enderror
                     </div>
-            
+
                     <button type="submit" class="btn btn-success w-100 mt-3">
                         ✅ Xác nhận đặt hàng
                     </button>
                 </form>
             </div>
-            
+
         </div>
 
     </main>
