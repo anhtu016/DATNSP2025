@@ -71,11 +71,16 @@ class ProductController extends Controller
              'short_description' => 'required|string',
              'description' => 'required|string',
              'thumbnail' => 'required|nullable|image|max:2048',
-             // ❌ Bỏ validate quantity vì sẽ tự tính sau
              'brand_id' => 'required|exists:brands,id',
              'categories' => 'required|array',
          ]);
      
+         if ($request->sell_price > 0 && $request->price >= $request->sell_price) {
+            return back()
+                ->withErrors(['price' => 'Giá sale phải nhỏ hơn giá gốc.'])
+                ->withInput();
+        }
+        
          $thumbnailPath = null;
          if ($request->hasFile('thumbnail')) {
              $thumbnailPath = $request->file('thumbnail')->store('products', 'public');

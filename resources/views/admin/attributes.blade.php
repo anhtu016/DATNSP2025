@@ -30,13 +30,13 @@
                                         <div>
                                             <h4 class="mb-sm-0">Danh sách biến thể</h4>
                                             <!-- Horizontal Collapse -->
-                                            {{-- <div class="mb-3">
+                                            <div class="mb-3">
                                                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#collapseWidthExample" aria-expanded="true"
                                                     aria-controls="collapseWidthExample">
                                                     <i class="ri-add-line align-bottom me-1"> Add Attribute</i>
                                                 </button>
-                                            </div> --}}
+                                            </div>
                                             @if (session('error'))
                                             <div class="alert alert-danger">
                                                 {{ session('error') }}
@@ -115,7 +115,7 @@
                                         <th scope="col">Thuộc tính</th>
                                         <th scope="col">Thể loại</th>
                                         <th scope="col">Giá trị</th>
-                                        {{-- <th scope="col">Action</th> --}}
+                                        <th scope="col">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -134,7 +134,7 @@
                                                     {{ $value->value }}
                                                 @endforeach
                                             </td>
-                                            {{-- <td>
+                                            <td>
                                                 <div class="dropdown">
                                                     <a href="#" role="button" id="dropdownMenuLink"
                                                         data-bs-toggle="dropdown" aria-expanded="false">
@@ -161,7 +161,7 @@
                                                         </li>
                                                     </ul>
                                                 </div>
-                                            </td> --}}
+                                            </td>
                                         </tr>
                                         <div class="modal fade" id="{{ $attribute->name }}" tabindex="-1"
                                             aria-labelledby="id?{{ $attribute->id }}" aria-modal="true">

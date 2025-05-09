@@ -26,6 +26,8 @@ class checkoutController extends Controller
     // Tiến hành thanh toán với các sản phẩm đã chọn
     // Ví dụ: redirect tới trang thanh toán
     return view('client.order', compact('selectedProducts'));
+
+    
 }
 
 }

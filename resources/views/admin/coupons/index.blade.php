@@ -16,11 +16,6 @@
             @endif
             <div class="d-flex justify-content-between mb-3">
                 <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">Tạo mã giảm giá mới</a>
-            
-                <form action="{{ route('admin.coupons.updateUsage') }}" method="POST">
-                    @csrf
-                    <button type="submit" class="btn btn-warning">Cập nhật</button>
-                </form>
             </div>
             
             

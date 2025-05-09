@@ -43,7 +43,7 @@
                                     <td>{{$ct->product_id}}</td>
                                     <td>{{$ct->description}}</td>
                                     <td>{{$ct->rating}}</td>
-                                    <td> <img src="{{ asset('storage/' . $ct->image) }}" alt="Ảnh đánh giá" width="150px"></td>
+                                    <td> <img src="{{ asset('storage/' . $ct->image) }}" alt="Ảnh đánh giá" width="70px"></td>
                                  
                                     <td>
                                         <div class="d-flex gap-2">                                       

@@ -27,6 +27,7 @@ use App\Http\Controllers\MomoController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\turnoverController;
 use App\Http\Controllers\User\checkoutController;
+use App\Http\Controllers\PaypalController;
 
 /*
 |--------------------------------------------------------------------------
@@ -364,7 +365,14 @@ Route::post('/momo-callback', [PaymentController::class, 'momoCallback'])->name(
 Route::post('/get-variant-stock', [CuaHangController::class, 'getVariantStock'])->name('getVariantStock');
 
 //chọn sản phẩm thanh toán 
-Route::patch('/checkout/select-products', [checkoutController::class, 'selectProducts'])->name('checkout.selectProducts');
+
+
+// xử lý thanh toán paypal
+Route::get('/paypal-success', [PaypalController::class, 'success'])->name('paypal.success');
+Route::get('/paypal-cancel', [PaypalController::class, 'cancel'])->name('paypal.cancel');
+
+// check box
+Route::post('/checkout/selected', [CheckoutController::class, 'selected'])->name('checkout.selected');
 
 
 

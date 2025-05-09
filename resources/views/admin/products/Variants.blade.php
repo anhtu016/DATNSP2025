@@ -24,7 +24,7 @@
                     <thead>
                         <tr>
                             <th>STT</th>
-                            <th>Mã Biến Thể</th>
+                 
                             @foreach ($attributes as $attribute)
                                 <th>{{ ucfirst($attribute->name) }}</th>
                             @endforeach
@@ -36,7 +36,7 @@
                         @foreach ($product->variants as $variant)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $variant->sku }}</td>
+                              
                                 @foreach ($variant->attributeValues as $attributeValue)
                                     <td>{{ $attributeValue->value }}</td>
                                 @endforeach

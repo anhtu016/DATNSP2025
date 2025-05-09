@@ -73,7 +73,7 @@
                         <td>{{$product->quantity}}</td>
                         <td>
                             <div class="btn btn-gruop">
-                                <a href="{{ route('Variants', $product->id) }}" class="btn btn-sm btn-success">Variants</a>
+                                <a href="{{ route('Variants', $product->id) }}" class="btn btn-sm btn-success">Biến thể</a>
 
                                 <form action="{{ route('products.destroy', $product->id) }}" method="POST"
                                     style="display:inline;">
@@ -95,7 +95,7 @@
             {{ $products->links() }}
         </div>
 
-        <a href="{{ route('products.create') }}" class="btn btn-primary mt-3">Create New Product</a>
+        <a href="{{ route('products.create') }}" class="btn btn-primary mt-3">Thêm sản phẩm mới</a>
     </div>
 </div>
 
