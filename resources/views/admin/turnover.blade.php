@@ -5,7 +5,7 @@
 
     <div class="card shadow-sm mb-4 p-3">
         <h5 class="mb-3">🔍 Bộ lọc Doanh thu</h5>
-        <form method="GET" action="{{ route('turnover.index') }}" class="row g-3">
+        <form method="GET" action="{{ route('admin.turnover.index') }}" class="row g-3">
             <div class="col-md-4">
                 <label for="year" class="form-label">Năm</label>
                 <select id="year" name="year" class="form-select">

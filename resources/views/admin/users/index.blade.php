@@ -39,20 +39,40 @@
                         <td>{{ $user->email }}</td>
 
                         <!-- Quyền của người dùng -->
-                        <td>
-                            @if ($user->permissions && $user->permissions->count())
-                                @foreach ($user->permissions as $permission)
-                                    <span class="{{ $permission->permission_name == 'admin' ? 'text-danger' : 'text-success' }}">
-                                        {{ $permission->permission_name }}
-                                    </span>
-                                    @if (!$loop->last) 
-                                        <span>, </span>
-                                    @endif
-                                @endforeach
-                            @else
-                                <span class="text-success">user</span>
-                            @endif
-                        </td>
+<td>
+    @if ($user->permissions && $user->permissions->count())
+        @foreach ($user->permissions as $permission)
+            @php
+                switch ($permission->permission_name) {
+                    case 'admin':
+                        $displayName = 'Quản trị viên';
+                        $color = 'text-danger';
+                        break;
+                    case 'staff':
+                        $displayName = 'Nhân viên quản lý';
+                        $color = 'text-primary';
+                        break;
+                    case 'accountant':
+                        $displayName = 'Kế toán';
+                        $color = 'text-warning';
+                        break;
+                    case 'user':
+                    default:
+                        $displayName = 'Người dùng';
+                        $color = 'text-success';
+                        break;
+                }
+            @endphp
+            <span class="{{ $color }}">{{ $displayName }}</span>
+            @if (!$loop->last)
+                <span>, </span>
+            @endif
+        @endforeach
+    @else
+        <span class="text-success">Người dùng</span>
+    @endif
+</td>
+
 
                         <!-- Ngày tạo người dùng -->
                         <td>{{ $user->created_at->format('d-m-Y H:i') }}</td>

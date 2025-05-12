@@ -24,7 +24,7 @@
             {{ session('success') }}
         </div>
     @endif
-        <form action="{{ route('admin.coupons.update', $coupon->id) }}" method="POST" class="form-container">
+        <form action="{{ route('coupons.update', $coupon->id) }}" method="POST" class="form-container">
             @csrf
             @method('PUT')
             <div class="form-group">

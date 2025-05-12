@@ -7,14 +7,7 @@
             <div class="row">
                 <div class="col-12">
                     <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                       
 
-                        <div class="page-title-right">
-                            <ol class="breadcrumb m-0">
-                                <li class="breadcrumb-item"><a href="javascript: void(0);">Ecommerce</a></li>
-                                <li class="breadcrumb-item active">Products</li>
-                            </ol>
-                        </div>
 
                     </div>
                 </div>
@@ -28,63 +21,71 @@
                                 <div class="row g-4">
                                     <div class="col-sm-auto">
                                         <div>
-                                            <h4 class="mb-sm-0">Danh sách biến thể</h4>
-                                            <!-- Horizontal Collapse -->
-                                            <div class="mb-3">
+                                            <div class="">
                                                 <button class="btn btn-secondary" type="button" data-bs-toggle="collapse"
                                                     data-bs-target="#collapseWidthExample" aria-expanded="true"
                                                     aria-controls="collapseWidthExample">
-                                                    <i class="ri-add-line align-bottom me-1"> Add Attribute</i>
+                                                    <i class="ri-add-line align-bottom me-1"> Thêm giá trị biến thể</i>
                                                 </button>
                                             </div>
+                                            <h4 class="mb-3 mt-4">Danh sách biến thể</h4>
+                                            <!-- Horizontal Collapse -->
+
                                             @if (session('error'))
-                                            <div class="alert alert-danger">
-                                                {{ session('error') }}
-                                            </div>
-                                        @endif
-                            
-                                        @if (session('success'))
-                                            <div class="alert alert-success">
-                                                {{ session('success') }}
-                                            </div>
-                                        @endif
+                                                <div class="alert alert-danger">
+                                                    {{ session('error') }}
+                                                </div>
+                                            @endif
+
+                                            @if (session('success'))
+                                                <div class="alert alert-success">
+                                                    {{ session('success') }}
+                                                </div>
+                                            @endif
                                             <div>
                                                 <div class="collapse collapse-horizontal hiden" id="collapseWidthExample">
                                                     <div class="card card-body mb-0" style="width: 300px;">
                                                         <div>
                                                             <form action="{{ route('attributes.store') }}" method="post">
                                                                 @csrf
-                                                                <label for="nameAttribute" class="form-label">Name Attribute</label>
-                                                                <input type="text" class="form-control" name="nameAttribute" id="nameAttribute">
-                                                            
-                                                                <label for="selectAttribute" class="form-label mt-2">Type</label>
-                                                                <select id="selectAttribute" name="selectAttribute" class="form-select mb-3">
-                                                                    <option selected disabled>Choose type</option>
+                                                                <label for="nameAttribute" class="form-label">Tên trường
+                                                                    biến thể</label>
+                                                                <input type="text" class="form-control"
+                                                                    name="nameAttribute" id="nameAttribute">
+
+                                                                <label for="selectAttribute" class="form-label mt-2">Thể
+                                                                    loại</label>
+                                                                <select id="selectAttribute" name="selectAttribute"
+                                                                    class="form-select mb-3">
+                                                                    <option selected disabled>Chọn thể loại</option>
                                                                     <option value="size">size</option>
                                                                     <option value="color">color</option>
-                                    
-                                                                </select>
-                                                                <div id="value-group">
-                                                                    <input type="text" name="valueAttribute[]" class="form-control mb-2" placeholder="Enter value">
-                                                                </div>
-                                                                
-                                                                <script>
-                                                                function addValueInput() {
-                                                                    const container = document.getElementById('value-group');
-                                                                    const input = document.createElement('input');
-                                                                    input.type = 'text';
-                                                                    input.name = 'valueAttribute[]';
-                                                                    input.classList.add('form-control', 'mb-2');
-                                                                    input.placeholder = 'Enter value';
-                                                                    container.appendChild(input);
-                                                                }
-                                                                </script>
-                                                                
+                                                                    <option value="classification">classification</option>
 
-                                                            
-                                                                <button type="submit" class="btn btn-success bg-gradient waves-effect waves-light">SAVE</button>
+                                                                </select>
+                                                                <div id="value-group">Giá trị biến thể
+                                                                    <input type="text" name="valueAttribute[]"
+                                                                        class="form-control mb-2" placeholder="Enter value">
+                                                                </div>
+
+                                                                <script>
+                                                                    function addValueInput() {
+                                                                        const container = document.getElementById('value-group');
+                                                                        const input = document.createElement('input');
+                                                                        input.type = 'text';
+                                                                        input.name = 'valueAttribute[]';
+                                                                        input.classList.add('form-control', 'mb-2');
+                                                                        input.placeholder = 'Enter value';
+                                                                        container.appendChild(input);
+                                                                    }
+                                                                </script>
+
+
+
+                                                                <button type="submit"
+                                                                    class="btn btn-success bg-gradient waves-effect waves-light">Lưu</button>
                                                             </form>
-                                                            
+
                                                         </div>
                                                     </div>
                                                 </div>
@@ -115,7 +116,7 @@
                                         <th scope="col">Thuộc tính</th>
                                         <th scope="col">Thể loại</th>
                                         <th scope="col">Giá trị</th>
-                                        <th scope="col">Action</th>
+                                        <th scope="col">Thao tác</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -145,7 +146,7 @@
                                                             <button type="button" class="btn dropdown-item"
                                                                 data-bs-toggle="modal"
                                                                 data-bs-target="#{{ $attribute->name }}">
-                                                                Edit
+                                                                Sửa
                                                             </button>
 
                                                         </li>
@@ -157,39 +158,88 @@
                                                                 @method('delete')
                                                             </form>
                                                             <button class="btn dropdown-item"
-                                                                onclick="confirmDelete({{ $attribute->id }})">Delete</button>
+                                                                onclick="confirmDelete({{ $attribute->id }})">Xóa</button>
+                                                        </li>
+                                                        <li>
+                                                            <button type="button" class="btn dropdown-item"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#detailModal-{{ $attribute->id }}">
+                                                                Xem chi tiết
+                                                            </button>
                                                         </li>
                                                     </ul>
                                                 </div>
                                             </td>
                                         </tr>
+                                        <div class="modal fade" id="detailModal-{{ $attribute->id }}" tabindex="-1"
+                                            aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-scrollable">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Chi tiết giá trị thuộc tính:
+                                                            {{ $attribute->name }}</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <ul class="list-group">
+                                                            @foreach ($attribute->attributeValue as $value)
+                                                                <li
+                                                                    class="list-group-item d-flex justify-content-between align-items-center">
+                                                                    {{ $value->value }}
+                                                                    <form
+                                                                        action="{{ route('attribute-values.destroy', $value->id) }}"
+                                                                        method="POST"
+                                                                        onsubmit="return confirm('Bạn có chắc muốn xóa giá trị này?')">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit"
+                                                                            class="btn btn-sm btn-danger">Xóa</button>
+                                                                    </form>
+                                                                </li>
+                                                            @endforeach
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
                                         <div class="modal fade" id="{{ $attribute->name }}" tabindex="-1"
                                             aria-labelledby="id?{{ $attribute->id }}" aria-modal="true">
                                             <div class="modal-dialog">
                                                 <div class="modal-content">
                                                     <div class="modal-header">
-                                                        <h5 class="modal-title" id="id?{{ $attribute->id }}">Update Attribute</h5>
-                                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        <h5 class="modal-title" id="id?{{ $attribute->id }}">Sửa thuộc
+                                                            tính
+                                                        </h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
                                                     </div>
                                                     <div class="modal-body">
-                                                        <form action="{{ route('attributes.update', $attribute->id) }}" method="POST">
+                                                        <form action="{{ route('attributes.update', $attribute->id) }}"
+                                                            method="POST">
                                                             @csrf
                                                             @method('PUT')
                                                             <div class="row g-3">
                                                                 <div class="col-xxl-6">
                                                                     <div>
-                                                                        <label for="firstName" class="form-label">Name Attribute</label>
-                                                                        <input type="text" class="form-control" id="firstName" name="updateAttribute"
+                                                                        <label for="firstName" class="form-label">Tên
+                                                                            thuộc tính</label>
+                                                                        <input type="text" class="form-control"
+                                                                            id="firstName" name="updateAttribute"
                                                                             value="{{ $attribute->name }}">
                                                                     </div>
                                                                 </div><!--end col-->
                                                                 <div class="col-xxl-6">
                                                                     <div>
-                                                                        <label for="selectType" class="form-label">Type</label>
-                                                                        <select name="updateType" id="selectType" class="form-select">
-                                                                            <option selected value="{{ $attribute->type }}">
+                                                                        <label for="selectType" class="form-label">Thể
+                                                                            loại</label>
+                                                                        <select name="updateType" id="selectType"
+                                                                            class="form-select">
+                                                                            <option selected
+                                                                                value="{{ $attribute->type }}">
                                                                                 {{ $attribute->type }}</option>
-                                                                            @foreach (['color', 'size', 'image'] as $type)
+                                                                            @foreach (['color', 'size', 'classification'] as $type)
                                                                                 @if ($type !== $attribute->type)
                                                                                     <option value="{{ $type }}">
                                                                                         {{ ucfirst($type) }}</option>
@@ -198,22 +248,25 @@
                                                                         </select>
                                                                     </div>
                                                                 </div><!--end col-->
-                                        
+
                                                                 <div class="col-12">
-                                                                    <label for="values" class="form-label">Attribute Values</label>
+                                                                    <label for="values" class="form-label">Giá trị thuộc
+                                                                        tính</label>
                                                                     <div id="value-group">
-                                                                        @foreach ($attribute->values as $value)
-                                                                            <input type="text" name="updateValue[]" class="form-control mb-2"
+                                                                        @foreach ($attribute->attributeValue as $value)
+                                                                            <input type="text" name="updateValue[]"
+                                                                                class="form-control mb-2"
                                                                                 value="{{ $value->value }}">
                                                                         @endforeach
                                                                     </div>
-                                                                    <button type="button" class="btn btn-secondary mt-2" onclick="addValueInput()">+ Add More Value</button>
                                                                 </div>
-                                        
+
                                                                 <div class="col-lg-12">
                                                                     <div class="hstack gap-2 justify-content-end">
-                                                                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
-                                                                        <button type="submit" class="btn btn-primary">Update</button>
+                                                                        <button type="button" class="btn btn-light"
+                                                                            data-bs-dismiss="modal">Đóng</button>
+                                                                        <button type="submit" class="btn btn-primary">Cập
+                                                                            nhật</button>
                                                                     </div>
                                                                 </div><!--end col-->
                                                             </div><!--end row-->
@@ -222,19 +275,19 @@
                                                 </div>
                                             </div>
                                         </div>
-                                        
+
+
                                         <script>
-                                        function addValueInput() {
-                                            const container = document.getElementById('value-group');
-                                            const input = document.createElement('input');
-                                            input.type = 'text';
-                                            input.name = 'updateValue[]';
-                                            input.classList.add('form-control', 'mb-2');
-                                            input.placeholder = 'Enter value';
-                                            container.appendChild(input);
-                                        }
+                                            function addValueInput() {
+                                                const container = document.getElementById('value-group');
+                                                const input = document.createElement('input');
+                                                input.type = 'text';
+                                                input.name = 'updateValue[]';
+                                                input.classList.add('form-control', 'mb-2');
+                                                input.placeholder = 'Enter value';
+                                                container.appendChild(input);
+                                            }
                                         </script>
-                                        
                                     @endforeach
                                 </tbody>
                             </table>

@@ -26,7 +26,7 @@
                     <th>Màu sắc</th>
                     <th>Kích cỡ</th>
                     <th>Danh mục</th>
-                    <th>Tổng số lượng sản phẩm</th>
+                    {{-- <th>Tổng số lượng sản phẩm</th> --}}
                     <th>Thao tác</th>
                 </tr>
             </thead>
@@ -70,7 +70,7 @@
                                 <span class="badge bg-info">{{ $cat->name }}</span>
                             @endforeach
                         </td>
-                        <td>{{$product->quantity}}</td>
+                        {{-- <td>{{$product->quantity}}</td> --}}
                         <td>
                             <div class="btn btn-gruop">
                                 <a href="{{ route('Variants', $product->id) }}" class="btn btn-sm btn-success">Biến thể</a>

@@ -23,7 +23,7 @@
                     <span data-key="t-menu">Menu</span>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link menu-link d-flex align-items-center" href="{{route('turnover.index')}}">
+                    <a class="nav-link menu-link d-flex align-items-center" href="{{route('admin.turnover.index')}}">
                         <i class="ri-line-chart-fill me-2"></i>
                         <span data-key="t-home">Thống kê</span>
                     </a>
@@ -79,10 +79,10 @@
                     <div class="collapse menu-dropdown" id="sidebarCategories">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ url('list-categories') }}" class="nav-link">Danh sách danh mục</a>
+                                <a href="{{ route('categories.index') }}" class="nav-link">Danh sách danh mục</a>
                             </li>
                             <li class="nav-item">
-                                <a href="{{ url('add-categories') }}" class="nav-link">Thêm danh mục</a>
+                                <a href="{{ route('categories.create') }}" class="nav-link">Thêm danh mục</a>
                             </li>
                         </ul>
                     </div>
@@ -98,7 +98,7 @@
 
                 <!-- Coupons -->
                 <li class="nav-item">
-                    <a class="nav-link menu-link d-flex align-items-center" href="{{ route('admin.coupons.index') }}">
+                    <a class="nav-link menu-link d-flex align-items-center" href="{{ route('coupons.index') }}">
                         <i class="ri-price-tag-2-line me-2"></i>
                         <span data-key="t-coupons">Mã giảm giá</span>
                     </a>
@@ -116,7 +116,7 @@
                     <div class="collapse menu-dropdown" id="sidebarReviews">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ url('list-reviews') }}" class="nav-link">Danh sách đánh giá</a>
+                                <a href="{{ route('admin.reviews.index') }}" class="nav-link">Danh sách đánh giá</a>
                             </li>
                         </ul>
                     </div>
@@ -133,7 +133,7 @@
                     <div class="collapse menu-dropdown" id="sidebarAttributes">
                         <ul class="nav nav-sm flex-column">
                             <li class="nav-item">
-                                <a href="{{ 'attributes' }}" class="nav-link">Danh sách biến thể</a>
+                                <a href="{{ route('attributes') }}" class="nav-link">Danh sách biến thể</a>
                             </li>
                         </ul>
                     </div>

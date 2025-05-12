@@ -15,7 +15,7 @@
                 </div>
             @endif
             <div class="d-flex justify-content-between mb-3">
-                <a href="{{ route('admin.coupons.create') }}" class="btn btn-primary">Tạo mã giảm giá mới</a>
+                <a href="{{ route('coupons.create') }}" class="btn btn-primary">Tạo mã giảm giá mới</a>
             </div>
             
             
@@ -98,17 +98,17 @@
 
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.coupons.edit', $coupon->id) }}"
+                                    <a href="{{ route('coupons.edit', $coupon->id) }}"
                                         class="btn btn-warning btn-sm">Sửa</a>
 
-                                    <form action="{{ route('admin.coupons.destroy', $coupon->id) }}" method="POST"
+                                    <form action="{{ route('coupons.destroy', $coupon->id) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                                     </form>
 
-                                    <form action="{{ route('admin.coupons.toggle', $coupon->id) }}" method="POST"
+                                    <form action="{{ route('coupons.toggle', $coupon->id) }}" method="POST"
                                         onsubmit="return confirm('Bạn có chắc chắn muốn {{ $coupon->is_active ? 'ẩn' : 'hiển thị' }} mã này?')">
                                         @csrf
                                         @method('PATCH')

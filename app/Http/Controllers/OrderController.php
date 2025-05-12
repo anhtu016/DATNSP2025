@@ -258,6 +258,20 @@ class OrderController extends Controller
 
             // Nếu chọn PayPal
             if ($request->payment_methods_id == 2) {
+                // Lưu thông tin tạm vào session
+                session([
+                    'checkout_data' => [
+                        'shipping_address' => $request->shipping_address,
+                        'phone_number' => $request->phone_number,
+                        'shipping_method_id' => $request->shipping_method_id,
+                        'payment_methods_id' => $request->payment_methods_id,
+                        'cart' => $cart,
+                        'coupon' => session('coupon'),
+                        'total_after_discount' => $totalAfterDiscount,
+                        'total' => $total,
+                    ]
+                ]);
+
                 $client = PayPalClient::client();
                 $paypalRequest = new OrdersCreateRequest();
                 $paypalRequest->prefer('return=representation');
@@ -273,13 +287,11 @@ class OrderController extends Controller
                     ],
                     "application_context" => [
                         "cancel_url" => route('paypal.cancel'),
-                        "return_url" => route('paypal.success', ['order_id' => $order->id])
+                        "return_url" => route('paypal.success')
                     ]
                 ];
 
                 $response = $client->execute($paypalRequest);
-                DB::commit();
-
                 foreach ($response->result->links as $link) {
                     if ($link->rel === 'approve') {
                         return redirect($link->href);
@@ -288,6 +300,7 @@ class OrderController extends Controller
 
                 return back()->with('error', 'Không thể chuyển đến PayPal.');
             }
+
 
             // Nếu không phải PayPal thì hoàn tất luôn
             session()->forget('cart');

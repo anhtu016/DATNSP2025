@@ -45,10 +45,10 @@
                 </div>
                 
         
-                <div class="form-group">
+                {{-- <div class="form-group">
                     <label>Số lượng</label>
                     <input type="number" name="quantity" class="form-control" value="{{ old('quantity', $product->quantity) }}">
-                </div>
+                </div> --}}
         
                 <div class="form-group">
                     <label>Mô tả ngắn</label>

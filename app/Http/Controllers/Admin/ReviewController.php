@@ -84,6 +84,6 @@ class ReviewController extends Controller
                     'status' => 1
                 ]);
             }
-            return redirect()->route('reviews.index');
+            return redirect()->route('admin.reviews.index');
     }
 }

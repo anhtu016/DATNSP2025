@@ -24,7 +24,7 @@
                     {{ session('success') }}
                 </div>
             @endif
-            <form action="{{ route('admin.coupons.store') }}" method="POST" class="form-container">
+            <form action="{{ route('coupons.store') }}" method="POST" class="form-container">
                 @csrf
                 <div class="form-group">
                     <label for="code">Mã giảm giá:</label>
