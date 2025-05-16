@@ -8,6 +8,8 @@ class Variant extends model{
     protected $casts = [
         'quantity_variant' => 'integer',
     ];
+    protected $table = 'variants';  // Tên bảng variant
+    protected $fillable = ['product_id', 'quantity_variant', 'sku', 'image_variant'];
     
 public function product()
 {

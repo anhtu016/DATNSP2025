@@ -36,61 +36,80 @@ class OrderController extends Controller
     }
 
 
-    public function updateStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'order_status' => 'required|string'
-        ]);
+  public function updateStatus(Request $request, Order $order)
+{
+    $request->validate([
+        'order_status' => 'required|string'
+    ]);
 
-        $newStatus = $request->order_status;
+    $newStatus = $request->order_status;
+    $currentStatus = $order->order_status;
 
-        // Trạng thái đã hủy - Hoàn lại sản phẩm vào kho
-        if ($newStatus === 'cancelled' && $order->order_status !== 'cancelled') {
-            DB::beginTransaction(); // Bắt đầu giao dịch
+    // Danh sách chuyển trạng thái hợp lệ theo thứ tự
+    $allowedTransitions = [
+        'pending' => ['processing', 'cancelled'],
+        'processing' => ['delivering'],
+        'delivering' => ['shipped'],
+        'shipped' => ['delivered'],
+    ];
 
-            try {
-                // Duyệt qua các chi tiết của đơn hàng để hoàn lại số lượng sản phẩm vào kho
-                foreach ($order->orderDetails as $detail) {
-                    $variant = Variant::find($detail->variant_id);
-                    if ($variant) {
-                        // Cộng số lượng vào kho
-                        $variant->quantity_variant += $detail->quantity;
-                        $variant->save();
-                    }
-                }
-
-                // Cập nhật trạng thái đơn hàng thành "Đã hủy"
-                $order->order_status = $newStatus;
-
-                DB::commit(); // Cam kết giao dịch
-            } catch (\Exception $e) {
-                DB::rollBack(); // Rollback giao dịch nếu có lỗi
-                return back()->with('error', 'Cập nhật trạng thái thất bại: ' . $e->getMessage());
-            }
-        } else {
-            // Chỉ cập nhật các trạng thái khác không liên quan đến việc hoàn kho
-            $order->order_status = $newStatus;
-        }
-
-        // Cập nhật thời gian tương ứng với trạng thái (nếu có)
-        if ($newStatus === 'delivered') {
-            $order->delivered_at = now();
-        }
-
-        if ($newStatus === 'delivering') {
-            $order->delivering_at = now();
-        }
-
-        if ($newStatus === 'processing') {
-            $order->processing_at = now();
-        }
-
-        $order->save(); // Lưu thông tin đơn hàng
-
-        event(new OrderStatusUpdated($order)); // Gửi event khi cập nhật trạng thái
-
-        return back()->with('success', 'Cập nhật trạng thái thành công.');
+    // Kiểm tra nếu không có chuyển tiếp hợp lệ
+    if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
+        return back()->with('error', 'Không thể chuyển trạng thái từ "' . $currentStatus . '" sang "' . $newStatus . '".');
     }
+
+    // Nếu là hủy đơn hàng
+    if ($newStatus === 'cancelled') {
+        // Chỉ cho phép hủy nếu đang ở trạng thái 'pending'
+        if ($currentStatus !== 'pending') {
+            return back()->with('error', 'Chỉ có thể hủy đơn hàng khi đang ở trạng thái chờ xử lý.');
+        }
+
+        DB::beginTransaction();
+        try {
+            foreach ($order->orderDetails as $detail) {
+                $variant = Variant::find($detail->variant_id);
+                if ($variant) {
+                    $variant->quantity_variant += $detail->quantity;
+                    $variant->save();
+                }
+            }
+
+            $order->order_status = 'cancelled';
+            $order->cancelled_at = now(); // Ghi nhận thời gian hủy đơn hàng
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->with('error', 'Đã xảy ra lỗi khi hủy đơn: ' . $e->getMessage());
+        }
+    } else {
+        // Cập nhật thời gian tương ứng theo trạng thái mới
+        switch ($newStatus) {
+            case 'processing':
+                $order->processing_at = now();
+                break;
+            case 'delivering':
+                $order->delivering_at = now();
+                break;
+            case 'shipped':
+                $order->shipped_at = now();
+                break;
+            case 'delivered':
+                $order->delivered_at = now();
+                break;
+        }
+
+        $order->order_status = $newStatus;
+    }
+
+    $order->save();
+
+    event(new OrderStatusUpdated($order));
+
+    return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
+}
+
 
 
     public function rejectCancel($orderId)
@@ -120,9 +139,18 @@ class OrderController extends Controller
     // xử lý đơn hàng trong thanh toán
     public function create(Request $request)
     {
-        $cart = session()->get('cart', []);
-        $total = 0;
+        $selectedIds = $request->input('selected_items', []); // Mảng ID sản phẩm được chọn
+        $sessionCart = session()->get('cart', []);
+        $cart = [];
 
+        // Lọc sản phẩm đã chọn
+        foreach ($selectedIds as $id) {
+            if (isset($sessionCart[$id])) {
+                $cart[$id] = $sessionCart[$id];
+            }
+        }
+
+        $total = 0;
 
         // Tính tổng tiền các sản phẩm đã chọn
         foreach ($cart as &$item) {
@@ -143,17 +171,16 @@ class OrderController extends Controller
                 $discountAmount = $couponSession['value'];
             } elseif ($couponSession['type'] === 'percentage') {
                 $discountAmount = ($total * $couponSession['value']) / 100;
+
                 if (!empty($couponSession['max_discount_value']) && $discountAmount > $couponSession['max_discount_value']) {
                     $discountAmount = $couponSession['max_discount_value'];
                 }
             }
 
-            // Giới hạn số tiền giảm giá để không vượt quá tổng giỏ hàng
             if ($discountAmount > $total) {
-                $discountAmount = $total;  // Không thể giảm nhiều hơn tổng giỏ hàng
+                $discountAmount = $total;
             }
 
-            // Cập nhật lại vào session (giữ nguyên các giá trị khác)
             $couponSession['discount_amount'] = $discountAmount;
             session(['coupon' => $couponSession]);
         }

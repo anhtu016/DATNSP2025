@@ -24,33 +24,55 @@
                     </p>
 
                 </div>
+<form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
+    @csrf
+    <div class="row align-items-end">
+        <div class="col-md-4">
+            <label for="order_status" class="form-label">Thay đổi trạng thái đơn hàng:</label>
+            <select name="order_status" id="order_status" class="form-select"
+                @disabled(in_array($order->order_status, ['cancel_requested', 'cancelled', 'delivered']))>
 
-                <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
-                    @csrf
-                    <div class="row align-items-end">
-                        <div class="col-md-4">
-                            <label for="order_status" class="form-label">Thay đổi trạng thái:</label>
-                            <select name="order_status" id="order_status" class="form-select"
-                                @disabled(in_array($order->order_status, ['cancel_requested', 'cancelled']))>
-                
-                                <option value="pending" @selected($order->order_status == 'pending')>Chờ xử lý</option>
-                                <option value="processing" @selected($order->order_status == 'processing')>Đang xử lý đơn hàng</option>
-                                <option value="delivering" @selected($order->order_status == 'delivering')>Đang giao hàng</option>
-                                <option value="shipped" @selected($order->order_status == 'shipped')>Đã giao hàng</option>
-                                <option value="delivered" @selected($order->order_status == 'delivered')>Hoàn tất</option>
-                                <option value="cancelled" @selected($order->order_status == 'cancelled')>Đã hủy</option>
-                            </select>
-                            @if ($order->order_status == 'cancel_requested')
-                                <small class="text-warning">Yêu cầu hủy, không thể thay đổi trạng thái</small>
-                            @endif
-                        </div>
-                        <div class="col-md-2">
-                            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled','delivered']))
-                                <button type="submit" class="btn btn-primary mt-3">Cập nhật</button>
-                            @endif
-                        </div>
-                    </div>
-                </form>
+                @php
+                    $current = $order->order_status;
+                    $statusOptions = [
+                        'pending' => ['processing', 'cancelled'],
+                        'processing' => ['delivering'],
+                        'delivering' => ['shipped'],
+                        'shipped' => ['delivered'],
+                    ];
+
+                    $statusLabels = [
+                        'pending' => 'Chờ xử lý',
+                        'processing' => 'Đang xử lý đơn hàng',
+                        'delivering' => 'Đang giao hàng',
+                        'shipped' => 'Đã giao hàng',
+                        'delivered' => 'Hoàn tất',
+                        'cancelled' => 'Hủy đơn hàng',
+                        'cancel_requested' => 'Yêu cầu hủy',
+                    ];
+                @endphp
+
+                <option value="{{ $current }}" selected disabled>-- {{ $statusLabels[$current] ?? $current }} --</option>
+
+                @foreach ($statusOptions[$current] ?? [] as $status)
+                    <option value="{{ $status }}">{{ $statusLabels[$status] ?? ucfirst($status) }}</option>
+                @endforeach
+            </select>
+
+            @if ($order->order_status == 'cancel_requested')
+                <small class="text-warning">Khách đã yêu cầu hủy - Không thể thay đổi trạng thái</small>
+            @endif
+        </div>
+
+        <div class="col-md-2">
+            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled', 'delivered']))
+                <button type="submit" class="btn btn-primary mt-3">Cập nhật trạng thái</button>
+            @endif
+        </div>
+    </div>
+</form>
+
+
                 
 
                 <h4 class="mb-3">🛒 Sản phẩm đã đặt</h4>

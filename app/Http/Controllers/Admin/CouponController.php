@@ -161,7 +161,7 @@ class CouponController extends Controller
         
     
         $coupon->delete();
-        return redirect()->route('admin.coupons.index')->with('success', 'Mã giảm giá đã xóa thành công.');
+        return redirect()->route('coupons.index')->with('success', 'Mã giảm giá đã xóa thành công.');
     }
     // ẩn và hiện
     public function toggleStatus(Coupon $coupon)

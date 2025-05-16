@@ -58,6 +58,10 @@ public function orderDetails()
 {
     return $this->hasMany(\App\Models\OrderDetail::class, 'product_id');
 }
+public function images()
+{
+    return $this->hasMany(ProductImage::class);
+}
 
 
 }

@@ -17,8 +17,8 @@
             <div class="d-flex justify-content-between mb-3">
                 <a href="{{ route('coupons.create') }}" class="btn btn-primary">Tạo mã giảm giá mới</a>
             </div>
-            
-            
+
+
             <table class="table table-striped table-bordered table-hover">
                 <thead>
                     <tr>
@@ -90,35 +90,41 @@
                                 @else
                                     <span class="badge bg-success">Đang áp dụng</span>
                                 @endif
-
                             </td>
-
-
-
 
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('coupons.edit', $coupon->id) }}"
-                                        class="btn btn-warning btn-sm">Sửa</a>
+                                    {{-- Hiện nút "Sửa" nếu mã chưa bắt đầu hoặc chưa có lượt sử dụng --}}
+                                    @if ($now->lt($start) && $coupon->usage_count == 0)
+                                        <a href="{{ route('coupons.edit', $coupon->id) }}"
+                                            class="btn btn-warning btn-sm">Sửa</a>
+                                    @endif
 
-                                    <form action="{{ route('coupons.destroy', $coupon->id) }}" method="POST"
-                                        onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
-                                    </form>
+                                    {{-- Hiện nút "Xóa" nếu mã đã hết hạn --}}
+                                    @if ($now->gt($end))
+                                        <form action="{{ route('coupons.destroy', $coupon->id) }}" method="POST"
+                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                        </form>
+                                    @endif
 
-                                    <form action="{{ route('coupons.toggle', $coupon->id) }}" method="POST"
-                                        onsubmit="return confirm('Bạn có chắc chắn muốn {{ $coupon->is_active ? 'ẩn' : 'hiển thị' }} mã này?')">
-                                        @csrf
-                                        @method('PATCH')
-                                        <button type="submit"
-                                            class="btn btn-sm {{ $coupon->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }}">
-                                            {{ $coupon->is_active ? 'Ẩn' : 'Hiện' }}
-                                        </button>
-                                    </form>
+                                    {{-- Hiện nút "Ẩn/Hiện" nếu mã đã có lượt sử dụng --}}
+                                    @if ($coupon->usage_count > 0)
+                                        <form action="{{ route('coupons.toggle', $coupon->id) }}" method="POST"
+                                            onsubmit="return confirm('Bạn có chắc chắn muốn {{ $coupon->is_active ? 'ẩn' : 'hiển thị' }} mã này?')">
+                                            @csrf
+                                            @method('PATCH')
+                                            <button type="submit"
+                                                class="btn btn-sm {{ $coupon->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }}">
+                                                {{ $coupon->is_active ? 'Ẩn' : 'Hiện' }}
+                                            </button>
+                                        </form>
+                                    @endif
                                 </div>
                             </td>
+
 
 
                         </tr>
