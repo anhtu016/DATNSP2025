@@ -61,11 +61,37 @@
                             </a>
                         </td>
                         <td>
-                            <form action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xoá đơn hàng này không?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger">Xoá</button>
-                            </form>
+                            <form id="delete-order-form-{{ $order->id }}" action="{{ route('admin.orders.destroy', $order->id) }}" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<button type="button" class="btn btn-sm btn-danger" id="delete-order-btn-{{ $order->id }}">
+    Xoá
+</button>
+
+
+<script>
+document.getElementById('delete-order-btn-{{ $order->id }}').addEventListener('click', function(e) {
+    e.preventDefault();
+
+    Swal.fire({
+        title: 'Bạn có chắc chắn muốn xoá đơn hàng này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Có, xoá ngay',
+        cancelButtonText: 'Không',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.isConfirmed) {
+            this.disabled = true;
+            this.innerText = '⏳ Đang xoá...';
+            document.getElementById('delete-order-form-{{ $order->id }}').submit();
+        }
+    });
+});
+</script>
+
                         </td>
                         <td>
                             @if($order->order_status == 'cancel_requested')

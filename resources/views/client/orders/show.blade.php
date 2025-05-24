@@ -19,8 +19,8 @@
             </div>
             <div class="card-body">
                 <p><strong>🗓 Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
-                <p><strong>💳 Thanh toán:</strong> {{ $order->paymentMethod->name ?? 'Thanh toán khi nhận hàng' }}</p>
-                <p><strong>🚚 Vận chuyển:</strong> {{ $order->shippingMethod->name ?? 'Giao hàng tiết kiệm' }}</p>
+                <p><strong>💳 Thanh toán:</strong> {{ $paymentMethods[$order->payment_methods_id] ?? 'Không xác định' }}</p>
+                <p><strong>🚚 Vận chuyển:</strong> {{ $shippingMethods[$order->shipping_method_id] ?? 'Không xác định' }}</p>
                 <p><strong>📍 Địa chỉ:</strong> {{ $order->shipping_address }}</p>
                 <p><strong>🕒 Cập nhật:</strong> <span
                         id="updated-at">{{ \Carbon\Carbon::parse($order->updated_at)->format('d/m/Y H:i') }}</span></p>
@@ -86,17 +86,39 @@
             @endif
 
             @if ($order->order_status === 'pending')
-                <form action="{{ route('user.orders.cancel', $order->id) }}" method="POST"
-                    onsubmit="return confirm('Bạn có chắc muốn hủy đơn hàng này không?')">
+                <form id="cancel-order-form" action="{{ route('user.orders.cancel', $order->id) }}" method="POST"
+                    style="display:none;">
                     @csrf
                     @method('PUT')
-                    <button id="cancel-order-btn" class="btn btn-danger mt-3"
-                        onclick="this.innerText='⏳ Đang xử lý...'; this.form.submit();">
-                        ❌ Hủy đơn hàng
-                    </button>
-
-
                 </form>
+
+                <button id="cancel-order-btn" class="btn btn-danger mt-3">
+                    ❌ Hủy đơn hàng
+                </button>
+
+                <!-- Thêm SweetAlert2 CDN nếu chưa có -->
+
+                <script>
+                    document.getElementById('cancel-order-btn').addEventListener('click', function(e) {
+                        e.preventDefault(); // Ngăn submit form ngay
+
+                        Swal.fire({
+                            title: 'Bạn có chắc muốn hủy đơn hàng này không?',
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Có, hủy đơn',
+                            cancelButtonText: 'Không, giữ lại',
+                            reverseButtons: true,
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Nếu người dùng xác nhận, disable nút và submit form
+                                this.disabled = true;
+                                this.innerHTML = '⏳ Đang xử lý...';
+                                document.getElementById('cancel-order-form').submit();
+                            }
+                        });
+                    });
+                </script>
             @endif
         </div>
 

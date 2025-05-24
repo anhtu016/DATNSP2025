@@ -20,6 +20,14 @@ class UserOrderController extends Controller
     }
     public function show($id)
 {
+    $paymentMethods = [
+    1 => 'Thanh toán khi nhận hàng',
+    2 => 'Thanh toán online PayPal',
+];
+        $shippingMethods = [
+            1 => 'Giao hàng nhanh',
+            2 => 'Giao hàng tiêu chuẩn',
+        ];
     $order = Order::where('id', $id)
         ->where('customer_id', Auth::id())
         ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
@@ -31,7 +39,7 @@ class UserOrderController extends Controller
             $daysSinceDelivered = null;  // Nếu đơn hàng chưa giao
         }
 
-    return view('client.orders.show', compact('order','daysSinceDelivered'));
+    return view('client.orders.show', compact('order','daysSinceDelivered', 'paymentMethods','shippingMethods'));
 }
 
 
