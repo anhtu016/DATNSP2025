@@ -88,7 +88,7 @@ class CouponController extends Controller
             $coupon->products()->attach($validated['product_ids']);
         }
     
-        return redirect()->route('admin.coupons.index')->with('success', 'Tạo mã giảm giá thành công!');
+        return redirect()->route('coupons.index')->with('success', 'Tạo mã giảm giá thành công!');
     }
     
     
@@ -142,7 +142,7 @@ class CouponController extends Controller
             $coupon->products()->detach();
         }
     
-        return redirect()->route('admin.coupons.index')->with('success', 'Cập nhật mã giảm giá thành công!');
+        return redirect()->route('coupons.index')->with('success', 'Cập nhật mã giảm giá thành công!');
     }
     
     

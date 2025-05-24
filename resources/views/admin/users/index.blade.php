@@ -1,112 +1,116 @@
 @extends('admin.layout.default')
 @section('content')
-<div class="page-content">
-    <div class="container-fluid">
-        <h2 class="mb-4">Danh sách người dùng</h2>
+    <div class="page-content">
+        <div class="container-fluid">
+            <h2 class="mb-4">Danh sách người dùng</h2>
 
-        <!-- Thông báo lỗi -->
-        @if (session('error'))
-            <div class="alert alert-danger">
-                {{ session('error') }}
-            </div>
-        @endif
-
-        <!-- Thông báo thành công -->
-        @if (session('success'))
-            <div class="alert alert-success">
-                {{ session('success') }}
-            </div>
-        @endif
-
-        <!-- Bảng danh sách người dùng -->
-        <table class="table table-bordered table-striped">
-            <thead>
-                <tr>
-                    <th>STT</th>
-                    <th>Tên</th>
-                    <th>Email</th>
-                    <th>Quyền</th>
-                    <th>Ngày tạo</th>
-                    <th>Hành động</th>
-                    <th>Trạng thái</th>
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($users as $user)
-                    <tr>
-                        <td>{{ $loop->iteration }}</td>
-                        <td>{{ $user->name }}</td>
-                        <td>{{ $user->email }}</td>
-
-                        <!-- Quyền của người dùng -->
-<td>
-    @if ($user->permissions && $user->permissions->count())
-        @foreach ($user->permissions as $permission)
-            @php
-                switch ($permission->permission_name) {
-                    case 'admin':
-                        $displayName = 'Quản trị viên';
-                        $color = 'text-danger';
-                        break;
-                    case 'staff':
-                        $displayName = 'Nhân viên quản lý';
-                        $color = 'text-primary';
-                        break;
-                    case 'accountant':
-                        $displayName = 'Kế toán';
-                        $color = 'text-warning';
-                        break;
-                    case 'user':
-                    default:
-                        $displayName = 'Người dùng';
-                        $color = 'text-success';
-                        break;
-                }
-            @endphp
-            <span class="{{ $color }}">{{ $displayName }}</span>
-            @if (!$loop->last)
-                <span>, </span>
+            <!-- Thông báo lỗi -->
+            @if (session('error'))
+                <div class="alert alert-danger">
+                    {{ session('error') }}
+                </div>
             @endif
-        @endforeach
-    @else
-        <span class="text-success">Người dùng</span>
-    @endif
-</td>
+
+            <!-- Thông báo thành công -->
+            @if (session('success'))
+                <div class="alert alert-success">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            <!-- Bảng danh sách người dùng -->
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>Quyền</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
+                        <th>Trạng thái</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($users as $user)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $user->name }}</td>
+                            <td>{{ $user->email }}</td>
+
+                            <!-- Quyền của người dùng -->
+                            <td>
+                                @if ($user->permissions && $user->permissions->count())
+                                    @foreach ($user->permissions as $permission)
+                                        @php
+                                            switch ($permission->permission_name) {
+                                                case 'admin':
+                                                    $displayName = 'Quản trị viên';
+                                                    $color = 'text-danger';
+                                                    break;
+                                                case 'staff':
+                                                    $displayName = 'Nhân viên quản lý';
+                                                    $color = 'text-primary';
+                                                    break;
+                                                case 'accountant':
+                                                    $displayName = 'Kế toán';
+                                                    $color = 'text-warning';
+                                                    break;
+                                                case 'user':
+                                                default:
+                                                    $displayName = 'Người dùng';
+                                                    $color = 'text-success';
+                                                    break;
+                                            }
+                                        @endphp
+                                        <span class="{{ $color }}">{{ $displayName }}</span>
+                                        @if (!$loop->last)
+                                            <span>, </span>
+                                        @endif
+                                    @endforeach
+                                @else
+                                    <span class="text-success">Người dùng</span>
+                                @endif
+                            </td>
 
 
-                        <!-- Ngày tạo người dùng -->
-                        <td>{{ $user->created_at->format('d-m-Y H:i') }}</td>
+                            <!-- Ngày tạo người dùng -->
+                            <td>{{ $user->created_at->format('d-m-Y H:i') }}</td>
 
-                        <!-- Hành động: Sửa và Khóa -->
-                        <td class="text-center">
-                            <!-- Nút sửa -->
-                            <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                            <!-- Hành động: Sửa và Khóa -->
+                            <td class="text-center">
+                                <!-- Nút sửa -->
+                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Sửa</a>
 
-                        
-                        </td>
-                        <td>
-                         
+
+                            </td>
+                            <td>
+
                                 @if ($user->is_active)
                                     <span class="text-success">Đang hoạt động</span>
                                 @else
                                     <span class="text-danger">Đã khóa</span>
                                 @endif
 
-                                <form action="{{ route('users.toggleStatus', $user->id) }}" method="POST" style="display:inline;">
+                                <form action="{{ route('users.toggleStatus', $user->id) }}" method="POST"
+                                    style="display:inline;">
                                     @csrf
                                     @method('PATCH')
-                                    <button class="btn btn-sm btn-warning">
+                                    <button class="btn btn-sm btn-danger">
                                         {{ $user->is_active ? 'Khóa' : 'Mở khóa' }}
                                     </button>
                                 </form>
-                       
-                        </td>
-                    </tr>
-                @endforeach
-            </tbody>
-        </table>
+
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+                                    <div class="d-flex justify-content-end mt-3">
+                            {{ $users->links('pagination::bootstrap-5') }}
+                        </div>
+        </div>
     </div>
-</div>
 
     @push('admin_css')
         <!-- App favicon -->

@@ -1,5 +1,9 @@
 @extends('client.layout.default')
 @section('content')
+@if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+@endif
+
     <main>
         <div class="container mt-5">
             <div class="row g-5">
@@ -72,7 +76,7 @@
                                                     <input type="radio" class="btn-check"
                                                         name="attributes[{{ $attrName }}]"
                                                         id="{{ $attrName }}_{{ $value->id }}"
-                                                        value="{{ $value->id }}" required>
+                                                        value="{{ $value->id }}" >
                                                     <label class="btn btn-outline-dark"
                                                         for="{{ $attrName }}_{{ $value->id }}">
                                                         {{ $value->value }}
@@ -99,7 +103,7 @@
                                                 id="decrement-btn">−</button>
                                             <input type="number" name="quantity" id="quantity"
                                                 class="form-control text-center mx-2 no-spinner mt-2" value="1"
-                                                min="1" max="{{ $product->quantity }}"
+                                                min="1" max="100"
                                                 style="width: 60px; height: 40px;">
                                             <button type="button" class="btn btn-outline-dark"
                                                 style="width: 40px; height: 40px;" onclick="incrementQuantity()"
@@ -139,8 +143,9 @@
                     <ul class="nav nav-tabs" role="tablist">
                         <li class="nav-item">
                             <h2>
-                                                            <a id="tab-B" href="#pane-B" class="nav-link" data-bs-toggle="tab" role="tab">Xem đánh
-                                giá</a>
+                                <a id="tab-B" href="#pane-B" class="nav-link" data-bs-toggle="tab" role="tab">Xem
+                                    đánh
+                                    giá</a>
                             </h2>
                         </li>
                     </ul>
@@ -164,32 +169,52 @@
                             <div class="card-body">
                                 <div class="row justify-content-between">
 
-                                   <div class="col-lg-6">
-    @if ($loadReviews->isEmpty())
-        <h5 class="text-danger">Hiện tại chưa có đánh giá về sản phẩm này !</h5>
-    @else
-        @foreach ($loadReviews as $reviews)
-            @if ($reviews->status == 1)
-                <!-- Chỉ hiển thị nếu status = 1 -->
-                <div class="review_content">
-                    <div class="clearfix add_bottom_10">
-                        <span class="rating">
-                            @for ($i = 1; $i <= $reviews->rating; $i++)
-                                <i class="icon-star filled"></i>
-                            @endfor
-                            <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh giá)</em>
-                        </span>
-                    </div>
-                    <h4>{{ $reviews->user->name }}</h4>
-                    <p>{{ $reviews->description }}</p>
-                    @if ($reviews->image) 
-                        <img src="{{ asset('storage/' . $reviews->image) }}" alt="Ảnh đánh giá" width="150px">
-                    @endif
-                </div>
-            @endif
-        @endforeach
-    @endif
-</div>
+                                    <div class="">
+                                        @if ($loadReviews->isEmpty())
+                                            <h5 class="text-danger">Hiện tại chưa có đánh giá về sản phẩm này !</h5>
+                                        @else
+                                            @foreach ($loadReviews as $reviews)
+                                                @if ($reviews->status == 1)
+                                                    <div class="review_content">
+                                                        <div class="clearfix add_bottom_10">
+                                                            <span class="rating">
+                                                                @for ($i = 1; $i <= $reviews->rating; $i++)
+                                                                    <i class="icon-star filled"></i>
+                                                                @endfor
+                                                                <em>{{ number_format($reviews->rating, 1) }}/5.0 (đánh
+                                                                    giá)</em>
+                                                            </span>
+                                                        </div>
+                                                        <p>{{ $reviews->created_at }} | phân loại hàng: @if ($reviews->variant && $reviews->variant->attributeValues)
+                                                                @foreach ($reviews->variant->attributeValues as $value)
+                                                                    <span
+                                                                        class="badge bg-info">{{ $value->attribute->name }}:
+                                                                        {{ $value->value }}</span>
+                                                                @endforeach
+                                                            @endif
+                                                        </p>
+                                                        <h4>{{ $reviews->user->name }}</h4>
+
+                                                        {{-- Thông tin biến thể --}}
+
+
+                                                        <p>{{ $reviews->description }}</p>
+
+                                                        @if ($reviews->image)
+                                                            <img src="{{ asset('storage/' . $reviews->image) }}"
+                                                                alt="Ảnh đánh giá" width="100px" height="100px">
+                                                        @endif
+                                                    </div>
+                                                    <hr style="height: 1px; background-color: black; border: none; width: 100%;">
+
+                                                @endif
+                                            @endforeach
+                                            <div class="mt-3">
+                                                {{ $loadReviews->links() }}
+                                            </div>
+                                        @endif
+
+                                    </div>
 
                                 </div>
                             </div>
@@ -269,30 +294,30 @@
             mainImg.src = el.src;
         }
     </script>
-<script>
-    let scrollIndex = 0;
-    const scrollAmount = 80; // chiều cao mỗi lần scroll
+    <script>
+        let scrollIndex = 0;
+        const scrollAmount = 80; // chiều cao mỗi lần scroll
 
-    function scrollThumbnails(direction) {
-        const container = document.getElementById('thumbnail-container');
-        const list = document.getElementById('thumbnail-list');
-        const maxScroll = list.scrollHeight - container.clientHeight;
+        function scrollThumbnails(direction) {
+            const container = document.getElementById('thumbnail-container');
+            const list = document.getElementById('thumbnail-list');
+            const maxScroll = list.scrollHeight - container.clientHeight;
 
-        scrollIndex += direction * scrollAmount;
+            scrollIndex += direction * scrollAmount;
 
-        // Giới hạn cuộn
-        scrollIndex = Math.max(0, Math.min(scrollIndex, maxScroll));
+            // Giới hạn cuộn
+            scrollIndex = Math.max(0, Math.min(scrollIndex, maxScroll));
 
-        container.scrollTo({
-            top: scrollIndex,
-            behavior: 'smooth'
-        });
-    }
+            container.scrollTo({
+                top: scrollIndex,
+                behavior: 'smooth'
+            });
+        }
 
-    function changeMainImage(el) {
-        document.getElementById('product-image').src = el.src;
-    }
-</script>
+        function changeMainImage(el) {
+            document.getElementById('product-image').src = el.src;
+        }
+    </script>
 
     <script>
         const variants = @json($variantsData);

@@ -52,7 +52,7 @@
                     ];
                 @endphp
 
-                <option value="{{ $current }}" selected disabled>-- {{ $statusLabels[$current] ?? $current }} --</option>
+                <option value="{{ $current }}" selected disabled> {{ $statusLabels[$current] ?? $current }}</option>
 
                 @foreach ($statusOptions[$current] ?? [] as $status)
                     <option value="{{ $status }}">{{ $statusLabels[$status] ?? ucfirst($status) }}</option>

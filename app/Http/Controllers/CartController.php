@@ -21,7 +21,7 @@ class CartController extends Controller
         $cartTotal += $item['price'] * $item['quantity'];
     }
 
-    // Lấy 3 mã giảm giá tối ưu nhất (dựa trên tổng giỏ hàng)
+   
     $now = now();
 
     $coupons = Coupon::where('start_date', '<=', $now)
@@ -47,7 +47,7 @@ class CartController extends Controller
     
 
 
-  public function addToCart(Request $request, $id)
+public function addToCart(Request $request, $id)
 {
     $product = Product::findOrFail($id);
     $attributes = $request->input('attributes', []);
@@ -67,7 +67,6 @@ class CartController extends Controller
         return redirect()->back()->with('error', 'Thuộc tính không hợp lệ.');
     }
 
-    // Tìm biến thể đúng với color và size
     $variant = Variant::where('product_id', $id)
         ->whereHas('attributeValues', function ($query) use ($colorId, $sizeId) {
             $query->whereIn('attribute_value_id', [$colorId, $sizeId]);
@@ -78,12 +77,10 @@ class CartController extends Controller
         return redirect()->back()->with('error', 'Không tìm thấy biến thể phù hợp.');
     }
 
-    // Kiểm tra tồn kho của biến thể
     if (!is_numeric($variant->quantity_variant) || $variant->quantity_variant < $quantity) {
         return redirect()->back()->with('error', 'Số lượng tồn kho không đủ.');
     }
 
-    // Lấy ảnh của biến thể (image_variant)
     $variantImage = $variant->image_variant ?? $product->thumbnail ?? 'client/img/default.png';
 
     $cartItemId = $id . '-' . $colorId . '-' . $sizeId;
@@ -97,6 +94,7 @@ class CartController extends Controller
         }
 
         $cart[$cartItemId]['quantity'] = $newQuantity;
+        $cart[$cartItemId]['quantity_variant'] = $variant->quantity_variant; // ✅ cập nhật lại
     } else {
         $cart[$cartItemId] = [
             'id' => $product->id,
@@ -105,8 +103,9 @@ class CartController extends Controller
             'quantity' => $quantity,
             'Color' => $color->value,
             'Size' => $size->value,
-            'thumbnail' => $variantImage,  // Lưu ảnh của biến thể
+            'thumbnail' => $variantImage,
             'variant_id' => $variant->id,
+            'quantity_variant' => $variant->quantity_variant, // ✅ thêm vào đây
         ];
     }
 
@@ -158,104 +157,110 @@ public function update(Request $request, $id)
 }
 
 // xử lý mã giảm giá trong giỏ hàng
-public function applyCoupon(Request $request)
-{
-    // Validate mã giảm giá
-    $request->validate([
-        'coupon_code' => 'required|string',
-    ]);
+// public function applyCoupon(Request $request)
+// {
+//     $request->validate([
+//         'coupon_code' => 'required|string',
+//     ]);
 
-    // Tìm coupon theo mã
-    $coupon = Coupon::where('code', $request->coupon_code)->first();
+//     $selectedItems = $request->input('selected_items', []);
+    
 
-    // Kiểm tra nếu coupon không tồn tại
-    if (!$coupon) {
-        return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ.');
-    }
+//     // ✅ Kiểm tra nếu không có sản phẩm nào được chọn
+//     if (empty($selectedItems)) {
+//         return redirect()->back()
+//             ->withInput()
+//             ->with('error', 'Vui lòng chọn ít nhất một sản phẩm để áp dụng mã giảm giá.');
+//     }
 
-    // Kiểm tra hạn sử dụng của coupon
-    if (Carbon::parse($coupon->end_date)->isPast()) {
-        return redirect()->back()->with('error', 'Mã giảm giá đã hết hạn.');
-    }
+//     $coupon = Coupon::where('code', $request->coupon_code)->first();
+//     if (!$coupon) {
+//         return redirect()->back()->with('error', 'Mã giảm giá không hợp lệ.');
+//     }
 
-    // Kiểm tra số lượt sử dụng hiện tại
-    $usageCount = Order::where('coupon_code', $coupon->code)->count();
+//     if (Carbon::parse($coupon->end_date)->isPast()) {
+//         return redirect()->back()->with('error', 'Mã giảm giá đã hết hạn.');
+//     }
 
-    // Kiểm tra nếu coupon đã hết lượt sử dụng
-    if ($coupon->usage_limit > 0 && $usageCount >= $coupon->usage_limit) {
-        return redirect()->back()->with('error', 'Mã giảm giá đã hết lượt sử dụng.');
-    }
+//     $usageCount = Order::where('coupon_code', $coupon->code)->count();
+//     if ($coupon->usage_limit > 0 && $usageCount >= $coupon->usage_limit) {
+//         return redirect()->back()->with('error', 'Mã giảm giá đã hết lượt sử dụng.');
+//     }
 
-    // Lấy tổng giỏ hàng từ session
-    $cart = session()->get('cart', []);
-    $total = 0;
+//     $cart = session()->get('cart', []);
+//     $total = 0;
 
-    // Tính tổng giá trị giỏ hàng
-    foreach ($cart as $item) {
-        $total += $item['price'] * $item['quantity'];
-    }
+//     // ✅ Chỉ tính tổng của các sản phẩm đã chọn
+//     foreach ($cart as $id => $item) {
+//         if (in_array($id, $selectedItems)) {
+//             $total += $item['price'] * $item['quantity'];
+//         }
+//     }
 
-    // Kiểm tra giá trị đơn hàng có đủ điều kiện sử dụng mã giảm giá
-    if ($total < $coupon->min_order_value) {
-        return redirect()->back()->with('error', 'Giá trị đơn hàng không đủ để áp dụng mã giảm giá.');
-    }
+//     if ($total < $coupon->min_order_value) {
+//         return redirect()->back()->with('error', 'Giá trị đơn hàng không đủ để áp dụng mã giảm giá.');
+//     }
 
-    $discountAmount = 0;
+//     $discountAmount = 0;
+//     if ($coupon->type == 'percentage') {
+//         $discountAmount = ($total * $coupon->value) / 100;
+//         if ($coupon->max_discount_value && $discountAmount > $coupon->max_discount_value) {
+//             $discountAmount = $coupon->max_discount_value;
+//         }
+//     } elseif ($coupon->type == 'fixed') {
+//         $discountAmount = min($coupon->value, $total);
+//     }
 
-    // Tính toán số tiền giảm giá theo loại coupon
-    if ($coupon->type == 'percentage') {
-        $discountAmount = ($total * $coupon->value) / 100;
+//     $finalTotal = $total - $discountAmount;
+//     if ($finalTotal < 0) {
+//         $discountAmount = $total;
+//         $finalTotal = 0;
+//     }
 
-        // Giới hạn số tiền giảm giá không vượt quá max_discount_value
-        if ($coupon->max_discount_value && $discountAmount > $coupon->max_discount_value) {
-            $discountAmount = $coupon->max_discount_value;
-        }
-    } elseif ($coupon->type == 'fixed') {
-        // Nếu là giảm giá cố định, kiểm tra nếu coupon không vượt quá tổng giỏ hàng
-        $discountAmount = min($coupon->value, $total);
-    }
+//     // Phân bổ giảm giá theo tỷ lệ giá từng sản phẩm được chọn
+// $discountPerItem = [];
+// foreach ($selectedItems as $id) {
+//     if (isset($cart[$id])) {
+//         $itemTotal = $cart[$id]['price'] * $cart[$id]['quantity'];
+//         $ratio = $itemTotal / $total;
+//         $discountPerItem[$id] = round($discountAmount * $ratio); // phân bổ làm tròn
+//     }
+// }
 
-    // Đảm bảo tổng giỏ hàng không bị âm sau khi áp dụng mã giảm giá
-    $finalTotal = $total - $discountAmount;
+// // Lưu session chi tiết mã giảm giá
+// session([
+//     'coupon' => [
+//         'code' => $coupon->code,
+//         'type' => $coupon->type,
+//         'value' => $coupon->value,
+//         'description' => $coupon->description ?? '',
+//         'max_discount_value' => $coupon->max_discount_value ?? null,
+//         'min_order_value' => $coupon->min_order_value ?? 0,
+//         'end_date' => $coupon->end_date,
+//         'selected_items' => $selectedItems,
+//         'discount_amount' => $discountAmount,
+//     ],
+//     'coupon_applied_items' => $discountPerItem, // 💡 danh sách sản phẩm và giảm giá tương ứng
+//     'discounted_subtotal' => $finalTotal,
+// ]);
 
-    // Nếu tổng giỏ hàng sau khi giảm giá là âm, điều chỉnh lại giá trị giảm giá
-    if ($finalTotal < 0) {
-        $discountAmount = $total; // Chỉ giảm hết số tiền có trong giỏ hàng
-        $finalTotal = 0; // Đảm bảo tổng giỏ hàng không bị âm
-    }
+//     return redirect()->back()
+//         ->withInput()
+//         ->with('success', 'Áp dụng mã giảm giá thành công!');
+// }
 
-    // Lưu thông tin mã giảm giá vào session
-    session([
-        'coupon' => [
-            'code' => $coupon->code,
-            'type' => $coupon->type,
-            'value' => $coupon->value,
-            'description' => $coupon->description ?? '',
-            'max_discount_value' => $coupon->max_discount_value ?? null,
-            'min_order_value' => $coupon->min_order_value ?? 0,
-            'apply_to_all_products' => $coupon->apply_to_all_products,
-            'discount_amount' => $discountAmount,
-            'end_date' => $coupon->end_date,
-        ]
-    ]);
-
-    // Lưu tổng giỏ hàng đã giảm vào session
-    session(['total' => $finalTotal]);
-
-    return redirect()->back()->with('success', 'Áp dụng mã giảm giá thành công!');
-}
 
 
 
 //hủy mã giảm giá 
-public function removeCoupon()
-{
-    // Xóa mã giảm giá khỏi session
-    session()->forget('coupon');
+// public function removeCoupon()
+// {
+//     session()->forget('coupon');
+//     session()->forget('selectedItems');
 
-    // Cập nhật lại giỏ hàng, tính toán lại tổng tiền
-    return redirect()->route('cart.view')->with('success', 'Mã giảm giá đã được hủy.');
-}
+//     return redirect()->back()->with('success', 'Đã hủy mã giảm giá.');
+// }
+
 
 
 }

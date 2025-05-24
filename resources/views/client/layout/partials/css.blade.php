@@ -146,7 +146,7 @@
     .btn-primary {
         background-color: #3b82f6;
         border: none;
-        padding: 12px 20px;
+       
         font-size: 16px;
         border-radius: 8px;
         color: white;
@@ -363,7 +363,7 @@
     color: white;  
     text-align: center;  
     padding: 40px;  
-    border-radius: 8px;  
+    
     max-width: 100%;  
     margin: 0 auto;  
 }  

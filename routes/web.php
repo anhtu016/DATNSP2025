@@ -275,14 +275,14 @@ Route::prefix('admin')->middleware(['auth', 'check.permission:admin'])->group(fu
 
 
 
-
+// kế toán
 
 Route::prefix('admin')->middleware(['auth', 'check.permission:accountant'])->group(function () {
       Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
     Route::get('/turnover', [turnoverController::class, 'index'])->name('admin.turnover.index');
     Route::get('/turnover/filter', [turnoverController::class, 'filter'])->name('admin.turnover.filter');
 });
-
+//nhân viên kho
 Route::prefix('admin')->middleware(['auth', 'check.permission:staff'])->group(function () {
       Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
     // Route mã giảm giá, đơn hàng, đánh giá
@@ -353,9 +353,13 @@ Route::get('/user/orders/{order}/review', [UserOrderController::class, 'review']
 Route::post('/reviews', [ReviewController::class, 'store'])->name('user.reviews.store');
 Route::get('/order-status/{id}', [UserOrderController::class, 'statusPartial'])->name('order.status.partial');
 //áp dụng mã giảm giá
-Route::post('/cart/apply-coupon', [CartController::class, 'applyCoupon'])->name('cart.applyCoupon');
+// Route::post('/order/apply-coupon', [cartController::class, 'applyCoupon'])->name('cart.applyCoupon');
+Route::post('/coupon/storeCoupon', [orderController::class, 'applyCoupon'])->name('order.storeCoupon');
+
 // Route để hủy mã giảm giá
-Route::post('/coupon/remove', [CartController::class, 'removeCoupon'])->name('coupon.remove');
+Route::post('/coupon/remove', [orderController::class, 'removeCoupon'])->name('coupon.remove');
+
+
 Route::get('/promotions', [PromotionController::class, 'index'])->name('promotions.index');
 
 

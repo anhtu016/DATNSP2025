@@ -22,7 +22,7 @@
                         <th>STT</th>
                         <th>Tên sản phẩm</th>
                         <th>Ảnh sản phẩm</th>
-                        <th>Ảnh phụ</th>
+                        {{-- <th>Ảnh phụ</th> --}}
                         <th>Giá sản phẩm</th>
                         <th>Màu sắc</th>
                         <th>Kích cỡ</th>
@@ -39,11 +39,11 @@
                             <td>
                                 <img src="{{ asset('storage/' . $product->thumbnail) }}" alt="Product Image" width="70px">
                             </td>
-                            <td>
+                            {{-- <td>
                                 @foreach ($product->images as $img)
                                     <img src="{{ asset('storage/' . $img->image) }}" width="70px" height="70px">
                                 @endforeach
-                            </td>
+                            </td> --}}
                             <td>{{ number_format($product->price, 0, ',', '.') }} đ</td>
                             <td>
                                 @foreach ($product->variants as $variant)
@@ -82,12 +82,31 @@
                                     <a href="{{ route('Variants', $product->id) }}" class="btn btn-sm btn-success">Biến
                                         thể</a>
 
-                                    <form action="{{ route('products.destroy', $product->id) }}" method="POST"
-                                        style="display:inline;">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm  btn-danger">xóa</button>
-                                    </form>
+                                        <form id="delete-form-{{ $product->id }}" action="{{ route('products.destroy', $product->id) }}" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<button class="btn btn-sm btn-danger" onclick="confirmDelete({{ $product->id }})">xóa</button>
+
+<script>
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa sản phẩm này?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('delete-form-' + id).submit();
+        }
+    })
+}
+</script>
+
 
                                     <a href="{{ route('products.edit', $product->id) }}"
                                         class="btn btn-sm  btn-warning">Sửa</a>

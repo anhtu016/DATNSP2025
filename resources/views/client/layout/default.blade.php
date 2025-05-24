@@ -15,6 +15,10 @@
     <link href="{{ asset('client/css/style.css') }}" rel="stylesheet">
     {{-- <link href="{{ asset('client/css/responsive.css') }}" rel="stylesheet"> --}}
 <!-- Notyf CSS -->
+<!-- Thêm link CSS & JS Toastify -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+<script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/notyf@3/notyf.min.css">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 

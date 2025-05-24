@@ -18,6 +18,7 @@ class CuaHangController extends Controller
      */
     public function index(string $id)
     {
+        
         // Mảng ánh xạ màu
         $colorMap = [
             'Red' => '#FF0000',
@@ -90,7 +91,13 @@ class CuaHangController extends Controller
                 'quantity' => $variant->quantity_variant,
             ];
         });
-    
+        
+        $loadReviews = ProductReview::with(['user', 'variant.attributeValues.attribute'])
+    ->where('product_id', $product->id)
+    ->where('status', 1)
+    ->latest()
+    ->paginate(5);  // 5 đánh giá mỗi trang
+
         return view('client.detail-product', compact(
             'product', 'attributes', 'detailProduct', 'imageProduct', 'loadReviews',
             'isLowStock', 'variantStock', 'variantsData'

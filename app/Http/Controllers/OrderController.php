@@ -36,79 +36,79 @@ class OrderController extends Controller
     }
 
 
-  public function updateStatus(Request $request, Order $order)
-{
-    $request->validate([
-        'order_status' => 'required|string'
-    ]);
+    public function updateStatus(Request $request, Order $order)
+    {
+        $request->validate([
+            'order_status' => 'required|string'
+        ]);
 
-    $newStatus = $request->order_status;
-    $currentStatus = $order->order_status;
+        $newStatus = $request->order_status;
+        $currentStatus = $order->order_status;
 
-    // Danh sách chuyển trạng thái hợp lệ theo thứ tự
-    $allowedTransitions = [
-        'pending' => ['processing', 'cancelled'],
-        'processing' => ['delivering'],
-        'delivering' => ['shipped'],
-        'shipped' => ['delivered'],
-    ];
+        // Danh sách chuyển trạng thái hợp lệ theo thứ tự
+        $allowedTransitions = [
+            'pending' => ['processing', 'cancelled'],
+            'processing' => ['delivering'],
+            'delivering' => ['shipped'],
+            'shipped' => ['delivered'],
+        ];
 
-    // Kiểm tra nếu không có chuyển tiếp hợp lệ
-    if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
-        return back()->with('error', 'Không thể chuyển trạng thái từ "' . $currentStatus . '" sang "' . $newStatus . '".');
-    }
-
-    // Nếu là hủy đơn hàng
-    if ($newStatus === 'cancelled') {
-        // Chỉ cho phép hủy nếu đang ở trạng thái 'pending'
-        if ($currentStatus !== 'pending') {
-            return back()->with('error', 'Chỉ có thể hủy đơn hàng khi đang ở trạng thái chờ xử lý.');
+        // Kiểm tra nếu không có chuyển tiếp hợp lệ
+        if (!isset($allowedTransitions[$currentStatus]) || !in_array($newStatus, $allowedTransitions[$currentStatus])) {
+            return back()->with('error', 'Không thể chuyển trạng thái từ "' . $currentStatus . '" sang "' . $newStatus . '".');
         }
 
-        DB::beginTransaction();
-        try {
-            foreach ($order->orderDetails as $detail) {
-                $variant = Variant::find($detail->variant_id);
-                if ($variant) {
-                    $variant->quantity_variant += $detail->quantity;
-                    $variant->save();
-                }
+        // Nếu là hủy đơn hàng
+        if ($newStatus === 'cancelled') {
+            // Chỉ cho phép hủy nếu đang ở trạng thái 'pending'
+            if ($currentStatus !== 'pending') {
+                return back()->with('error', 'Chỉ có thể hủy đơn hàng khi đang ở trạng thái chờ xử lý.');
             }
 
-            $order->order_status = 'cancelled';
-            $order->cancelled_at = now(); // Ghi nhận thời gian hủy đơn hàng
+            DB::beginTransaction();
+            try {
+                foreach ($order->orderDetails as $detail) {
+                    $variant = Variant::find($detail->variant_id);
+                    if ($variant) {
+                        $variant->quantity_variant += $detail->quantity;
+                        $variant->save();
+                    }
+                }
 
-            DB::commit();
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->with('error', 'Đã xảy ra lỗi khi hủy đơn: ' . $e->getMessage());
-        }
-    } else {
-        // Cập nhật thời gian tương ứng theo trạng thái mới
-        switch ($newStatus) {
-            case 'processing':
-                $order->processing_at = now();
-                break;
-            case 'delivering':
-                $order->delivering_at = now();
-                break;
-            case 'shipped':
-                $order->shipped_at = now();
-                break;
-            case 'delivered':
-                $order->delivered_at = now();
-                break;
+                $order->order_status = 'cancelled';
+                $order->cancelled_at = now(); // Ghi nhận thời gian hủy đơn hàng
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                return back()->with('error', 'Đã xảy ra lỗi khi hủy đơn: ' . $e->getMessage());
+            }
+        } else {
+            // Cập nhật thời gian tương ứng theo trạng thái mới
+            switch ($newStatus) {
+                case 'processing':
+                    $order->processing_at = now();
+                    break;
+                case 'delivering':
+                    $order->delivering_at = now();
+                    break;
+                case 'shipped':
+                    $order->shipped_at = now();
+                    break;
+                case 'delivered':
+                    $order->delivered_at = now();
+                    break;
+            }
+
+            $order->order_status = $newStatus;
         }
 
-        $order->order_status = $newStatus;
+        $order->save();
+
+        event(new OrderStatusUpdated($order));
+
+        return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
     }
-
-    $order->save();
-
-    event(new OrderStatusUpdated($order));
-
-    return back()->with('success', 'Cập nhật trạng thái đơn hàng thành công.');
-}
 
 
 
@@ -136,9 +136,32 @@ class OrderController extends Controller
         return redirect()->route('user.orders.show', $order->id)
             ->with('success', 'Yêu cầu hủy đơn hàng đã được gửi. Vui lòng chờ xác nhận từ quản trị viên.');
     }
-    // xử lý đơn hàng trong thanh toán
+
     public function create(Request $request)
     {
+        $cart = session()->get('cart', []);
+
+        // Tính tổng giá trị giỏ hàng
+        $cartTotal = 0;
+         
+        $now = now();
+        foreach ($cart as $item) {
+            $cartTotal += $item['price'] * $item['quantity'];
+        }
+
+        $coupons = Coupon::where('start_date', '<=', $now)
+            ->where('end_date', '>=', $now)
+            ->where(function ($query) use ($cartTotal) {
+                $query->where('min_order_value', '<=', $cartTotal)
+                    ->orWhereNull('min_order_value');
+            })
+            ->where(function ($query) {
+                $query->whereColumn('usage_count', '<', 'usage_limit')
+                    ->orWhereNull('usage_limit');
+            })
+            ->orderBy('value', 'desc') // Coupon giá trị giảm cao hơn ưu tiên trước
+            ->take(3)
+            ->get();
         $selectedIds = $request->input('selected_items', []); // Mảng ID sản phẩm được chọn
         $sessionCart = session()->get('cart', []);
         $cart = [];
@@ -151,46 +174,27 @@ class OrderController extends Controller
         }
 
         $total = 0;
-
-        // Tính tổng tiền các sản phẩm đã chọn
         foreach ($cart as &$item) {
             $item['total'] = $item['price'] * $item['quantity'];
+            $item['discount_amount'] = 0;
+            $item['total_after_discount'] = $item['total'];
             $total += $item['total'];
         }
+        // $coupon = session('coupon');
+// dd($coupon);
 
-        // Áp dụng mã giảm giá nếu có
+        // Tính giảm giá theo mã
         $discountAmount = 0;
-        $couponSession = session('coupon');
-
-        if ($couponSession) {
-            if ($total < ($couponSession['min_order_value'] ?? 0)) {
-                return back()->with('error', 'Không đủ điều kiện áp dụng mã giảm giá.');
+        if (session('coupon')) {
+            $coupon = session('coupon');
+            if ($coupon['type'] === 'fixed') {
+                $discountAmount = $coupon['value'];
+            } elseif ($coupon['type'] === 'percentage') {
+                $discountAmount = $total * $coupon['value'] / 100;
             }
-
-            if ($couponSession['type'] === 'fixed') {
-                $discountAmount = $couponSession['value'];
-            } elseif ($couponSession['type'] === 'percentage') {
-                $discountAmount = ($total * $couponSession['value']) / 100;
-
-                if (!empty($couponSession['max_discount_value']) && $discountAmount > $couponSession['max_discount_value']) {
-                    $discountAmount = $couponSession['max_discount_value'];
-                }
-            }
-
-            if ($discountAmount > $total) {
-                $discountAmount = $total;
-            }
-
-            $couponSession['discount_amount'] = $discountAmount;
-            session(['coupon' => $couponSession]);
         }
 
-        // Phân bổ giảm giá cho từng sản phẩm
-        foreach ($cart as &$item) {
-            $ratio = $item['total'] / $total;
-            $item['discount_amount'] = round($ratio * $discountAmount);
-            $item['total_after_discount'] = $item['total'] - $item['discount_amount'];
-        }
+        $totalAfterDiscount = $total - $discountAmount;
 
         $shippingMethods = [
             1 => 'Giao hàng nhanh',
@@ -204,7 +208,17 @@ class OrderController extends Controller
 
         $userName = Auth::user()?->name ?? 'Khách';
 
-        return view('client.order', compact('cart', 'total', 'discountAmount', 'shippingMethods', 'paymentMethods', 'userName'));
+        return view('client.order', compact(
+            'cart',
+            'total',
+            'discountAmount',
+            'totalAfterDiscount',
+            'shippingMethods',
+            'paymentMethods',
+            'userName',
+            'coupons'
+            
+        ));
     }
 
 
@@ -411,87 +425,38 @@ class OrderController extends Controller
     }
 
     // áp dụng mã giảm giá
-
-
-    public function storecoupon(Request $request)
+    public function applyCoupon(Request $request)
     {
-        $cart = session()->get('cart', []);
-        $total = 0;
+        $request->validate([
+            'coupon_code' => 'required|string'
+        ]);
 
-        foreach ($cart as $item) {
-            $product = Product::find($item['id']);
-            if (!$product) {
-                return back()->with('error', 'Sản phẩm không tồn tại.');
-            }
+        $coupon = Coupon::where('code', $request->coupon_code)->first();
 
-            if ($product->quantity < $item['quantity']) {
-                return redirect()->back()
-                    ->with('error', 'Sản phẩm "' . $product->name . '" không đủ số lượng trong kho. Vui lòng điều chỉnh số lượng.');
-            }
-
-            $total += $item['price'] * $item['quantity'];
+        if (!$coupon) {
+            return back()->with('coupon_error', 'Mã giảm giá không hợp lệ.');
         }
 
-        $discount = 0;
-        $couponCode = $request->input('coupon_code');
-        $coupon = null;
+        // Lưu mã giảm giá vào session
+        session([
+            'coupon' => [
+                'code' => $coupon->code,
+                'type' => $coupon->type,
+                'value' => $coupon->value,
+            ]
+        ]);
 
-        if ($couponCode) {
-            $coupon = Coupon::where('code', $couponCode)
-                ->where('start_date', '<=', now())
-                ->where('end_date', '>=', now())
-                ->first();
-
-            if (!$coupon) {
-                return back()->with('error', 'Mã giảm giá không hợp lệ hoặc đã hết hạn.');
-            }
-
-            if ($coupon->min_order_value && $total < $coupon->min_order_value) {
-                return back()->with('error', 'Đơn hàng không đủ điều kiện áp dụng mã giảm giá.');
-            }
-
-            if ($coupon->type === 'percentage') {
-                $discount = $total * ($coupon->value / 100);
-            } else {
-                $discount = $coupon->value;
-            }
-        }
-
-        $customerId = Auth::id();
-
-        try {
-            $order = Order::create([
-                'total_amount' => $total,
-                'discount_amount' => $discount,
-                'coupon_code' => $couponCode,
-                'shipping_address' => $request->shipping_address,
-                'order_date' => now(),
-                'shipping_method_id' => $request->shipping_method_id,
-                'payment_methods_id' => $request->payment_methods_id,
-                'phone_number' => $request->phone_number,
-                'customer_id' => $customerId,
-                'order_status' => 'pending',
-            ]);
-
-            foreach ($cart as $item) {
-                OrderDetail::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item['id'],
-                    'variant_id' => $item['variant_id'],
-                    'quantity' => $item['quantity'],
-                    'price' => $item['price'],
-                    'total' => $item['price'] * $item['quantity'],
-                ]);
-            }
-
-            session()->forget('cart');
-
-        } catch (\Exception $e) {
-            return back()->with('error', 'Đặt hàng thất bại: ' . $e->getMessage());
-        }
-
-        return redirect()->route('home')->with('success', 'Đặt hàng thành công!');
+        return back()->with('success', 'Áp dụng mã giảm giá thành công!');
     }
 
+
+
+
+    public function removeCoupon()
+    {
+        session()->forget('coupon');
+
+        return redirect()->back()->with('success', 'Đã hủy mã giảm giá.');
+    }
 
 }

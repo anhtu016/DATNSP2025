@@ -55,13 +55,6 @@
                 @enderror
             </div>
 
-            <div class="form-group">
-                <label for="password_confirmation">Xác nhận mật khẩu</label>
-                <input type="password" class="form-control @error('password_confirmation') is-invalid @enderror" id="password_confirmation" name="password_confirmation">
-                @error('password_confirmation')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
-            </div>
 
             <br>
             <button type="submit" class="btn btn-primary">Thêm người dùng</button>

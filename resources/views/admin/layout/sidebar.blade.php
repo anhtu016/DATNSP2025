@@ -2,7 +2,7 @@
     <!-- LOGO -->
     <div class="navbar-brand-box">
         <br>
-                <a href="" class="">
+                <a href="{{ route('home') }}" class="">
                     <img src="{{asset('client/img/logo.svg')}}" alt="" width="100" height="35">
                 </a>
         <!-- Light Logo-->
@@ -140,12 +140,12 @@
                 </li>
 
                 <!-- Home -->
-                <li class="nav-item">
+                {{-- <li class="nav-item">
                     <a class="nav-link menu-link d-flex align-items-center" href="{{ route('home') }}">
                         <i class="ri-home-line me-2"></i>
                         <span data-key="t-home">Trang chủ</span>
                     </a>
-                </li>
+                </li> --}}
             </ul>
         </div>
     </div>

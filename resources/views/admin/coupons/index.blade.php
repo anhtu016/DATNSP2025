@@ -102,25 +102,68 @@
 
                                     {{-- Hiện nút "Xóa" nếu mã đã hết hạn --}}
                                     @if ($now->gt($end))
-                                        <form action="{{ route('coupons.destroy', $coupon->id) }}" method="POST"
-                                            onsubmit="return confirm('Bạn có chắc chắn muốn xóa mã giảm giá này?')">
+                                        <form id="delete-form-{{ $coupon->id }}"
+                                            action="{{ route('coupons.destroy', $coupon->id) }}" method="POST"
+                                            style="display:none;">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
                                         </form>
+
+                                        <button class="btn btn-danger btn-sm"
+                                            onclick="confirmDelete({{ $coupon->id }})">Xóa</button>
+
+                                        <script>
+                                            function confirmDelete(id) {
+                                                Swal.fire({
+                                                    title: 'Bạn có chắc chắn muốn xóa mã giảm giá này?',
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: '#d33',
+                                                    cancelButtonColor: '#3085d6',
+                                                    confirmButtonText: 'Xóa',
+                                                    cancelButtonText: 'Hủy'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('delete-form-' + id).submit();
+                                                    }
+                                                })
+                                            }
+                                        </script>
                                     @endif
 
                                     {{-- Hiện nút "Ẩn/Hiện" nếu mã đã có lượt sử dụng --}}
-                                    @if ($coupon->usage_count > 0)
-                                        <form action="{{ route('coupons.toggle', $coupon->id) }}" method="POST"
-                                            onsubmit="return confirm('Bạn có chắc chắn muốn {{ $coupon->is_active ? 'ẩn' : 'hiển thị' }} mã này?')">
+                                   @if (($coupon->usage_count > 0 || $now->lt($end)) && !$now->lt($start))
+
+                                        <form id="toggle-form-{{ $coupon->id }}"
+                                            action="{{ route('coupons.toggle', $coupon->id) }}" method="POST"
+                                            style="display:none;">
                                             @csrf
                                             @method('PATCH')
-                                            <button type="submit"
-                                                class="btn btn-sm {{ $coupon->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }}">
-                                                {{ $coupon->is_active ? 'Ẩn' : 'Hiện' }}
-                                            </button>
                                         </form>
+
+                                        <button
+                                            class="btn btn-sm {{ $coupon->is_active ? 'btn-outline-secondary' : 'btn-outline-success' }}"
+                                            onclick="confirmToggle({{ $coupon->id }}, {{ $coupon->is_active ? 'true' : 'false' }})">
+                                            {{ $coupon->is_active ? 'Ẩn' : 'Hiện' }}
+                                        </button>
+
+                                        <script>
+                                            function confirmToggle(id, isActive) {
+                                                Swal.fire({
+                                                    title: `Bạn có chắc chắn muốn ${isActive ? 'ẩn' : 'hiển thị'} mã này?`,
+                                                    icon: 'question',
+                                                    showCancelButton: true,
+                                                    confirmButtonColor: isActive ? '#6c757d' : '#28a745',
+                                                    cancelButtonColor: '#d33',
+                                                    confirmButtonText: isActive ? 'Ẩn' : 'Hiện',
+                                                    cancelButtonText: 'Hủy'
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        document.getElementById('toggle-form-' + id).submit();
+                                                    }
+                                                });
+                                            }
+                                        </script>
                                     @endif
                                 </div>
                             </td>

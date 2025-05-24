@@ -9,61 +9,49 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     // Hiển thị danh sách người dùng
-    public function index()
-    {
-        $users = User::orderBy('created_at', 'asc')->get(); 
-        $users = User::with('permissions')->get();
-        return view('admin.users.index', compact('users'));
-    }
+public function index()
+{
+    // Lấy danh sách users kèm permissions, phân trang 10 user mỗi trang
+    $users = User::with('permissions')
+                 ->orderBy('created_at', 'asc')
+                 ->paginate(10);
+
+    return view('admin.users.index', compact('users'));
+}
+
 
   // Hiển thị form tạo người dùng
   public function create()
   {
-      $permissionIds = [1, 2];
+      $permissionIds = [1, 2, 3, 4];
       $permissions = Permission::whereIn('id', $permissionIds)->get(); 
       return view('admin.users.create', compact('permissions'));  
   }
   
-  public function store(Request $request)
-  {
-    
-      $validated = $request->validate([
-          'name' => 'required|string|max:255',
-          'email' => 'required|email|unique:users,email|max:255',
-          'password' => 'required|string|min:8|confirmed', 
-          'password_confirmation'=> 'required|string|min:8|confirmed', 
-      ]);
-      
-      // Tạo người dùng mới
-      $user = User::create([
-          'name' => $validated['name'],
-          'email' => $validated['email'],
-          'password' => bcrypt($validated['password']), 
-      ]);
-  
-      // Quyền mặc định là 'user' với id = 2
-      $defaultPermissionIds = [2];
-  
-      // Kiểm tra nếu quyền được chọn trong form
-      if (isset($request->permissions)) {
-          $permissions = $request->permissions;
-  
-          // Nếu quyền mặc định chưa được chọn thì thêm vào
-          foreach ($defaultPermissionIds as $defaultPermissionId) {
-              if (!in_array($defaultPermissionId, $permissions)) {
-                  $permissions[] = $defaultPermissionId;
-              }
-          }
-  
-          // Gán quyền cho người dùng
-          $user->permissions()->attach($permissions);
-      } else {
-          // Nếu không chọn gì, gán quyền mặc định
-          $user->permissions()->attach($defaultPermissionIds);
-      }
-  
-      return redirect()->route('users.index')->with('success', 'Người dùng đã được thêm thành công');
-  }
+public function store(Request $request)
+{
+    $validated = $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|email|unique:users,email|max:255',
+        'password' => 'required|string|min:8',
+    ]);
+
+    // Tạo người dùng mới
+    $user = User::create([
+        'name' => $validated['name'],
+        'email' => $validated['email'],
+        'password' => bcrypt($validated['password']),
+    ]);
+
+    // Nếu có quyền được chọn trong form, gán vào
+    if ($request->filled('permissions')) {
+        $permissions = (array) $request->permissions;
+        $user->permissions()->attach($permissions);
+    }
+
+    return redirect()->route('users.index')->with('success', 'Người dùng đã được thêm thành công');
+}
+
   
   
 

@@ -20,62 +20,70 @@ class ReviewController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create(Request $request, Order $order)
-    {
-        $ratings = $request->input('rating');
-        $description = $request->input('description');
-        $hasReview = false;
-        $hasError = false;
+public function create(Request $request, Order $order)
+{
+    $ratings = $request->input('rating', []);
+    $descriptions = $request->input('description', []);
+    $images = $request->file('image', []);
 
-        $images = $request->file('image');
+    $hasReview = false;
+    $hasError = false;
 
-        foreach ($order->orderDetails as $item) {
-            if (isset($ratings[$item->id]) && isset($description[$item->id])) {
-                $existingReview = ProductReview::where([
-                    'variants_id' => $item->variant_id,
-                    'user_id' => auth()->id(),
-                    'order_id' => $item->order_id
-                ])->first();
+    foreach ($order->orderDetails as $item) {
+        $orderDetailId = $item->id;
 
-                if (!$existingReview) {
-                    // Xử lý ảnh nếu có upload
-                    $imagePath = null;
-                    if (isset($images[$item->id])) {
-                        $imagePath = $images[$item->id]->store('reviews', 'public');
-                    }
+        $rating = $ratings[$orderDetailId] ?? null;
+        $description = trim($descriptions[$orderDetailId] ?? '');
+        $variantId = $item->variant_id;
 
-                    // Tạo đánh giá
-                    ProductReview::create([
-                        'variants_id' => $item->variant_id,
-                        'user_id' => auth()->id(),
-                        'order_id' => $item->order_id,
-                        'rating' => $ratings[$item->id],
-                        'description' => $description[$item->id],
-                        'status' => 1,
-                        'product_id' => $item->product_id,
-                        'image' => $imagePath, 
-                    ]);
-                    $hasReview = true;
-                } else {
-                    $hasError = true;
+        // Kiểm tra dữ liệu đầu vào có hợp lệ không
+        if ($rating && $description && $variantId) {
+            $alreadyReviewed = ProductReview::where([
+                'variants_id' => $variantId,
+                'user_id' => auth()->id(),
+                'order_id' => $item->order_id,
+            ])->exists();
+
+            if (!$alreadyReviewed) {
+                // Xử lý ảnh (nếu có)
+                $imagePath = null;
+                if (isset($images[$orderDetailId])) {
+                    $imagePath = $images[$orderDetailId]->store('reviews', 'public');
                 }
+
+                ProductReview::create([
+                    'variants_id' => $variantId,
+                    'user_id' => auth()->id(),
+                    'order_id' => $item->order_id,
+                    'rating' => $rating,
+                    'description' => $description,
+                    'status' => 1,
+                    'product_id' => $item->product_id,
+                    'image' => $imagePath,
+                ]);
+
+                $hasReview = true;
+            } else {
+                $hasError = true;
             }
         }
+    }
 
-
-        if ($hasReview) {
-            return redirect()->route('orders.review', $order->id)
-                ->with('success', 'Đánh giá của bạn đã được gửi thành công!');
-        } elseif ($hasError) {
-            return redirect()->route('orders.review', $order->id)
-                ->with('error', 'Bạn đã đánh giá sản phẩm này rồi')
-                ->withInput();
-        }
-
+    // Trả về thông báo
+    if ($hasReview) {
         return redirect()->route('orders.review', $order->id)
-            ->with('error', 'Vui lòng chọn đánh giá và nhập bình luận cho sản phẩm')
+            ->with('success', 'Đánh giá của bạn đã được gửi thành công!');
+    } elseif ($hasError) {
+        return redirect()->route('orders.review', $order->id)
+            ->with('error', 'Bạn đã đánh giá một số sản phẩm rồi')
             ->withInput();
     }
+
+    return redirect()->route('orders.review', $order->id)
+        ->with('error', 'Vui lòng nhập đánh giá cho ít nhất một sản phẩm')
+        ->withInput();
+}
+
 
     /**
      * Store a newly created resource in storage.

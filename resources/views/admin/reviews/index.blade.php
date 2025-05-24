@@ -26,25 +26,25 @@
                             <thead class="table-light">
                                 <tr>                                   
 
-                                    <th class="sort" data-sort="date">STT</th>
-                                    <th class="sort" data-sort="date">Mã sản phẩm</th>
-                                    <th class="sort" data-sort="date">Người dùng</th>
-                                    <th class="sort" data-sort="date">Mô tả</th>
-                                    <th class="sort" data-sort="email">Xếp hạng</th>
-                                    <th class="sort" data-sort="phone">Ảnh</th>
-                                    <th class="sort" data-sort="action">Thao tác</th>
+                                    <th class="" data-sort="date">STT</th>
+                                    <th class="" data-sort="date">Mã sản phẩm</th>
+                                    <th class="" data-sort="phone">Ảnh sản phẩm</th>
+                                    <th class="" data-sort="date">Người dùng</th>
+                                    <th class="" data-sort="date">Nội dung đánh giá</th>
+                                    <th class="" data-sort="email">Xếp hạng</th>
+                                    <th class="" data-sort="action">Thao tác</th>
                                 </tr>
                             </thead>
                             @foreach ($listReviews as $ct)
                             <tbody class="list form-check-all">
                                 <tr>                                    
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{$ct->user_id}}</td>                                   
-                                    <td>{{$ct->product_id}}</td>
-                                    <td>{{$ct->description}}</td>
-                                    <td>{{$ct->rating}}</td>
+                                    <td>{{ $loop->iteration }}</td>                                
+                                    <td>{{ $ct->product->name ?? 'Không rõ' }}</td>
+
                                     <td> <img src="{{ asset('storage/' . $ct->image) }}" alt="Ảnh đánh giá" width="70px"></td>
-                                 
+                                    <td>{{$ct->user->name ?? 'không rõ'}}</td>   
+                                    <td>{{$ct->description}}</td>
+                                    <td>{{$ct->rating}} sao </td>
                                     <td>
                                         <div class="d-flex gap-2">                                       
                                             <div class="remove">

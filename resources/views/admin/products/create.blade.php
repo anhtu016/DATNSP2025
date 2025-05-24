@@ -2,7 +2,7 @@
 @section('content')
     <div class="page-content">
         <div class="container">
-            <h1>Create Product</h1>
+            <h1>Thêm mới sản phẩm</h1>
 
             {{-- Thông báo lỗi chung --}}
             @if ($errors->any())

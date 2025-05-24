@@ -32,18 +32,17 @@
                                 <th>Thao tác</th>
                             </tr>
                         </thead>
-
-
                         <tbody>
                             {{-- KHỐI 1: DANH SÁCH SẢN PHẨM --}}
-
                             @php
-                                $subtotal = 0;
-                                $total = 0;
-                                $discount = 0;
                                 $coupon = session('coupon');
                                 $hasValidCoupon = isset($coupon['type'], $coupon['value']);
-                                $cartCount = max(count($cart), 1); // tránh chia 0
+                                $selectedItems = old('selected_items', session('coupon.selected_items', []));
+                                $selectedCount = count($selectedItems);
+
+                                $subtotal = 0;
+                                $discount = 0;
+                                $total = 0;
                             @endphp
 
                             @foreach ($cart as $id => $item)
@@ -52,26 +51,39 @@
                                     $subtotal += $itemTotal;
 
                                     $itemDiscount = 0;
-
-                                    if ($hasValidCoupon) {
+                                    if ($hasValidCoupon && $selectedCount > 0 && in_array($id, $selectedItems)) {
                                         if ($coupon['type'] === 'fixed') {
-                                            // Phân chia giảm giá đều cho mỗi item
-                                            $itemDiscount = $coupon['value'] / $cartCount;
+                                            $itemDiscount = $coupon['discount_amount'] / $selectedCount;
                                         } elseif ($coupon['type'] === 'percentage') {
                                             $itemDiscount = ($itemTotal * $coupon['value']) / 100;
+                                            if (
+                                                isset($coupon['max_discount_value']) &&
+                                                $itemDiscount > $coupon['max_discount_value']
+                                            ) {
+                                                $itemDiscount = $coupon['max_discount_value'];
+                                            }
                                         }
                                     }
 
-                                    $finalItemTotal = max($itemTotal - $itemDiscount, 0); // tránh âm
                                     $discount += $itemDiscount;
+                                    $finalItemTotal = max($itemTotal - $itemDiscount, 0);
                                     $total += $finalItemTotal;
                                 @endphp
+
                                 <tr id="cart-item-{{ $id }}" class="text-center" data-id="{{ $id }}">
+                                    @php
+                                        $checkedItems = old('selected_items', session('coupon.selected_items', []));
+                                    @endphp
+
                                     <td>
                                         <input type="checkbox" name="selected_items[]" value="{{ $id }}"
                                             class="cart-item-checkbox" data-price="{{ $item['price'] }}"
-                                            data-quantity="{{ $item['quantity'] }}">
+                                            data-quantity="{{ $item['quantity'] }}"
+                                            data-max="{{ $item['quantity_variant'] ?? 99 }}"
+                                            {{ in_array($id, $checkedItems) ? 'checked' : '' }}>
                                     </td>
+\
+
 
                                     <td class="align-middle">
                                         <img src="{{ asset('storage/' . ($item['variant_image'] ?? $item['thumbnail'])) }}"
@@ -96,9 +108,10 @@
                                                     data-id="{{ $id }}">
                                                     <i class="bi bi-dash"></i>
                                                 </button>
-                                                <input type="text"
+                                                <input type="text" name="quantity"
                                                     class="form-control form-control-sm text-center quantity-input"
                                                     style="width: 50px;" value="{{ $item['quantity'] }}"
+                                                      data-max="{{ $item['quantity_variant'] ?? 99 }}"
                                                     data-id="{{ $id }}" min="1">
                                                 <button type="button"
                                                     class="btn btn-light border btn-sm px-2 btn-increase mb-2"
@@ -113,26 +126,21 @@
                                     <td class="align-middle">{{ $item['Color'] ?? 'Không chọn' }}</td>
 
                                     <td class="align-middle item-total">
-                                        {{ number_format(max($finalItemTotal, 0)) }} VNĐ
+                                        {{ number_format($finalItemTotal) }} VNĐ
                                     </td>
 
                                     <td class="align-middle">
-                                        {{-- <button type="submit" form="update-form-{{ $id }}"
-                                            class="btn btn-sm btn-success">Cập nhật</button> --}}
                                         <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
                                             <button class="btn btn-sm btn-danger">Xóa</button>
                                         </form>
-
                                     </td>
                                 </tr>
                             @endforeach
 
                             {{-- KHỐI 2: MÃ GIẢM GIÁ --}}
-                            <tr class="table">
-
-                            </tr>
+                            {{-- <tr class="table"></tr>
                             <tr>
                                 <td colspan="9">
                                     <div class="d-flex gap-2">
@@ -192,55 +200,99 @@
                                                 }
                                             }
                                         </style>
-
-                                        <!-- Nút hiển thị voucher -->
+                        
                                         <div class="position-relative text-end" style="display: inline-block;">
                                             <div class="m-4 text-end">
-                                                <a class="btn btn-outline-primary" id="toggle-coupon">
-                                                    🎁 Ưu đãi lên đến 30% nhận voucher ngay !
-                                                </a>
+                                                <a class="btn btn-outline-primary" id="toggle-coupon">🎁 Ưu đãi dành cho bạn ! xem thêm voucher !</a>
                                             </div>
 
                                             <!-- Hộp thoại voucher -->
-                                            <div class="coupon-box" id="coupon-box">
+                                            <div class="coupon-box" id="coupon-box" style="display:none;">
                                                 <p class="small">✨ Ưu đãi cho bạn:</p>
-                                                <form action="{{ route('cart.applyCoupon', $id ?? 0) }}" method="POST">
+
+                                                <!-- Form áp dụng mã giảm giá -->
+                                                <form action="{{ route('cart.applyCoupon', $id ?? 0) }}" method="POST"
+                                                    id="coupon-form">
                                                     @csrf
                                                     <div class="d-flex mb-2">
                                                         <input type="text" name="coupon_code" class="form-control"
                                                             placeholder="Nhập mã giảm giá của shop" style="flex: 1;">
                                                         <button class="btn btn-sm btn-primary ms-2 m-0" type="submit"
-                                                            style="font-size: 12px;">Áp dụng</button>
+                                                            id="apply-coupon-btn" disabled style="font-size: 12px;">
+                                                            Áp dụng
+                                                        </button>
                                                     </div>
+
+                                                    <!-- Mã giảm giá gợi ý -->
+                                                    @if ($coupons->count())
+                                                        <div class="mt-3">
+                                                            @foreach ($coupons->take(3) as $coupon)
+                                                                @php $isExpired = \Carbon\Carbon::parse($coupon->end_date)->isPast(); @endphp
+                                                                <div
+                                                                    class="border rounded p-2 mb-2 bg-light position-relative d-flex align-items-center">
+                                                                    <div class="me-3" style="width: 105px;">
+                                                                        <img src="{{ asset('client/img/coupon2.jpg') }}"
+                                                                            alt="Coupon Image" class="img-fluid" />
+                                                                    </div>
+                                                                    <div class="flex-grow-1 small text-start"
+                                                                        style="font-size: 0.85rem;">
+                                                                        <div>
+                                                                            <strong>{{ $coupon->code }}</strong> -
+                                                                            {{ $coupon->type === 'percentage' ? $coupon->value . '%' : number_format($coupon->value, 0, ',', '.') . '₫' }}
+                                                                            @if ($isExpired)
+                                                                                <span class="text-danger">(Hết hạn)</span>
+                                                                            @endif
+                                                                        </div>
+                                                                        @if ($coupon->min_order_value)
+                                                                            <div>🛒 Đơn tối thiểu:
+                                                                                {{ number_format($coupon->min_order_value, 0, ',', '.') }}₫
+                                                                            </div>
+                                                                        @endif
+                                                                        @if ($coupon->max_discount_value)
+                                                                            <div>💸 Giảm tối đa:
+                                                                                {{ number_format($coupon->max_discount_value, 0, ',', '.') }}₫
+                                                                            </div>
+                                                                        @endif
+                                                                        <div>📅 HSD:
+                                                                            {{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}
+                                                                        </div>
+                                                                    </div>
+                                                                    @if (!$isExpired)
+                                                                        <div class="ms-3">
+                                                                            <input type="radio" name="suggested_coupons[]"
+                                                                                value="{{ $coupon->code }}"
+                                                                                @if (session()->has('coupon') && session('coupon')['code'] === $coupon->code) checked @endif
+                                                                                disabled>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                            @endforeach
+                                                        </div>
+                                                    @endif
                                                 </form>
 
+                                                <!-- Hiển thị mã giảm giá đang áp dụng -->
                                                 @if (session()->has('coupon'))
                                                     <div class="mt-3">
                                                         <div class="border rounded p-2 mb-2 bg-light position-relative">
                                                             <div class="d-flex align-items-center">
-                                                                <div class="me-3">
-                                                                    <div class="coupon-image" style="width: 105px;">
-                                                                        <img src="{{ asset('client/img/coupon2.jpg') }}"
-                                                                            alt="Coupon Image" class="img-fluid" />
-                                                                    </div>
+                                                                <div class="me-3" style="width: 105px;">
+                                                                    <img src="{{ asset('client/img/coupon2.jpg') }}"
+                                                                        alt="Coupon Image" class="img-fluid" />
                                                                 </div>
-                                                                <div class="flex-grow-1">
-                                                                    <div class="small text-start"
-                                                                        style="font-size: 0.85rem;">
-                                                                        <div>
-                                                                            <strong>{{ session('coupon')['code'] }}</strong>
-                                                                            -
-                                                                            @if (session('coupon')['type'] === 'percentage')
-                                                                                {{ session('coupon')['value'] }}%
-                                                                            @else
-                                                                                {{ number_format(session('coupon')['value'], 0, ',', '.') }}₫
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
+
+                                                                <div class="flex-grow-1 small text-start"
+                                                                    style="font-size: 0.85rem;">
+                                                                    <strong>{{ session('coupon')['code'] }}</strong> -
+                                                                    @if (session('coupon')['type'] === 'percentage')
+                                                                        {{ session('coupon')['value'] }}%
+                                                                    @else
+                                                                        {{ number_format(session('coupon')['value'], 0, ',', '.') }}₫
+                                                                    @endif
                                                                 </div>
                                                                 <div class="ms-3">
                                                                     <form action="{{ route('coupon.remove') }}"
-                                                                        method="POST">
+                                                                        method="POST" style="margin:0;">
                                                                         @csrf
                                                                         <button type="submit"
                                                                             class="btn btn-sm btn-danger">Hủy</button>
@@ -251,86 +303,32 @@
                                                     </div>
                                                 @endif
 
-                                                @if ($coupons->count())
-                                                    <div class="mt-3">
-                                                        @foreach ($coupons->take(3) as $coupon)
-                                                            @php $isExpired = \Carbon\Carbon::parse($coupon->end_date)->isPast(); @endphp
-                                                            <div
-                                                                class="border rounded p-2 mb-2 bg-light position-relative">
-                                                                <div class="d-flex align-items-center">
-                                                                    <div class="me-3">
-                                                                        <div class="coupon-image" style="width: 105px;">
-                                                                            <img src="{{ asset('client/img/coupon2.jpg') }}"
-                                                                                alt="Coupon Image" class="img-fluid" />
-                                                                        </div>
-                                                                    </div>
-                                                                    <div class="flex-grow-1">
-                                                                        <div class="small text-start"
-                                                                            style="font-size: 0.85rem;">
-                                                                            <div><strong>{{ $coupon->code }}</strong> -
-                                                                                {{ $coupon->type === 'percentage' ? $coupon->value . '%' : number_format($coupon->value, 0, ',', '.') . '₫' }}
-                                                                                @if ($isExpired)
-                                                                                    <span class="text-danger">(Hết
-                                                                                        hạn)</span>
-                                                                                @endif
-                                                                            </div>
-                                                                            @if ($coupon->min_order_value)
-                                                                                <div>🛒 Đơn tối thiểu:
-                                                                                    {{ number_format($coupon->min_order_value, 0, ',', '.') }}₫
-                                                                                </div>
-                                                                            @endif
-                                                                            @if ($coupon->max_discount_value)
-                                                                                <div>💸 Giảm tối đa:
-                                                                                    {{ number_format($coupon->max_discount_value, 0, ',', '.') }}₫
-                                                                                </div>
-                                                                            @endif
-                                                                            <div>📅 HSD:
-                                                                                {{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                    @if (!$isExpired)
-                                                                        <div class="ms-3">
-                                                                            <input type="radio"
-                                                                                name="suggested_coupons[]"
-                                                                                value="{{ $coupon->code }}"
-                                                                                @if (session()->has('coupon') && session('coupon')['code'] === $coupon->code) checked @endif>
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            </div>
-                                                        @endforeach
-                                                    </div>
-                                                @endif
                                             </div>
-
                                         </div>
 
 
 
+
+
+
+
                                 </td>
-                            </tr>
-
+                            </tr> --}}
                             {{-- KHỐI 3: TỔNG TIỀN & THANH TOÁN --}}
-                            <tr class="table">
-
-                            </tr>
-
+                            <tr class="table"></tr>
                             <td colspan="8" class="text-end align-bottom">Tạm tính:</td>
-                            <td colspan="2" id="subtotal" class="align-bottom">0 VNĐ</td>
+                            <td colspan="2" id="subtotal" class="align-bottom">{{ number_format($subtotal) }} VNĐ
+                            </td>
+
                             </tr>
 
-                            @if ($hasValidCoupon)
-                                <tr>
-                                    <td colspan="8" class="text-end align-bottom">Giảm giá:</td>
-                                    <td colspan="2" id="discount" class="align-bottom">0 VNĐ</td>
-                                </tr>
-                            @endif
 
-                            <tr>
+
+                            <tr id="total-row" style="display: none;"> <!-- <== thêm id và ẩn -->
                                 <td colspan="8" class="text-end align-bottom fw-bold">Tổng cộng:</td>
                                 <td colspan="2" class="fw-bold text-danger align-bottom" id="total">0 VNĐ</td>
                             </tr>
+
 
                             <tr>
                                 <td colspan="8" class="text-end align-bottom">
@@ -341,165 +339,225 @@
                                 </td>
                             </tr>
                             </tr>
-
-
                         </tbody>
                     </table>
-
                     {{-- /tự động cập nhật --}}
                     <script>
                         document.addEventListener('DOMContentLoaded', function() {
-    // --------- Cập nhật số lượng sản phẩm (AJAX) ----------
-    const updateQuantity = (id, newQuantity) => {
-        fetch("{{ url('/cart/update') }}/" + id, {
-                method: "PATCH",
-                headers: {
-                    "Content-Type": "application/json",
-                    "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify({
-                    quantity: newQuantity
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const row = document.querySelector(`#cart-item-${id}`);
-                    row.querySelector('.quantity-input').value = newQuantity;
+                            // --------- Cập nhật số lượng sản phẩm (AJAX) ----------
+                            const updateQuantity = (id, newQuantity) => {
+                                fetch("{{ url('/cart/update') }}/" + id, {
+                                        method: "PATCH",
+                                        headers: {
+                                            "Content-Type": "application/json",
+                                            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').getAttribute(
+                                                'content'),
+                                            "Accept": "application/json"
+                                        },
+                                        body: JSON.stringify({
+                                            quantity: newQuantity
+                                        })
+                                    })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.success) {
+                                            const row = document.querySelector(`#cart-item-${id}`);
+                                            row.querySelector('.quantity-input').value = newQuantity;
 
-                    // Cập nhật lại data-quantity của checkbox để tính tổng
-                    const checkbox = row.querySelector('.cart-item-checkbox');
-                    if (checkbox) {
-                        checkbox.dataset.quantity = newQuantity;
-                    }
+                                            // Cập nhật lại data-quantity của checkbox để tính tổng
+                                            const checkbox = row.querySelector('.cart-item-checkbox');
+                                            if (checkbox) {
+                                                checkbox.dataset.quantity = newQuantity;
+                                            }
 
-                    // ✅ Cập nhật lại cột Số tiền của từng dòng
-                    const price = parseFloat(row.querySelector('.unit-price').dataset.price);
-                    const itemTotal = row.querySelector('.item-total');
-                    itemTotal.textContent = formatCurrency(price * newQuantity);
+                                            // ✅ Cập nhật lại cột Số tiền của từng dòng
+                                            const price = parseFloat(row.querySelector('.unit-price').dataset.price);
+                                            const itemTotal = row.querySelector('.item-total');
+                                            itemTotal.textContent = formatCurrency(price * newQuantity);
 
-                    calculateTotal(); // Gọi lại tính tổng khi cập nhật số lượng
-                }
-            });
-    };
+                                            calculateTotal(); // Gọi lại tính tổng khi cập nhật số lượng
+                                        }
+                                    });
+                            };
 
-    // --------- Định dạng tiền tệ ----------
-    const formatCurrency = (amount) => amount.toLocaleString('vi-VN') + ' VNĐ';
+                            // --------- Định dạng tiền tệ ----------
+                            const formatCurrency = (amount) => amount.toLocaleString('vi-VN') + ' VNĐ';
 
-    // --------- Xử lý tăng giảm số lượng ----------
-    document.querySelectorAll('.btn-increase').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const input = document.querySelector(`#cart-item-${id} .quantity-input`);
-            const quantity = parseInt(input.value) || 1;
-            input.value = quantity + 1;
-            updateQuantity(id, quantity + 1);
-        });
-    });
+                            // --------- Xử lý tăng giảm số lượng ----------
+                            document.querySelectorAll('.btn-increase').forEach(button => {
+                                button.addEventListener('click', function() {
+                                    const id = this.dataset.id;
+                                    const input = document.querySelector(`#cart-item-${id} .quantity-input`);
+                                    const max = parseInt(input.dataset.max) || 99;
+                                    let quantity = parseInt(input.value) || 1;
 
-    document.querySelectorAll('.btn-decrease').forEach(button => {
-        button.addEventListener('click', function() {
-            const id = this.dataset.id;
-            const input = document.querySelector(`#cart-item-${id} .quantity-input`);
-            const quantity = parseInt(input.value) || 1;
-            if (quantity > 1) {
-                input.value = quantity - 1;
-                updateQuantity(id, quantity - 1);
-            }
-        });
-    });
+                                    if (quantity < max) {
+                                        input.value = quantity + 1;
+                                        updateQuantity(id, quantity + 1);
+                                    } else {
+                                        Toastify({
+                                            text: "⚠️ Sản phẩm đã đạt giới hạn tồn kho.",
+                                            duration: 3000,
+                                            gravity: "top",
+                                            position: "right",
+                                            backgroundColor: "#ff6b6b",
+                                            stopOnFocus: true,
+                                        }).showToast();
+                                    }
 
-    // --------- Xử lý khi người dùng nhập số lượng thủ công ----------
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        input.addEventListener('change', function() {
-            const id = this.dataset.id;
-            let newQuantity = parseInt(this.value);
+                                });
+                            });
 
-            // Ràng buộc số lượng >= 1
-            if (isNaN(newQuantity) || newQuantity < 1) {
-                newQuantity = 1;
-                this.value = 1;
-            }
+                            document.querySelectorAll('.btn-decrease').forEach(button => {
+                                button.addEventListener('click', function() {
+                                    const id = this.dataset.id;
+                                    const input = document.querySelector(`#cart-item-${id} .quantity-input`);
+                                    let quantity = parseInt(input.value) || 1;
 
-            updateQuantity(id, newQuantity);
-        });
-    });
+                                    if (quantity > 1) {
+                                        input.value = quantity - 1;
+                                        updateQuantity(id, quantity - 1);
+                                    }
+                                });
+                            });
 
-    // --------- Tính tổng đơn hàng khi chọn sản phẩm ----------
-    const checkboxes = document.querySelectorAll('.cart-item-checkbox');
-    const subtotalEl = document.querySelector('#subtotal');
-    const discountEl = document.querySelector('#discount');
-    const totalEl = document.querySelector('#total');
+                            document.querySelectorAll('.quantity-input').forEach(input => {
+                                input.addEventListener('change', function() {
+                                    const id = this.dataset.id;
+                                    let newQuantity = parseInt(this.value);
+                                    const max = parseInt(this.dataset.max) || 99;
 
-    const hasCoupon = {{ $hasValidCoupon ? 'true' : 'false' }};
-    const couponType = "{{ $coupon['type'] ?? '' }}";
-    const couponValue = {{ $coupon['value'] ?? 0 }};
-    const maxDiscountValue = {{ $coupon['max_discount_value'] ?? 'null' }};
-    const minOrderValue = {{ $coupon['min_order_value'] ?? 0 }};
+                                    if (isNaN(newQuantity) || newQuantity < 1) {
+                                        newQuantity = 1;
+                                    } else if (newQuantity > max) {
+                                        Toastify({
+                                            text: "⚠️ Sản phẩm đã đạt giới hạn tồn kho.",
+                                            duration: 3000,
+                                            gravity: "top",
+                                            position: "right",
+                                            backgroundColor: "#ff6b6b",
+                                            stopOnFocus: true,
+                                        }).showToast();
+                                        newQuantity = max;
+                                    }
 
-    // Hàm tính tổng
-    function calculateTotal() {
-        let subtotal = 0;
+                                    this.value = newQuantity;
+                                    updateQuantity(id, newQuantity);
+                                });
 
-        checkboxes.forEach(cb => {
-            if (cb.checked) {
-                const price = parseFloat(cb.dataset.price);
-                const quantity = parseInt(cb.dataset.quantity);
-                subtotal += price * quantity;
-            }
-        });
+                                // Tùy chọn: khóa không cho nhập thủ công (chỉ dùng nút tăng giảm)
+                                input.addEventListener('keydown', function(e) {
+                                    // Chặn nhập chữ, chỉ cho phép các phím số, backspace, delete, mũi tên, tab
+                                    if (!/[0-9]/.test(e.key) &&
+                                        !['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(e.key)
+                                    ) {
+                                        e.preventDefault();
+                                    }
+                                });
+                            });
 
-        let discount = 0;
 
-        if (hasCoupon && subtotal >= minOrderValue) {
-            if (couponType === 'fixed') {
-                discount = couponValue;
-            } else if (couponType === 'percentage') {
-                discount = subtotal * couponValue / 100;
-                if (maxDiscountValue && discount > maxDiscountValue) {
-                    discount = maxDiscountValue;
-                }
-            }
+                            // --------- Tính tổng đơn hàng khi chọn sản phẩm ----------
+                            const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+                            const subtotalEl = document.querySelector('#subtotal');
+                            const discountEl = document.querySelector('#discount');
+                            const totalEl = document.querySelector('#total');
 
-            if (discount > subtotal) discount = subtotal;
-        }
+                            const hasCoupon = {{ $hasValidCoupon ? 'true' : 'false' }};
+                            const couponType = "{{ $coupon['type'] ?? '' }}";
+                            const couponValue = {{ $coupon['value'] ?? 0 }};
+                            const maxDiscountValue = {{ $coupon['max_discount_value'] ?? 'null' }};
+                            const minOrderValue = {{ $coupon['min_order_value'] ?? 0 }};
 
-        const total = subtotal - discount;
+                            // Hàm tính tổng
+                            function calculateTotal() {
+                                let subtotal = 0;
 
-        subtotalEl.innerText = formatCurrency(subtotal);
-        discountEl.innerText = formatCurrency(discount);
-        totalEl.innerText = formatCurrency(total);
-    }
+                                checkboxes.forEach(cb => {
+                                    if (cb.checked) {
+                                        const price = parseFloat(cb.dataset.price);
+                                        const quantity = parseInt(cb.dataset.quantity);
+                                        subtotal += price * quantity;
+                                    }
+                                });
 
-    // --------- Chọn tất cả sản phẩm ----------
-    const selectAllCheckbox = document.getElementById('select-all');
-    selectAllCheckbox.addEventListener('change', function() {
-        const isChecked = selectAllCheckbox.checked;
-        checkboxes.forEach(checkbox => {
-            checkbox.checked = isChecked;
-        });
-        calculateTotal(); // Cập nhật tổng khi thay đổi trạng thái checkbox
-    });
+                                let discount = 0;
 
-    // Cập nhật trạng thái "Chọn tất cả" nếu người dùng chọn/deselect một checkbox sản phẩm
-    checkboxes.forEach(cb => {
-        cb.addEventListener('change', function() {
-            const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-            selectAllCheckbox.checked = allChecked;
-            selectAllCheckbox.indeterminate = !allChecked && Array.from(checkboxes).some(cb => cb.checked);
-            calculateTotal(); // Cập nhật tổng khi thay đổi trạng thái checkbox
-        });
-    });
+                                if (hasCoupon && subtotal >= minOrderValue) {
+                                    if (couponType === 'fixed') {
+                                        discount = couponValue;
+                                    } else if (couponType === 'percentage') {
+                                        discount = subtotal * couponValue / 100;
+                                        if (maxDiscountValue && discount > maxDiscountValue) {
+                                            discount = maxDiscountValue;
+                                        }
+                                    }
 
-    calculateTotal(); // Chạy lúc đầu
-});
+                                    if (discount > subtotal) discount = subtotal;
+                                }
 
+                                const total = subtotal - discount;
+
+                                subtotalEl.innerText = formatCurrency(subtotal);
+                                discountEl.innerText = formatCurrency(discount);
+                                totalEl.innerText = formatCurrency(total);
+
+                                const totalRow = document.getElementById('total-row');
+                                if (hasCoupon && discount > 0) {
+                                    totalRow.style.display = 'table-row';
+                                } else {
+                                    totalRow.style.display = 'none';
+                                }
+                            }
+
+
+                            // --------- Chọn tất cả sản phẩm ----------
+                            const selectAllCheckbox = document.getElementById('select-all');
+                            selectAllCheckbox.addEventListener('change', function() {
+                                const isChecked = selectAllCheckbox.checked;
+                                checkboxes.forEach(checkbox => {
+                                    checkbox.checked = isChecked;
+                                });
+                                calculateTotal(); // Cập nhật tổng khi thay đổi trạng thái checkbox
+                            });
+
+                            // Cập nhật trạng thái "Chọn tất cả" nếu người dùng chọn/deselect một checkbox sản phẩm
+                            checkboxes.forEach(cb => {
+                                cb.addEventListener('change', function() {
+                                    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+                                    selectAllCheckbox.checked = allChecked;
+                                    selectAllCheckbox.indeterminate = !allChecked && Array.from(checkboxes).some(
+                                        cb => cb.checked);
+                                    calculateTotal(); // Cập nhật tổng khi thay đổi trạng thái checkbox
+                                });
+                            });
+                            // không cho thanh toán khi chưa có sản phẩm
+                            const form = document.querySelector("form");
+                            const submitBtn = form.querySelector("button[type='submit']");
+                            form.addEventListener("submit", function(e) {
+                                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                                if (!anyChecked) {
+                                    e.preventDefault();
+                                    alert("Chưa có sản phẩm nào để thanh toán.");
+                                }
+                            });
+                            const checkoutForm = document.getElementById('checkout-form');
+                            checkoutForm.addEventListener('submit', function(e) {
+                                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+                                if (!anyChecked) {
+                                    e.preventDefault();
+                                    Swal.fire({
+                                        icon: 'warning',
+                                        title: 'Chưa có sản phẩm!',
+                                        text: 'Vui lòng chọn ít nhất một sản phẩm để thanh toán.',
+                                        confirmButtonText: 'Đã hiểu'
+                                    });
+                                }
+                            });
+
+                            calculateTotal(); // Chạy lúc đầu
+                        });
                     </script>
-
-
-
-
                 </form>
 
             </div>
@@ -529,7 +587,114 @@
         }
     </style>
 
-    {{-- <script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const toggleBtn = document.getElementById('toggle-coupon');
+            const couponBox = document.getElementById('coupon-box');
+            const couponInput = document.querySelector('input[name="coupon_code"]');
+            const radios = document.querySelectorAll('input[name="suggested_coupons[]"]');
+            const form = document.getElementById('coupon-form');
+            const checkboxes = document.querySelectorAll('.cart-item-checkbox');
+            const applyBtn = document.getElementById('apply-coupon-btn');
+
+            // Mở/tắt hộp thoại mã giảm giá
+            toggleBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                couponBox.style.display = (couponBox.style.display === 'block') ? 'none' : 'block';
+            });
+
+            // Đóng khi click ra ngoài
+            document.addEventListener('click', function(e) {
+                if (!couponBox.contains(e.target) && e.target !== toggleBtn) {
+                    couponBox.style.display = 'none';
+                }
+            });
+
+            // Cập nhật UI dựa trên checkbox sản phẩm
+            function updateCouponUI() {
+                const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+
+                radios.forEach(radio => {
+                    radio.disabled = !anyChecked;
+                    if (!anyChecked) radio.checked = false;
+                });
+
+                applyBtn.disabled = !anyChecked || !couponInput.value.trim();
+            }
+
+            updateCouponUI();
+
+            // Khi thay đổi checkbox sản phẩm
+            checkboxes.forEach(cb => {
+                cb.addEventListener('change', updateCouponUI);
+            });
+
+            // Khi nhập mã giảm giá thủ công
+            couponInput.addEventListener('input', updateCouponUI);
+
+            // Trước khi submit form thủ công
+            form.addEventListener('submit', function(e) {
+                const selected = Array.from(checkboxes).filter(cb => cb.checked);
+
+                if (selected.length === 0) {
+                    e.preventDefault();
+                    alert('Vui lòng chọn ít nhất một sản phẩm để áp dụng mã giảm giá.');
+                    return;
+                }
+
+                // Xóa các input hidden cũ
+                form.querySelectorAll('input[name="selected_items[]"]').forEach(i => i.remove());
+
+                // Thêm input hidden tương ứng sản phẩm được chọn
+                selected.forEach(cb => {
+                    const hidden = document.createElement('input');
+                    hidden.type = 'hidden';
+                    hidden.name = 'selected_items[]';
+                    hidden.value = cb.value;
+                    form.appendChild(hidden);
+                });
+            });
+
+            // Tự động áp dụng khi chọn radio
+            radios.forEach(radio => {
+                radio.addEventListener('change', function() {
+                    if (this.checked) {
+                        couponInput.value = this.value;
+
+                        const selected = Array.from(checkboxes).filter(cb => cb.checked);
+                        if (selected.length === 0) {
+                            alert('Vui lòng chọn ít nhất một sản phẩm để áp dụng mã giảm giá.');
+                            radio.checked = false;
+                            return;
+                        }
+
+                        // Xóa các input hidden cũ
+                        form.querySelectorAll('input[name="selected_items[]"]').forEach(i => i
+                            .remove());
+
+                        // Thêm input hidden tương ứng sản phẩm được chọn
+                        selected.forEach(cb => {
+                            const hidden = document.createElement('input');
+                            hidden.type = 'hidden';
+                            hidden.name = 'selected_items[]';
+                            hidden.value = cb.value;
+                            form.appendChild(hidden);
+                        });
+
+                        form.submit();
+                    }
+                });
+            });
+        });
+    </script>
+
+
+
+
+
+
+@endsection
+{{-- <script>
         document.addEventListener('DOMContentLoaded', function() {
     const selectAllCheckbox = document.getElementById('select-all');
     const cartItemCheckboxes = document.querySelectorAll('.cart-item-checkbox');
@@ -599,53 +764,3 @@
 });
 
     </script> --}}
- 
-
-    {{-- script mã giảm giá --}}
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const toggleBtn = document.getElementById('toggle-coupon');
-            const couponBox = document.getElementById('coupon-box');
-            const couponInput = document.querySelector('input[name="coupon_code"]');
-            const radios = document.querySelectorAll('input[name="suggested_coupons[]"]'); // input type="radio"
-            const form = couponInput.closest('form'); // Tìm form chứa input coupon_code
-
-            // Toggle hiển thị coupon box
-            toggleBtn.addEventListener('click', function(e) {
-                e.stopPropagation();
-                couponBox.classList.toggle('active');
-            });
-
-            // Ẩn coupon box khi click ra ngoài
-            document.addEventListener('click', function(e) {
-                if (!couponBox.contains(e.target) && e.target !== toggleBtn) {
-                    couponBox.classList.remove('active');
-                }
-            });
-
-            // Xử lý sao chép mã thủ công (nếu còn dùng)
-            document.querySelectorAll('.copy-btn').forEach(button => {
-                button.addEventListener('click', function() {
-                    const code = this.getAttribute('data-code');
-                    navigator.clipboard.writeText(code).then(() => {
-                        alert('Đã sao chép mã: ' + code);
-                    });
-                });
-            });
-
-            // Tự động áp dụng khi chọn radio
-            radios.forEach(radio => {
-                radio.addEventListener('change', function() {
-                    if (this.checked) {
-                        couponInput.value = this.value;
-                        form.submit();
-                    }
-                });
-            });
-        });
-    </script>
-
-
-
-
-@endsection

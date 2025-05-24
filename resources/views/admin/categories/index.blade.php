@@ -24,8 +24,7 @@
                     <div class="row g-4 mb-3">
                         <div class="col-sm-auto">
                             <div>
-                                <a href="add-categories"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Add</button></a>
-                                <a href="trash-categories"><button class="btn btn-soft-danger" onClick="deleteMultiple()"><i class="ri-delete-bin-2-line"></i></button></a>   
+                                <a href="add-categories"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Thêm danh mục</button></a>  
                             </div>
                         </div>
                         <div class="col-sm">
@@ -44,9 +43,9 @@
                                 <tr>                                   
                                     <th class="sort" data-sort="customer_name">STT</th>
                                     <th class="sort" data-sort="email">Tên Danh Mục</th>
-                                    <th class="sort" data-sort="phone">SLUG</th>
+                                    <th class="sort" data-sort="phone">Đường dẫn</th>
                                     <th class="sort" data-sort="date">Mô tả</th>
-                                    <th class="sort" data-sort="action">Action</th>
+                                    <th class="sort" data-sort="action">Thao tác</th>
                                 </tr>
                             </thead>
                             @foreach ($listCategory as $ct)
@@ -59,16 +58,36 @@
                                     <td>
                                         <div class="d-flex gap-2">
                                             <div class="edit">
-                                               <a href="{{route('categories.edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Edit</button></a> 
+                                               <a href="{{route('categories.edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Sửa</button></a> 
                                             </div>
-                                            <form action="{{route('categories.destroy', $ct->id)}}" method="post">
-                                                @csrf
-                                                @method('delete')
-                                                <div class="remove">
-                                                    <button class="btn btn-sm btn-danger remove-item-btn" data-bs-toggle="modal" data-bs-target="#deleteRecordModal" 
-                                                    onclick="return confirm('Bạn có chắc chắn muốn chuyển mục này vào thùng rác không ?')">Remove</button>
-                                                </div>
-                                            </form>
+                                            <form id="delete-form-{{ $ct->id }}" action="{{ route('categories.destroy', $ct->id) }}" method="POST" style="display:none;">
+    @csrf
+    @method('DELETE')
+</form>
+
+<button type="button" class="btn btn-sm btn-danger remove-item-btn"
+    onclick="confirmDelete({{ $ct->id }})">
+    Xóa
+</button>
+
+<script>
+function confirmDelete(id) {
+    Swal.fire({
+        title: 'Bạn có chắc chắn muốn xóa thư mục này không?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#d33',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Xóa',
+        cancelButtonText: 'Hủy'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('delete-form-' + id).submit();
+        }
+    });
+}
+</script>
+
                                             
                                         </div>
                                     </td>

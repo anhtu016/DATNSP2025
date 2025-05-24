@@ -43,6 +43,7 @@
         <table class="table table-striped table-bordered">
             <thead>
                 <tr>
+                    <th>STT</th>
                     <th>Tháng</th>
                     <th>Năm</th>
                     <th>Doanh thu</th>
@@ -51,6 +52,7 @@
             <tbody>
                 @foreach($monthlyRevenue as $revenue)
                     <tr>
+                            <td>{{ $loop->iteration }}</td>
                         <td>{{ $revenue->month }}</td>
                         <td>{{ $revenue->year }}</td>
                         <td>{{ number_format($revenue->revenue, 0, ',', '.') }} VNĐ</td>
