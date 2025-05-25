@@ -25,32 +25,42 @@ class ProductController extends Controller
         return view('client.index', compact('data'));
     }
     // danh sách sản phẩm
-    public function index1()
-    {
-        // Lấy sản phẩm + attributes + categories + paginate 10 sp/trang
-        $products = Product::with(['attributes', 'categories'])
-            ->paginate(10);
 
-        // Tính tổng số lượng tồn kho cho mỗi sản phẩm
-        $products->getCollection()->each(function ($product) {
-            $totalQuantity = 0;
 
-            // Lấy tất cả các biến thể của sản phẩm này và tính tổng số lượng
-            $variants = $product->variants;  // Giả sử sản phẩm có quan hệ `variants`
+public function index1(Request $request)
+{
+    // Bắt đầu query
+    $products = Product::with(['attributes', 'categories', 'variants']);
 
-            foreach ($variants as $variant) {
-                $totalQuantity += $variant->quantity_variant;  // Cộng dồn số lượng biến thể
-            }
-
-            // Cập nhật số lượng tổng cho sản phẩm
-            $product->quantity = $totalQuantity;
-        });
-
-        // Lấy danh sách attributes + attributeValues để tạo biến thể
-        $attributes = Attribute::with('attributeValue')->get();
-
-        return view('admin.products.index', compact('products', 'attributes'));
+    // Lọc theo tên sản phẩm
+    if ($request->filled('keyword')) {
+        $products->where('name', 'like', '%' . $request->keyword . '%');
     }
+
+    // Lọc theo danh mục
+    if ($request->filled('category_id')) {
+        $products->whereHas('categories', function ($q) use ($request) {
+            $q->where('categories.id', $request->category_id);
+        });
+    }
+
+
+    // Phân trang
+    $products = $products->paginate(10);
+
+    // Tính tổng số lượng tồn kho cho mỗi sản phẩm
+    $products->getCollection()->each(function ($product) {
+        $totalQuantity = $product->variants->sum('quantity_variant');
+        $product->quantity = $totalQuantity;
+    });
+
+    // Dữ liệu bổ sung cho form lọc
+    $attributes = Attribute::with('attributeValue')->get();
+    $categories = Category::all();
+
+    return view('admin.products.index', compact('products', 'attributes', 'categories'));
+}
+
 
 
     // Hiển thị trang tạo sản phẩm

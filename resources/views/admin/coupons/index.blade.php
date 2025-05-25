@@ -18,6 +18,37 @@
                 <a href="{{ route('coupons.create') }}" class="btn btn-primary">Tạo mã giảm giá mới</a>
             </div>
 
+            <form method="GET" class="row g-2 mb-4 align-items-end" action="{{ route('coupons.index') }}">
+    <div class="col-md-3">
+        <label for="code" class="form-label">Mã giảm giá</label>
+        <input type="text" name="code" id="code" class="form-control" 
+               value="{{ request('code') }}" placeholder="Nhập mã giảm giá">
+    </div>
+
+            <div class="col-md-3">
+        <label for="is_active" class="form-label">Trạng thái</label>
+        <select name="is_active" id="is_active" class="form-select">
+            <option value="">-- Tất cả trạng thái --</option>
+            <option value="hidden" {{ request('is_active') == 'hidden' ? 'selected' : '' }}>Đã ẩn</option>
+            <option value="upcoming" {{ request('is_active') == 'upcoming' ? 'selected' : '' }}>Chưa bắt đầu</option>
+            <option value="expired" {{ request('is_active') == 'expired' ? 'selected' : '' }}>Hết hạn sử dụng</option>
+            <option value="used_up" {{ request('is_active') == 'used_up' ? 'selected' : '' }}>Hết lượt sử dụng</option>
+            <option value="active" {{ request('is_active') == 'active' ? 'selected' : '' }}>Đang áp dụng</option>
+        </select>
+    </div>
+        <div class="col-md-3">
+        <label for="type" class="form-label">Loại mã giảm giá</label>
+        <select name="type" id="type" class="form-select">
+            <option value="">-- Tất cả loại --</option>
+            <option value="fixed" {{ request('type') == 'fixed' ? 'selected' : '' }}>Giảm cố định (VND)</option>
+            <option value="percentage" {{ request('type') == 'percentage' ? 'selected' : '' }}>Giảm phần trăm (%)</option>
+        </select>
+    </div>
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">Lọc</button>
+        <a href="{{ route('coupons.index') }}" class="btn btn-outline-secondary flex-fill">Đặt lại</a>
+    </div>
+</form>
 
             <table class="table table-striped table-bordered table-hover">
                 <thead>

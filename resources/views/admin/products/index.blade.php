@@ -15,6 +15,30 @@
                     {{ session('success') }}
                 </div>
             @endif
+                <form method="GET" class="row g-2 mb-4 align-items-end" action="{{ route('products.index') }}">
+    <div class="col-md-5">
+        <label for="keyword" class="form-label">Tên sản phẩm</label>
+        <input type="text" name="keyword" id="keyword" class="form-control" 
+               value="{{ request('keyword') }}" placeholder="Nhập tên sản phẩm">
+    </div>
+
+    <div class="col-md-5">
+        <label for="category_id" class="form-label">Danh mục</label>
+        <select name="category_id" id="category_id" class="form-select">
+            <option value="">-- Tất cả danh mục --</option>
+            @foreach ($categories as $cat)
+                <option value="{{ $cat->id }}" {{ request('category_id') == $cat->id ? 'selected' : '' }}>
+                    {{ $cat->name }}
+                </option>
+            @endforeach
+        </select>
+    </div>
+
+    <div class="col-md-2 d-flex gap-2">
+        <button type="submit" class="btn btn-primary flex-fill">Lọc</button>
+        <a href="{{ route('products.index') }}" class="btn btn-outline-secondary flex-fill">Đặt lại</a>
+    </div>
+</form>
 
             <table class="table table-bordered table-hover text-center">
                 <thead>

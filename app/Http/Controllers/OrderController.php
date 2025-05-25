@@ -20,11 +20,37 @@ use Illuminate\Support\Facades\DB;
 class OrderController extends Controller
 {
 
-    public function index()
-    {
-        $orders = Order::with('customer')->latest()->paginate(10);
-        return view('admin.orders.index', compact('orders'));
+    public function index(Request $request)
+{
+    $query = Order::with('customer');
+
+    // Lọc theo mã đơn hàng
+
+    // Lọc theo tên khách hàng (quan hệ customer)
+    if ($request->filled('customer_name')) {
+        $query->whereHas('customer', function($q) use ($request) {
+            $q->where('name', 'like', '%' . $request->customer_name . '%');
+        });
     }
+
+    // Lọc theo trạng thái đơn hàng
+    if ($request->filled('order_status')) {
+        $query->where('order_status', $request->order_status);
+    }
+
+    // Lọc theo khoảng ngày tạo đơn hàng
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereBetween('created_at', [
+            $request->start_date . ' 00:00:00',
+            $request->end_date . ' 23:59:59',
+        ]);
+    }
+
+    $orders = $query->latest()->paginate(10)->appends($request->all());
+
+    return view('admin.orders.index', compact('orders'));
+}
+
 
     public function show($orderId)
     {
@@ -425,29 +451,37 @@ class OrderController extends Controller
     }
 
     // áp dụng mã giảm giá
-    public function applyCoupon(Request $request)
-    {
-        $request->validate([
-            'coupon_code' => 'required|string'
-        ]);
+public function applyCoupon(Request $request)
+{
+    $request->validate([
+        'coupon_code' => 'required|string'
+    ]);
 
-        $coupon = Coupon::where('code', $request->coupon_code)->first();
+    $now = \Carbon\Carbon::now();
 
-        if (!$coupon) {
-            return back()->with('coupon_error', 'Mã giảm giá không hợp lệ.');
-        }
+    $coupon = Coupon::where('code', $request->coupon_code)
+        ->where('is_active', 1)
+        ->where('start_date', '<=', $now)
+        ->where('end_date', '>=', $now)
+        ->whereRaw('usage_count < usage_limit')
+        ->first();
 
-        // Lưu mã giảm giá vào session
-        session([
-            'coupon' => [
-                'code' => $coupon->code,
-                'type' => $coupon->type,
-                'value' => $coupon->value,
-            ]
-        ]);
-
-        return back()->with('success', 'Áp dụng mã giảm giá thành công!');
+    if (!$coupon) {
+        return back()->with('error', 'Mã giảm giá không hợp lệ do đã hết hạn hoặc hết lượt sử dụng.');
     }
+
+    // Lưu mã giảm giá vào session
+    session([
+        'coupon' => [
+            'code' => $coupon->code,
+            'type' => $coupon->type,
+            'value' => $coupon->value,
+        ]
+    ]);
+
+    return back()->with('success', 'Áp dụng mã giảm giá thành công!');
+}
+
 
 
 

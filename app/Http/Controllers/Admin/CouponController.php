@@ -9,16 +9,59 @@ use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
-    public function index()
-    {
-        // Lấy tất cả các mã giảm giá với phân trang
-        $coupons = Coupon::paginate(10); // 10 mã mỗi trang
-    
-        // Kiểm tra các đơn hàng đã bị hủy và có sử dụng mã giảm giá
-    
-        // Trả về danh sách mã giảm giá
-        return view('admin.coupons.index', compact('coupons'));
+public function index(Request $request)
+{
+    $query = Coupon::query();
+    $now = \Carbon\Carbon::now();
+    // Lọc theo mã giảm giá (code)
+    if ($request->filled('code')) {
+        $code = $request->code;
+        $query->where('code', 'like', "%{$code}%");
     }
+
+    
+    // Lọc theo trạng thái (ví dụ: active = 1, inactive = 0)
+     if ($request->filled('is_active')) {
+        switch ($request->is_active) {
+            case 'hidden':
+                $query->where('is_active', 0);
+                break;
+
+            case 'upcoming':
+                $query->where('is_active', 1)
+                      ->where('start_date', '>', $now);
+                break;
+
+            case 'expired':
+                $query->where('is_active', 1)
+                      ->where('end_date', '<', $now);
+                break;
+
+            case 'used_up':
+                $query->whereRaw('usage_count >= usage_limit')
+                      ->where('is_active', 1);
+                break;
+
+            case 'active':
+                $query->where('is_active', 1)
+                      ->where('start_date', '<=', $now)
+                      ->where('end_date', '>=', $now)
+                      ->whereRaw('usage_count < usage_limit');
+                break;
+        }
+    }
+
+        if ($request->filled('type')) {
+        $query->where('type', $request->type);
+    }
+
+    // Nếu bạn có trường ngày bắt đầu hoặc kết thúc, có thể lọc thêm ở đây
+
+    $coupons = $query->paginate(10);
+
+    return view('admin.coupons.index', compact('coupons'));
+}
+
     
 
     public function create()

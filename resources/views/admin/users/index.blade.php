@@ -17,6 +17,64 @@
                     {{ session('success') }}
                 </div>
             @endif
+                <form method="GET" action="{{ route('users.index') }}" class="row gy-2 gx-3 align-items-center mb-4">
+    <div class="col-md-4">
+        <label class="form-label visually-hidden" for="keywordInput">Tìm kiếm</label>
+        <div class="input-group">
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+            <input type="text" class="form-control" id="keywordInput" name="keyword" placeholder="Tên hoặc email"
+                value="{{ request('keyword') }}">
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <label class="form-label visually-hidden" for="permissionSelect">Quyền</label>
+        <select class="form-select" id="permissionSelect" name="permission_id">
+    <option value="">-- Tất cả quyền --</option>
+    @foreach ($permissions as $permission)
+        @php
+            switch ($permission->permission_name) {
+                case 'admin':
+                    $displayName = 'Quản trị viên';
+                    break;
+                case 'staff':
+                    $displayName = 'Nhân viên quản lý';
+                    break;
+                case 'accountant':
+                    $displayName = 'Kế toán';
+                    break;
+                case 'user':
+                default:
+                    $displayName = 'Người dùng';
+                    break;
+            }
+        @endphp
+        <option value="{{ $permission->id }}" {{ request('permission_id') == $permission->id ? 'selected' : '' }}>
+            {{ $displayName }}
+        </option>
+    @endforeach
+</select>
+
+    </div>
+
+    <div class="col-md-2">
+        <label class="form-label visually-hidden" for="statusSelect">Trạng thái</label>
+        <select class="form-select" id="statusSelect" name="is_active">
+            <option value="">-- Tất cả trạng thái --</option>
+            <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Đang hoạt động</option>
+            <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Đã khóa</option>
+        </select>
+    </div>
+
+    <div class="col-md-3 d-flex gap-2">
+        <button type="submit" class="btn btn-primary w-100">
+            <i class="bi bi-filter"></i> Lọc
+        </button>
+        <a href="{{ route('users.index') }}" class="btn btn-outline-secondary w-100">
+            <i class="bi bi-arrow-clockwise"></i> Đặt lại
+        </a>
+    </div>
+</form>
 
             <!-- Bảng danh sách người dùng -->
             <table class="table table-bordered table-striped">
@@ -106,9 +164,9 @@
                     @endforeach
                 </tbody>
             </table>
-                                    <div class="d-flex justify-content-end mt-3">
-                            {{ $users->links('pagination::bootstrap-5') }}
-                        </div>
+            <div class="d-flex justify-content-end mt-3">
+                {{ $users->links('pagination::bootstrap-5') }}
+            </div>
         </div>
     </div>
 

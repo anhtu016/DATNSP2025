@@ -9,14 +9,30 @@ use Illuminate\Support\Facades\DB;
 class UserController extends Controller
 {
     // Hiển thị danh sách người dùng
-public function index()
+public function index(Request $request)
 {
-    // Lấy danh sách users kèm permissions, phân trang 10 user mỗi trang
     $users = User::with('permissions')
-                 ->orderBy('created_at', 'asc')
-                 ->paginate(10);
+        ->when($request->filled('keyword'), function ($query) use ($request) {
+            $query->where(function ($q) use ($request) {
+                $q->where('name', 'like', '%' . $request->keyword . '%')
+                  ->orWhere('email', 'like', '%' . $request->keyword . '%');
+            });
+        })
+        ->when($request->filled('permission_id'), function ($query) use ($request) {
+            $query->whereHas('permissions', function ($q) use ($request) {
+                $q->where('permissions.id', $request->permission_id);
+            });
+        })
+        ->when($request->filled('status'), function ($query) use ($request) {
+            $query->where('status', $request->status); // nếu bạn có cột status (1: hoạt động, 0: khóa)
+        })
+        ->orderBy('created_at', 'asc')
+        ->paginate(10);
 
-    return view('admin.users.index', compact('users'));
+    // Lấy danh sách quyền để đổ vào form lọc
+    $permissions = Permission::all();
+
+    return view('admin.users.index', compact('users', 'permissions'));
 }
 
 
