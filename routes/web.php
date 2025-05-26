@@ -384,6 +384,13 @@ Route::get('/paypal-cancel', [PaypalController::class, 'cancel'])->name('paypal.
 Route::post('/checkout/selected', [CheckoutController::class, 'selected'])->name('checkout.selected');
 
 
+// danh sách sản phẩm 
+Route::get('/danhsachsanpham', [HomeController::class, 'index3'])->name('productlist');
+// bộ lọc sản phẩm
+Route::get('/products/filter', [HomeController::class, 'filter'])->name('product.filter');
+
+
+
 
 
 

@@ -163,89 +163,102 @@ class OrderController extends Controller
             ->with('success', 'Yêu cầu hủy đơn hàng đã được gửi. Vui lòng chờ xác nhận từ quản trị viên.');
     }
 
-    public function create(Request $request)
-    {
-        $cart = session()->get('cart', []);
 
-        // Tính tổng giá trị giỏ hàng
-        $cartTotal = 0;
-         
-        $now = now();
-        foreach ($cart as $item) {
-            $cartTotal += $item['price'] * $item['quantity'];
-        }
+public function create(Request $request)
+{
+    $sessionCart = session()->get('cart', []);
+    $selectedIds = $request->input('selected_items', []); // Mảng ID sản phẩm được chọn
+    $cart = [];
 
-        $coupons = Coupon::where('start_date', '<=', $now)
-            ->where('end_date', '>=', $now)
-            ->where(function ($query) use ($cartTotal) {
-                $query->where('min_order_value', '<=', $cartTotal)
-                    ->orWhereNull('min_order_value');
-            })
-            ->where(function ($query) {
-                $query->whereColumn('usage_count', '<', 'usage_limit')
-                    ->orWhereNull('usage_limit');
-            })
-            ->orderBy('value', 'desc') // Coupon giá trị giảm cao hơn ưu tiên trước
-            ->take(3)
-            ->get();
-        $selectedIds = $request->input('selected_items', []); // Mảng ID sản phẩm được chọn
-        $sessionCart = session()->get('cart', []);
-        $cart = [];
+    $stockErrors = []; // Danh sách các sản phẩm bị lỗi tồn kho
 
-        // Lọc sản phẩm đã chọn
-        foreach ($selectedIds as $id) {
-            if (isset($sessionCart[$id])) {
-                $cart[$id] = $sessionCart[$id];
+    // Kiểm tra và lọc sản phẩm còn tồn kho
+    foreach ($selectedIds as $id) {
+        if (isset($sessionCart[$id])) {
+            $item = $sessionCart[$id];
+            $variant = Variant::find($item['variant_id'] ?? null);
+
+            if (!$variant) {
+                $stockErrors[] = "Sản phẩm biến thể không tồn tại (ID $id).";
+                continue;
             }
-        }
 
-        $total = 0;
-        foreach ($cart as &$item) {
-            $item['total'] = $item['price'] * $item['quantity'];
-            $item['discount_amount'] = 0;
-            $item['total_after_discount'] = $item['total'];
-            $total += $item['total'];
-        }
-        // $coupon = session('coupon');
-// dd($coupon);
-
-        // Tính giảm giá theo mã
-        $discountAmount = 0;
-        if (session('coupon')) {
-            $coupon = session('coupon');
-            if ($coupon['type'] === 'fixed') {
-                $discountAmount = $coupon['value'];
-            } elseif ($coupon['type'] === 'percentage') {
-                $discountAmount = $total * $coupon['value'] / 100;
+            if ($variant->quantity_variant < $item['quantity']) {
+                $stockErrors[] = "{$item['name']} ({$item['Color']} - {$item['Size']}) không còn đủ số lượng.";
+                continue;
             }
+
+            $cart[$id] = $item;
         }
-
-        $totalAfterDiscount = $total - $discountAmount;
-
-        $shippingMethods = [
-            1 => 'Giao hàng nhanh',
-            2 => 'Giao hàng tiêu chuẩn',
-        ];
-
-        $paymentMethods = [
-            1 => 'Thanh toán khi nhận hàng',
-            2 => 'PayPal',
-        ];
-
-        $userName = Auth::user()?->name ?? 'Khách';
-
-        return view('client.order', compact(
-            'cart',
-            'total',
-            'discountAmount',
-            'totalAfterDiscount',
-            'shippingMethods',
-            'paymentMethods',
-            'userName',
-            'coupons'
-            
-        ));
     }
+
+    // Nếu không còn sản phẩm hợp lệ
+    if (empty($cart)) {
+        return redirect()->back()->with('error', 'sản phẩm được chọn đã hết hàng hoặc không đủ số lượng.');
+    }
+
+    // Tính tổng giá trị giỏ hàng
+    $total = 0;
+    foreach ($cart as &$item) {
+        $item['total'] = $item['price'] * $item['quantity'];
+        $item['discount_amount'] = 0;
+        $item['total_after_discount'] = $item['total'];
+        $total += $item['total'];
+    }
+
+    // Lấy mã giảm giá phù hợp
+    $now = now();
+    $coupons = Coupon::where('start_date', '<=', $now)
+        ->where('end_date', '>=', $now)
+        ->where(function ($query) use ($total) {
+            $query->where('min_order_value', '<=', $total)
+                ->orWhereNull('min_order_value');
+        })
+        ->where(function ($query) {
+            $query->whereColumn('usage_count', '<', 'usage_limit')
+                ->orWhereNull('usage_limit');
+        })
+        ->orderBy('value', 'desc')
+        ->take(3)
+        ->get();
+
+    // Tính giảm giá theo mã
+    $discountAmount = 0;
+    if (session('coupon')) {
+        $coupon = session('coupon');
+        if ($coupon['type'] === 'fixed') {
+            $discountAmount = $coupon['value'];
+        } elseif ($coupon['type'] === 'percentage') {
+            $discountAmount = $total * $coupon['value'] / 100;
+        }
+    }
+
+    $totalAfterDiscount = $total - $discountAmount;
+
+    $shippingMethods = [
+        1 => 'Giao hàng nhanh',
+        2 => 'Giao hàng tiêu chuẩn',
+    ];
+
+    $paymentMethods = [
+        1 => 'Thanh toán khi nhận hàng',
+        2 => 'PayPal',
+    ];
+
+    $userName = Auth::user()?->name ?? 'Khách';
+
+    return view('client.order', compact(
+        'cart',
+        'total',
+        'discountAmount',
+        'totalAfterDiscount',
+        'shippingMethods',
+        'paymentMethods',
+        'userName',
+        'coupons'
+    ))->with('stock_error', $stockErrors); // Truyền danh sách lỗi tồn kho
+}
+
 
 
 

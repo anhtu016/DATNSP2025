@@ -17,64 +17,65 @@
                     {{ session('success') }}
                 </div>
             @endif
-                <form method="GET" action="{{ route('users.index') }}" class="row gy-2 gx-3 align-items-center mb-4">
-    <div class="col-md-4">
-        <label class="form-label visually-hidden" for="keywordInput">Tìm kiếm</label>
-        <div class="input-group">
-            <span class="input-group-text"><i class="bi bi-search"></i></span>
-            <input type="text" class="form-control" id="keywordInput" name="keyword" placeholder="Tên hoặc email"
-                value="{{ request('keyword') }}">
-        </div>
-    </div>
+            <form method="GET" action="{{ route('users.index') }}" class="row gy-2 gx-3 align-items-center mb-4">
+                <div class="col-md-4">
+                    <label class="form-label visually-hidden" for="keywordInput">Tìm kiếm</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control" id="keywordInput" name="keyword"
+                            placeholder="Tên hoặc email" value="{{ request('keyword') }}">
+                    </div>
+                </div>
 
-    <div class="col-md-3">
-        <label class="form-label visually-hidden" for="permissionSelect">Quyền</label>
-        <select class="form-select" id="permissionSelect" name="permission_id">
-    <option value="">-- Tất cả quyền --</option>
-    @foreach ($permissions as $permission)
-        @php
-            switch ($permission->permission_name) {
-                case 'admin':
-                    $displayName = 'Quản trị viên';
-                    break;
-                case 'staff':
-                    $displayName = 'Nhân viên quản lý';
-                    break;
-                case 'accountant':
-                    $displayName = 'Kế toán';
-                    break;
-                case 'user':
-                default:
-                    $displayName = 'Người dùng';
-                    break;
-            }
-        @endphp
-        <option value="{{ $permission->id }}" {{ request('permission_id') == $permission->id ? 'selected' : '' }}>
-            {{ $displayName }}
-        </option>
-    @endforeach
-</select>
+                <div class="col-md-3">
+                    <label class="form-label visually-hidden" for="permissionSelect">Quyền</label>
+                    <select class="form-select" id="permissionSelect" name="permission_id">
+                        <option value="">-- Tất cả quyền --</option>
+                        @foreach ($permissions as $permission)
+                            @php
+                                switch ($permission->permission_name) {
+                                    case 'admin':
+                                        $displayName = 'Quản trị viên';
+                                        break;
+                                    case 'staff':
+                                        $displayName = 'Nhân viên quản lý';
+                                        break;
+                                    case 'accountant':
+                                        $displayName = 'Kế toán';
+                                        break;
+                                    case 'user':
+                                    default:
+                                        $displayName = 'Người dùng';
+                                        break;
+                                }
+                            @endphp
+                            <option value="{{ $permission->id }}"
+                                {{ request('permission_id') == $permission->id ? 'selected' : '' }}>
+                                {{ $displayName }}
+                            </option>
+                        @endforeach
+                    </select>
 
-    </div>
+                </div>
 
-    <div class="col-md-2">
-        <label class="form-label visually-hidden" for="statusSelect">Trạng thái</label>
-        <select class="form-select" id="statusSelect" name="is_active">
-            <option value="">-- Tất cả trạng thái --</option>
-            <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Đang hoạt động</option>
-            <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Đã khóa</option>
-        </select>
-    </div>
+                <div class="col-md-2">
+                    <label class="form-label visually-hidden" for="statusSelect">Trạng thái</label>
+                    <select class="form-select" id="statusSelect" name="is_active">
+                        <option value="">-- Tất cả trạng thái --</option>
+                        <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Đang hoạt động</option>
+                        <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Đã khóa</option>
+                    </select>
+                </div>
 
-    <div class="col-md-3 d-flex gap-2">
-        <button type="submit" class="btn btn-primary w-100">
-            <i class="bi bi-filter"></i> Lọc
-        </button>
-        <a href="{{ route('users.index') }}" class="btn btn-outline-secondary w-100">
-            <i class="bi bi-arrow-clockwise"></i> Đặt lại
-        </a>
-    </div>
-</form>
+                <div class="col-md-3 d-flex gap-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-filter"></i> Lọc
+                    </button>
+                    <a href="{{ route('users.index') }}" class="btn btn-outline-secondary w-100">
+                        <i class="bi bi-arrow-clockwise"></i> Đặt lại
+                    </a>
+                </div>
+            </form>
 
             <!-- Bảng danh sách người dùng -->
             <table class="table table-bordered table-striped">
@@ -138,10 +139,22 @@
                             <!-- Hành động: Sửa và Khóa -->
                             <td class="text-center">
                                 <!-- Nút sửa -->
-                                <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                                @if ($user->permissions && !$user->permissions->contains('permission_name', 'admin'))
+                                    <a href="{{ route('users.edit', $user->id) }}" class="btn btn-warning btn-sm">Sửa</a>
+                                @endif
+                                {{-- <form action="{{ route('users.destroy', $user->id) }}" method="POST"
+                                    onsubmit="return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');"
+                                    style="display:inline-block;">
+                                    @csrf
+                                    @method('DELETE')
 
+
+                                    <button type="submit" class="btn btn-sm btn-danger">Xóa</button>
+
+                                </form> --}}
 
                             </td>
+
                             <td>
 
                                 @if ($user->is_active)
@@ -154,9 +167,13 @@
                                     style="display:inline;">
                                     @csrf
                                     @method('PATCH')
-                                    <button class="btn btn-sm btn-danger">
-                                        {{ $user->is_active ? 'Khóa' : 'Mở khóa' }}
-                                    </button>
+                                    @if ($user->permissions && !$user->permissions->contains('permission_name', 'admin'))
+                                        <button class="btn btn-sm btn-danger">
+                                            {{ $user->is_active ? 'Khóa' : 'Mở khóa' }}
+                                        </button>
+                                    @endif
+
+
                                 </form>
 
                             </td>

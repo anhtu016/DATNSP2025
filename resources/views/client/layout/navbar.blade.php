@@ -28,6 +28,9 @@
                             <li>
                                 <a href="{{ route('home') }}" class="show-submenu">Trang chủ</a>
                             </li>
+                            <li>
+                                <a href="{{ route('productlist') }}" class="show-submenu">sản phẩm</a>
+                            </li>
                             <li class="submenu">
                                 <a href="javascript:void(0);" class="show-submenu">Danh mục</a>
                                 <ul>

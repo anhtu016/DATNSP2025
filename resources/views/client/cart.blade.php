@@ -82,7 +82,7 @@
                                             data-max="{{ $item['quantity_variant'] ?? 99 }}"
                                             {{ in_array($id, $checkedItems) ? 'checked' : '' }}>
                                     </td>
-\
+
 
 
                                     <td class="align-middle">

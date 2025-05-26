@@ -112,7 +112,7 @@
                                     </div>
 
                                     <div class="d-flex gap-3 mt-4">
-                                        <button type="submit" class="btn btn-primary w-100">
+                                        <button type="submit" class="btn btn-primary w-100" id="add-to-cart-btn">
                                             <i class="fas fa-shopping-cart me-2"></i>Thêm vào giỏ hàng
                                         </button>
                                     </div>
@@ -273,6 +273,13 @@
         .thumb-image:hover {
             border-color: #007bff;
         }
+        button.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    pointer-events: none;
+    
+}
+
     </style>
 
     <style>
@@ -324,117 +331,91 @@
     </script>
 
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const variantInfo = document.getElementById('variant-info');
-            const variantStock = document.getElementById('variant-stock');
-            const totalStockWrapper = document.getElementById('total-stock').parentElement;
-            const stockAlert = document.createElement('p'); // Cảnh báo số lượng ít
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+    const variantInfo = document.getElementById('variant-info');
+    const variantStock = document.getElementById('variant-stock');
+    const totalStockWrapper = document.getElementById('total-stock')?.parentElement;
+    const variantStockData = @json($variantStock);
+    const attributeOrder = {!! json_encode(array_keys($attributes)) !!};
+    const requiredAttrCount = {{ count($attributes) }};
+    const addToCartBtn = document.getElementById('add-to-cart-btn'); // ✅ Lấy nút thêm giỏ hàng
 
-            stockAlert.classList.add('alert', 'alert-warning', 'mt-3'); // Thêm class để định kiểu cảnh báo
-            stockAlert.style.display = 'none'; // Ẩn cảnh báo mặc định
-            stockAlert.textContent = "Sản phẩm sắp hết, chỉ còn ít sản phẩm trong kho!"; // Nội dung cảnh báo
-            totalStockWrapper.after(stockAlert); // Thêm cảnh báo sau phần tổng số lượng
+    // Tạo cảnh báo khi số lượng thấp hoặc hết hàng
+    const stockAlert = document.createElement('p');
+    stockAlert.classList.add('alert', 'alert-warning', 'mt-3');
+    stockAlert.style.display = 'none';
+    totalStockWrapper?.after(stockAlert);
 
-            const variantStockData = @json($variantStock);
+    document.querySelectorAll('label.btn-outline-dark').forEach(label => {
+        label.addEventListener('click', function () {
+            setTimeout(() => {
+                let selectedAttributes = {};
 
-            document.querySelectorAll('label.btn-outline-dark').forEach(label => {
-                label.addEventListener('click', function() {
-                    setTimeout(() => {
-                        let selectedAttributes = {};
+                document.querySelectorAll('input[type="radio"][name^="attributes"]:checked').forEach(checked => {
+                    const name = checked.name.replace('attributes[', '').replace(']', '');
+                    selectedAttributes[name] = checked.value;
+                });
 
-                        document.querySelectorAll(
-                                'input[type="radio"][name^="attributes"]:checked')
-                            .forEach(checked => {
-                                const name = checked.name.replace('attributes[', '')
-                                    .replace(']', '');
-                                selectedAttributes[name] = checked.value;
-                            });
+                if (Object.keys(selectedAttributes).length === requiredAttrCount) {
+                    const key = attributeOrder.map(attr => selectedAttributes[attr]).join('-');
 
-                        if (Object.keys(selectedAttributes).length ===
-                            {{ count($attributes) }}) {
-                            const attributeOrder = {!! json_encode(array_keys($attributes)) !!};
-                            const key = attributeOrder.map(attr => selectedAttributes[attr])
-                                .join('-');
+                    if (variantStockData[key] !== undefined) {
+                        const stock = variantStockData[key];
+                        variantStock.textContent = stock;
+                        variantInfo.style.display = 'block';
+                        totalStockWrapper.style.display = 'none';
 
-                            if (variantStockData[key] !== undefined) {
-                                const stock = variantStockData[key];
-                                variantStock.textContent = stock;
-                                variantInfo.style.display = 'block';
-
-                                // ✅ Ẩn tổng số lượng khi đã chọn đầy đủ
-                                totalStockWrapper.style.display = 'none';
-
-                                // Hiển thị cảnh báo nếu số lượng dưới 20
-                                if (stock < 20) {
-                                    stockAlert.style.display = 'block';
-                                } else {
-                                    stockAlert.style.display = 'none';
-                                }
-                            } else {
-                                variantStock.textContent = '0';
-                                variantInfo.style.display = 'block';
-                                stockAlert.style.display =
-                                    'none'; // Ẩn cảnh báo khi không có sản phẩm
+                        if (stock === 0) {
+                            stockAlert.textContent = "Sản phẩm này đã hết hàng!";
+                            stockAlert.style.display = 'block';
+                            if (addToCartBtn) {
+                                addToCartBtn.disabled = true;
+                                addToCartBtn.classList.add('disabled'); // style cho nút
+                            }
+                        } else if (stock < 20) {
+                            stockAlert.textContent = "Sản phẩm sắp hết, chỉ còn ít trong kho!";
+                            stockAlert.style.display = 'block';
+                            if (addToCartBtn) {
+                                addToCartBtn.disabled = false;
+                                addToCartBtn.classList.remove('disabled');
                             }
                         } else {
-                            variantInfo.style.display = 'none';
-                            totalStockWrapper.style.display = 'block';
-                            stockAlert.style.display =
-                                'none'; // Ẩn cảnh báo nếu chưa chọn đủ thuộc tính
-                        }
-                    }, 50);
-                });
-            });
-        });
-
-        //
-        document.addEventListener('DOMContentLoaded', function() {
-            const variantInfo = document.getElementById('variant-info');
-            const variantStock = document.getElementById('variant-stock');
-            const totalStockWrapper = document.getElementById('total-stock').parentElement;
-
-            const variantStockData = @json($variantStock);
-
-            document.querySelectorAll('label.btn-outline-dark').forEach(label => {
-                label.addEventListener('click', function() {
-                    setTimeout(() => {
-                        let selectedAttributes = {};
-
-                        document.querySelectorAll(
-                                'input[type="radio"][name^="attributes"]:checked')
-                            .forEach(checked => {
-                                const name = checked.name.replace('attributes[', '')
-                                    .replace(']', '');
-                                selectedAttributes[name] = checked.value;
-                            });
-
-                        if (Object.keys(selectedAttributes).length ===
-                            {{ count($attributes) }}) {
-                            const attributeOrder = {!! json_encode(array_keys($attributes)) !!};
-                            const key = attributeOrder.map(attr => selectedAttributes[attr])
-                                .join('-');
-
-                            if (variantStockData[key] !== undefined) {
-                                variantStock.textContent = variantStockData[key];
-                                variantInfo.style.display = 'block';
-                            } else {
-                                variantStock.textContent = '0';
-                                variantInfo.style.display = 'block';
+                            stockAlert.style.display = 'none';
+                            if (addToCartBtn) {
+                                addToCartBtn.disabled = false;
+                                addToCartBtn.classList.remove('disabled');
                             }
-
-                            // ✅ Ẩn tổng số lượng khi đã chọn đầy đủ
-                            totalStockWrapper.style.display = 'none';
-                        } else {
-                            // ❗ Nếu chưa chọn đủ, hiện tổng số lượng
-                            variantInfo.style.display = 'none';
-                            totalStockWrapper.style.display = 'block';
                         }
-                    }, 50);
-                });
-            });
+                    } else {
+                        variantStock.textContent = '0';
+                        variantInfo.style.display = 'block';
+                        totalStockWrapper.style.display = 'none';
+                        stockAlert.textContent = "Sản phẩm biến thể này không tồn tại hoặc đã hết!";
+                        stockAlert.style.display = 'block';
+
+                        if (addToCartBtn) {
+                            addToCartBtn.disabled = true;
+                            addToCartBtn.classList.add('disabled');
+                        }
+                    }
+                } else {
+                    variantInfo.style.display = 'none';
+                    totalStockWrapper.style.display = 'block';
+                    stockAlert.style.display = 'none';
+
+                    if (addToCartBtn) {
+                        addToCartBtn.disabled = true;
+                        addToCartBtn.classList.add('disabled');
+                    }
+                }
+            }, 50);
         });
-    </script>
+    });
+});
+
+</script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const variantImage = document.getElementById('product-image');

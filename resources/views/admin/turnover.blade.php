@@ -77,8 +77,67 @@
         </div>
     </div>
     <hr>
-    
+    <div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <h3 class="card-title">Biểu đồ Doanh thu theo tháng và năm</h3>
+        <canvas id="monthlyRevenueChart" width="100%" height="40"></canvas>
+    </div>
 </div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+    const ctx = document.getElementById('monthlyRevenueChart').getContext('2d');
+
+    const labels = [
+        @foreach ($monthlyRevenue as $item)
+            "{{ $item->month }}/{{ $item->year }}",
+        @endforeach
+    ];
+
+    const data = [
+        @foreach ($monthlyRevenue as $item)
+            {{ $item->revenue }},
+        @endforeach
+    ];
+
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Doanh thu (VNĐ)',
+                data: data,
+                backgroundColor: '#4e73df',
+                borderColor: '#2e59d9',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString() + ' VNĐ';
+                        }
+                    }
+                }
+            },
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            return context.label + ': ' + context.parsed.y.toLocaleString() + ' VNĐ';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
 
 
     <!-- End Page-content -->

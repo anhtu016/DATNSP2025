@@ -39,7 +39,7 @@ public function index(Request $request)
   // Hiển thị form tạo người dùng
   public function create()
   {
-      $permissionIds = [1, 2, 3, 4];
+      $permissionIds = [ 2, 3, 4];
       $permissions = Permission::whereIn('id', $permissionIds)->get(); 
       return view('admin.users.create', compact('permissions'));  
   }
@@ -78,7 +78,8 @@ public function edit($id)
     $user = User::findOrFail($id);
     
 
-    $permissions = Permission::all();
+    $permissionIds = [ 2, 3, 4];
+    $permissions = Permission::whereIn('id', $permissionIds)->get(); 
     
 
     $userPermissions = $user->permissions->pluck('id')->toArray(); 
@@ -146,15 +147,15 @@ public function destroy($id)
     $user = User::findOrFail($id);
 
     // Kiểm tra đơn hàng đang xử lý
-    $hasProcessingOrders = DB::table('order')
-        ->where('user_id', $id)
-        ->where('order_status', 'pending') 
-        ->exists();
+    // $hasProcessingOrders = DB::table('order')
+    //     ->where('user_id', $id)
+    //     ->where('order_status', 'pending') 
+    //     ->exists();
 
-    if ($hasProcessingOrders) {
-        return redirect()->route('users.index')
-            ->with('error', 'Không thể xóa người dùng đang có đơn hàng đang xử lý!');
-    }
+    // if ($hasProcessingOrders) {
+    //     return redirect()->route('users.index')
+    //         ->with('error', 'Không thể xóa người dùng đang có đơn hàng đang xử lý!');
+    // }
 
     // Xóa quyền người dùng
     DB::table('users_permissions')->where('user_id', $id)->delete();

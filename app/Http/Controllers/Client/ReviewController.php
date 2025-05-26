@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Order;
 use App\Models\ProductReview;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Validator;
 class ReviewController extends Controller
 {
     /**
@@ -20,14 +20,34 @@ class ReviewController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+
+
 public function create(Request $request, Order $order)
 {
+    $rules = [];
+    $attributes = [];
+
+    foreach ($order->orderDetails as $item) {
+        $rules["image.{$item->id}"] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+        $rules["rating.{$item->id}"] = 'required|integer|min:1|max:5';
+        $rules["description.{$item->id}"] = 'required|string';
+
+        $attributes["image.{$item->id}"] = 'ảnh đánh giá';
+        $attributes["rating.{$item->id}"] = 'đánh giá sao';
+        $attributes["description.{$item->id}"] = 'bình luận';
+    }
+
+    // Validate dữ liệu, nếu lỗi sẽ tự redirect với lỗi về form
+    $request->validate($rules, [], $attributes);
+
+    // Lấy dữ liệu
     $ratings = $request->input('rating', []);
     $descriptions = $request->input('description', []);
     $images = $request->file('image', []);
 
     $hasReview = false;
     $hasError = false;
+    $errorMessage = null;
 
     foreach ($order->orderDetails as $item) {
         $orderDetailId = $item->id;
@@ -36,53 +56,54 @@ public function create(Request $request, Order $order)
         $description = trim($descriptions[$orderDetailId] ?? '');
         $variantId = $item->variant_id;
 
-        // Kiểm tra dữ liệu đầu vào có hợp lệ không
-        if ($rating && $description && $variantId) {
-            $alreadyReviewed = ProductReview::where([
+        $alreadyReviewed = ProductReview::where([
+            'variants_id' => $variantId,
+            'user_id' => auth()->id(),
+            'order_id' => $item->order_id,
+        ])->exists();
+
+        if (!$alreadyReviewed) {
+            $imagePath = null;
+            if (isset($images[$orderDetailId])) {
+                $imagePath = $images[$orderDetailId]->store('reviews', 'public');
+            }
+
+            ProductReview::create([
                 'variants_id' => $variantId,
                 'user_id' => auth()->id(),
                 'order_id' => $item->order_id,
-            ])->exists();
+                'rating' => $rating,
+                'description' => $description,
+                'status' => 1,
+                'product_id' => $item->product_id,
+                'image' => $imagePath,
+            ]);
 
-            if (!$alreadyReviewed) {
-                // Xử lý ảnh (nếu có)
-                $imagePath = null;
-                if (isset($images[$orderDetailId])) {
-                    $imagePath = $images[$orderDetailId]->store('reviews', 'public');
-                }
-
-                ProductReview::create([
-                    'variants_id' => $variantId,
-                    'user_id' => auth()->id(),
-                    'order_id' => $item->order_id,
-                    'rating' => $rating,
-                    'description' => $description,
-                    'status' => 1,
-                    'product_id' => $item->product_id,
-                    'image' => $imagePath,
-                ]);
-
-                $hasReview = true;
-            } else {
-                $hasError = true;
-            }
+            $hasReview = true;
+        } else {
+            $hasError = true;
+            $errorMessage = "Bạn đã đánh giá sản phẩm ID $orderDetailId rồi.";
+            break;
         }
     }
 
-    // Trả về thông báo
     if ($hasReview) {
         return redirect()->route('orders.review', $order->id)
             ->with('success', 'Đánh giá của bạn đã được gửi thành công!');
     } elseif ($hasError) {
         return redirect()->route('orders.review', $order->id)
-            ->with('error', 'Bạn đã đánh giá một số sản phẩm rồi')
+            ->with('error', $errorMessage)
             ->withInput();
     }
 
     return redirect()->route('orders.review', $order->id)
-        ->with('error', 'Vui lòng nhập đánh giá cho ít nhất một sản phẩm')
+        ->with('error', 'Vui lòng nhập đánh giá cho sản phẩm')
         ->withInput();
 }
+
+
+
+
 
 
     /**

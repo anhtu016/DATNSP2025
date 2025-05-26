@@ -67,6 +67,9 @@
                                                             for="star{{ $star }}-{{ $item->id }}">&#9733;</label>
                                                     @endfor
                                                 </div>
+                                                @error('rating.' . $item->id)
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                                @enderror
 
                                             </div>
 
@@ -76,14 +79,21 @@
                                                     class="form-label fw-bold">Bình luận của bạn</label>
                                                 <textarea name="description[{{ $item->id }}]" id="description-{{ $item->id }}" class="form-control"
                                                     rows="4" placeholder="Nhập bình luận của bạn về sản phẩm này..."></textarea>
+                                                @error('description.' . $item->id)
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                                @enderror
                                             </div>
 
                                             <!-- Ảnh đánh giá -->
                                             <div class="mb-3">
                                                 <label for="image-{{ $item->id }}" class="form-label fw-bold">Tải ảnh
-                                                    đánh giá (nếu có)</label>
+                                                    đánh giá</label>
                                                 <input class="form-control" type="file" id="image-{{ $item->id }}"
                                                     name="image[{{ $item->id }}]" accept="image/*">
+                                                @error('image.' . $item->id)
+                                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                                @enderror
+
                                             </div>
 
                                             <input type="hidden" name="variants_id[{{ $item->id }}]"
@@ -102,13 +112,15 @@
 
                         <!-- CSS thêm cho hiệu ứng sao -->
                         <style>
-             .star-rating {
-    display: flex;
-    flex-direction: row-reverse; /* GIỮ nguyên nếu bạn render từ 5->1 */
-    justify-content: flex-start; /* <== cái này đảm bảo nằm bên trái */
-    gap: 0.3rem;
-    font-size: 1.8rem;
-}
+                            .star-rating {
+                                display: flex;
+                                flex-direction: row-reverse;
+                                /* GIỮ nguyên nếu bạn render từ 5->1 */
+                                justify-content: flex-start;
+                                /* <== cái này đảm bảo nằm bên trái */
+                                gap: 0.3rem;
+                                font-size: 1.8rem;
+                            }
 
 
                             .star-rating input[type="radio"] {

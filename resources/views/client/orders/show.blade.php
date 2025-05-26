@@ -65,7 +65,7 @@
 
 
                 @if ($daysSinceDelivered !== null)
-                    <p class="text-muted">📦 Đơn hàng đã giao được {{ $daysSinceDelivered }} ngày.</p>
+                    {{-- <p class="text-muted">📦 Đơn hàng đã giao được {{ $daysSinceDelivered }} ngày.</p> --}}
                 @endif
             </div>
         </div>
@@ -73,13 +73,36 @@
         {{-- Nút hành động --}}
         <div class="mb-4">
             @if ($order->order_status === 'delivered' && !$order->is_confirmed)
-                <form action="{{ route('user.orders.confirm', $order->id) }}" method="POST"
-                    onsubmit="return confirm('Bạn xác nhận đơn hàng đã hoàn tất?')">
-                    @csrf
-                    @method('PUT')
-                    <button style="display: inline-block !important" id="confirm-order-btn">✅ Xác nhận đã hoàn thành đơn
-                        hàng</button>
-                </form>
+                <form id="confirm-order-form" action="{{ route('user.orders.confirm', $order->id) }}" method="POST" class="d-inline-block">
+    @csrf
+    @method('PUT')
+    <button type="button" id="confirm-order-btn"
+        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center gap-2">
+        <span>Xác nhận đã hoàn thành đơn hàng</span>
+    </button>
+</form>
+<script>
+    document.getElementById('confirm-order-btn').addEventListener('click', function (e) {
+        e.preventDefault();
+
+        Swal.fire({
+            title: 'Xác nhận hoàn tất đơn hàng?',
+            text: "Bạn sẽ không thể hoàn tác sau khi xác nhận!",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Có',
+            cancelButtonText: 'Không',
+            reverseButtons: true
+        }).then((result) => {
+            if (result.isConfirmed) {
+                this.disabled = true;
+                this.innerHTML = '⏳ Đang xác nhận...';
+                document.getElementById('confirm-order-form').submit();
+            }
+        });
+    });
+</script>
+
             @elseif ($order->is_confirmed)
                 <p class="text-success"><strong>✅ Đã xác nhận hoàn tất lúc
                         {{ \Carbon\Carbon::parse($order->confirmed_at)->format('d/m/Y H:i') }}</strong></p>
