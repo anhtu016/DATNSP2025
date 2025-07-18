@@ -1,112 +1,119 @@
 @extends('admin.layout.default')
 @section('content')
-<h1>abc</h1>
+    <h1>abc</h1>
     <h3>abc</h3>
-<div class="row p-5">
-    <div class="col-lg-12">
-        <div class="card">
-            <div class="card-header">               
-            </div><!-- end card header -->
-            <div class="card-body">                    
-                <h2>Danh sách danh mục</h2>
-                @if (session('error'))
-                <div class="alert alert-danger">
-                    {{ session('error') }}
-                </div>
-            @endif
-
-            @if (session('success'))
-                <div class="alert alert-success">
-                    {{ session('success') }}
-                </div>
-            @endif
-                <div class="listjs-table" id="customerList">
-                    <div class="row g-4 mb-3">
-                        <div class="col-sm-auto">
-                            <div>
-                                <a href="add-categories"><button type="button" class="btn btn-success add-btn" data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i class="ri-add-line align-bottom me-1"></i> Thêm danh mục</button></a>  
-                            </div>
+    <div class="row p-5">
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                </div><!-- end card header -->
+                <div class="card-body">
+                    <h2>Danh sách danh mục</h2>
+                    @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
                         </div>
-                        <div class="col-sm">
-                            <div class="d-flex justify-content-sm-end">
-                                <div class="search-box ms-2">
-                                    <input type="text" class="form-control search" placeholder="Search...">
-                                    <i class="ri-search-line search-icon"></i>
+                    @endif
+
+                    @if (session('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+                    <div class="listjs-table" id="customerList">
+                        <div class="row g-4 mb-3">
+                            <div class="col-sm-auto">
+                                <div>
+                                    <a href="add-categories"><button type="button" class="btn btn-success add-btn"
+                                            data-bs-toggle="modal" id="create-btn" data-bs-target="#showModal"><i
+                                                class="ri-add-line align-bottom me-1"></i> Thêm danh mục</button></a>
+                                </div>
+                            </div>
+                            <div class="col-sm">
+                                <div class="d-flex justify-content-sm-end">
+                                    <div class="search-box ms-2">
+                                        <input type="text" class="form-control search" placeholder="Search...">
+                                        <i class="ri-search-line search-icon"></i>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+
+                        <div class="table-responsive table-card mt-3 mb-1">
+                            <table class="table align-middle table-nowrap" id="customerTable">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th class="sort" data-sort="customer_name">STT</th>
+                                        <th class="sort" data-sort="email">Tên Danh Mục</th>
+                                        <th class="sort" data-sort="phone">Đường dẫn</th>
+                                        <th class="sort" data-sort="date">Mô tả</th>
+                                        <th class="sort" data-sort="action">Thao tác</th>
+                                    </tr>
+                                </thead>
+                                @foreach ($listCategory as $ct)
+                                    <tbody class="list form-check-all">
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $ct->name }}</td>
+                                            <td>{{ $ct->slug }}</td>
+                                            <td>{{ $ct->description }}</td>
+                                            <td>
+                                                <div class="d-flex gap-2">
+                                                    <div class="edit">
+                                                        <a href="{{ route('categories.edit', $ct->id) }}"><button
+                                                                class="btn btn-sm btn-success edit-item-btn"
+                                                                data-bs-toggle="modal"
+                                                                data-bs-target="#showModal">Sửa</button></a>
+                                                    </div>
+                                                    <form id="delete-form-{{ $ct->id }}"
+                                                        action="{{ route('categories.destroy', $ct->id) }}" method="POST"
+                                                        style="display:none;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                    </form>
+
+                                                    <button type="button" class="btn btn-sm btn-danger remove-item-btn"
+                                                        onclick="confirmDelete({{ $ct->id }})">
+                                                        Xóa
+                                                    </button>
+
+                                                    <script>
+                                                        function confirmDelete(id) {
+                                                            Swal.fire({
+                                                                title: 'Bạn có chắc chắn muốn xóa thư mục này không?',
+                                                                icon: 'warning',
+                                                                showCancelButton: true,
+                                                                confirmButtonColor: '#d33',
+                                                                cancelButtonColor: '#3085d6',
+                                                                confirmButtonText: 'Xóa',
+                                                                cancelButtonText: 'Hủy'
+                                                            }).then((result) => {
+                                                                if (result.isConfirmed) {
+                                                                    document.getElementById('delete-form-' + id).submit();
+                                                                }
+                                                            });
+                                                        }
+                                                    </script>
+
+
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                @endforeach
+                            </table>
+
+                            {{ $listCategory->links('pagination::bootstrap-5') }}
+                        </div>
+
+
                     </div>
-
-                    <div class="table-responsive table-card mt-3 mb-1">
-                        <table class="table align-middle table-nowrap" id="customerTable">
-                            <thead class="table-light">
-                                <tr>                                   
-                                    <th class="sort" data-sort="customer_name">STT</th>
-                                    <th class="sort" data-sort="email">Tên Danh Mục</th>
-                                    <th class="sort" data-sort="phone">Đường dẫn</th>
-                                    <th class="sort" data-sort="date">Mô tả</th>
-                                    <th class="sort" data-sort="action">Thao tác</th>
-                                </tr>
-                            </thead>
-                            @foreach ($listCategory as $ct)
-                            <tbody class="list form-check-all">
-                                <tr>
-                                    <td>{{ $loop->iteration }}</td>
-                                    <td>{{$ct->name}}</td>
-                                    <td>{{$ct->slug}}</td>
-                                    <td>{{$ct->description}}</td>
-                                    <td>
-                                        <div class="d-flex gap-2">
-                                            <div class="edit">
-                                               <a href="{{route('categories.edit',$ct->id)}}"><button class="btn btn-sm btn-success edit-item-btn" data-bs-toggle="modal" data-bs-target="#showModal">Sửa</button></a> 
-                                            </div>
-                                            <form id="delete-form-{{ $ct->id }}" action="{{ route('categories.destroy', $ct->id) }}" method="POST" style="display:none;">
-    @csrf
-    @method('DELETE')
-</form>
-
-<button type="button" class="btn btn-sm btn-danger remove-item-btn"
-    onclick="confirmDelete({{ $ct->id }})">
-    Xóa
-</button>
-
-<script>
-function confirmDelete(id) {
-    Swal.fire({
-        title: 'Bạn có chắc chắn muốn xóa thư mục này không?',
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Xóa',
-        cancelButtonText: 'Hủy'
-    }).then((result) => {
-        if (result.isConfirmed) {
-            document.getElementById('delete-form-' + id).submit();
-        }
-    });
-}
-</script>
-
-                                            
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                            @endforeach
-                        </table>
-                        
-                        {{ $listCategory->links('pagination::bootstrap-5') }}
-                    </div>
-
-                   
-                </div>
-            </div><!-- end card -->
+                </div><!-- end card -->
+            </div>
+            <!-- end col -->
         </div>
         <!-- end col -->
     </div>
-    <!-- end col -->
-</div>
     <!-- css-->
     @push('admin_css')
         <!-- App favicon -->

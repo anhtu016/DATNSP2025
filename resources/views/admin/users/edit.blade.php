@@ -21,11 +21,11 @@
                 {{-- Thông tin cơ bản --}}
                 <div class="form-group">
                     <label>Tên người dùng</label>
-                    <input type="text" name="name" value="{{ old('name', $user->name) }}" class="form-control">
+                    <input type="text" name="name" value="{{ old('name', $user->name) }}" class="form-control" disabled>
                 </div>
                 <div class="form-group">
                     <label>Email</label>
-                    <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-control">
+                    <input type="email" name="email" value="{{ old('email', $user->email) }}" class="form-control" disabled>
                 </div>
 
                 {{-- Phân quyền --}}

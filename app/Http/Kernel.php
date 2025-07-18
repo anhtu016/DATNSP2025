@@ -71,6 +71,7 @@ class Kernel extends HttpKernel
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
         'is_staff' => \App\Http\Middleware\Staff::class,
         'check.permission' => \App\Http\Middleware\CheckPermission::class,
+        'check_active' => \App\Http\Middleware\CheckUserIsActive::class,
 
       
 

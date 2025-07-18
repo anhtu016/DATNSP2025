@@ -23,16 +23,23 @@
                     <label for="order_status" class="form-label">Trạng thái đơn hàng</label>
                     <select name="order_status" class="form-select">
                         <option value="">-- Tất cả trạng thái --</option>
-                        <option value="pending" {{ request('order_status') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
-                        <option value="processing" {{ request('order_status') == 'processing' ? 'selected' : '' }}>Đang xử lý đơn hàng
+                        <option value="pending" {{ request('order_status') == 'pending' ? 'selected' : '' }}>Chờ xử lý
                         </option>
-                        <option value="delivering" {{ request('order_status') == 'delivering' ? 'selected' : '' }}>Đang giao hàng
+                        <option value="processing" {{ request('order_status') == 'processing' ? 'selected' : '' }}>Đang xử
+                            lý đơn hàng
                         </option>
-                        <option value="shipped" {{ request('order_status') == 'shipped' ? 'selected' : '' }}>Đã giao hàng</option>
-                        <option value="delivered" {{ request('order_status') == 'delivered' ? 'selected' : '' }}>Hoàn thành</option>
-                        <option value="cancel_requested" {{ request('order_status') == 'cancel_requested' ? 'selected' : '' }}>Yêu
+                        <option value="delivering" {{ request('order_status') == 'delivering' ? 'selected' : '' }}>Đang giao
+                            hàng
+                        </option>
+                        <option value="shipped" {{ request('order_status') == 'shipped' ? 'selected' : '' }}>Đã giao hàng
+                        </option>
+                        <option value="delivered" {{ request('order_status') == 'delivered' ? 'selected' : '' }}>Hoàn thành
+                        </option>
+                        <option value="cancel_requested"
+                            {{ request('order_status') == 'cancel_requested' ? 'selected' : '' }}>Yêu
                             cầu hủy</option>
-                        <option value="cancelled" {{ request('order_status') == 'cancelled' ? 'selected' : '' }}>Đã hủy</option>
+                        <option value="cancelled" {{ request('order_status') == 'cancelled' ? 'selected' : '' }}>Đã hủy
+                        </option>
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -120,41 +127,44 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <form id="delete-order-form-{{ $order->id }}"
-                                        action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
-                                        style="display:none;">
-                                        @csrf
-                                        @method('DELETE')
-                                    </form>
+                                    @if ($order->order_status === 'cancelled')
+                                        <form id="delete-order-form-{{ $order->id }}"
+                                            action="{{ route('admin.orders.destroy', $order->id) }}" method="POST"
+                                            style="display:none;">
+                                            @csrf
+                                            @method('DELETE')
+                                        </form>
 
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        id="delete-order-btn-{{ $order->id }}">
-                                        Xoá
-                                    </button>
+                                        <button type="button" class="btn btn-sm btn-danger"
+                                            id="delete-order-btn-{{ $order->id }}">
+                                            Xoá
+                                        </button>
 
+                                        <script>
+                                            document.getElementById('delete-order-btn-{{ $order->id }}').addEventListener('click', function(e) {
+                                                e.preventDefault();
 
-                                    <script>
-                                        document.getElementById('delete-order-btn-{{ $order->id }}').addEventListener('click', function(e) {
-                                            e.preventDefault();
-
-                                            Swal.fire({
-                                                title: 'Bạn có chắc chắn muốn xoá đơn hàng này không?',
-                                                icon: 'warning',
-                                                showCancelButton: true,
-                                                confirmButtonText: 'Có, xoá ngay',
-                                                cancelButtonText: 'Không',
-                                                reverseButtons: true,
-                                            }).then((result) => {
-                                                if (result.isConfirmed) {
-                                                    this.disabled = true;
-                                                    this.innerText = '⏳ Đang xoá...';
-                                                    document.getElementById('delete-order-form-{{ $order->id }}').submit();
-                                                }
+                                                Swal.fire({
+                                                    title: 'Bạn có chắc chắn muốn xoá đơn hàng này không?',
+                                                    icon: 'warning',
+                                                    showCancelButton: true,
+                                                    confirmButtonText: 'Có, xoá ngay',
+                                                    cancelButtonText: 'Không',
+                                                    reverseButtons: true,
+                                                }).then((result) => {
+                                                    if (result.isConfirmed) {
+                                                        this.disabled = true;
+                                                        this.innerText = '⏳ Đang xoá...';
+                                                        document.getElementById('delete-order-form-{{ $order->id }}').submit();
+                                                    }
+                                                });
                                             });
-                                        });
-                                    </script>
-
+                                        </script>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
                                 </td>
+
                                 <td>
                                     @if ($order->order_status == 'cancel_requested')
                                         <form action="{{ route('admin.orders.confirmCancel', $order->id) }}" method="POST"

@@ -156,6 +156,7 @@ public function index1(Request $request)
     {
         $product = Product::findOrFail($id);
 
+
         // Không cho cập nhật nếu sản phẩm có trong đơn hàng
         if ($product->orderDetails()->exists()) {
             return redirect()->back()->with('error', 'Không thể cập nhật sản phẩm vì đã có trong đơn hàng.');
@@ -175,6 +176,11 @@ public function index1(Request $request)
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,webp|max:2048', // Kiểm tra các ảnh phụ
         ]);
 
+                if ($request->sell_price > 0 && $request->price >= $request->sell_price) {
+            return back()
+                ->with('error', 'Cập nhật sản phẩm không thành công. Giá sale phải nhỏ hơn giá gốc')
+                ->withInput();
+        }
         // Cập nhật thumbnail nếu có file ảnh mới
         if ($request->hasFile('thumbnail')) {
             $product->thumbnail = $request->file('thumbnail')->store('products', 'public');

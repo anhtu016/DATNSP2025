@@ -1,7 +1,7 @@
 @extends('client.layout.default')
 
 @section('content')
-<div class="container margin_60_35">
+<div class="container margin_60_35 " style="height: 120vh;">
     <h2 class="text-center">Mã giảm giá</h2>
     @if ($coupons->isNotEmpty())
         <div class="coupons-container">

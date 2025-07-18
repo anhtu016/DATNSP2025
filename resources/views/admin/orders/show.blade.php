@@ -12,84 +12,112 @@
                     <p><strong>⏰ Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
                     <p><strong>📦 Trạng thái:</strong>
                         @switch($order->order_status)
-                        @case('pending') Chờ xử lý @break
-                        @case('processing') Đang xử lý đơn hàng @break
-                        @case('delivering') Đang giao hàng @break
-                        @case('shipped') Đã giao hàng @break
-                        @case('delivered') Hoàn tất @break
-                        @case('cancelled') Đã hủy @break
-                        @case('cancel_requested') Yêu cầu hủy @break
-                        @default Không xác định
-                    @endswitch
+                            @case('pending')
+                                Chờ xử lý
+                            @break
+
+                            @case('processing')
+                                Đang xử lý đơn hàng
+                            @break
+
+                            @case('delivering')
+                                Đang giao hàng
+                            @break
+
+                            @case('shipped')
+                                Đã giao hàng
+                            @break
+
+                            @case('delivered')
+                                Hoàn tất
+                            @break
+
+                            @case('cancelled')
+                                Đã hủy
+                            @break
+
+                            @case('cancel_requested')
+                                Yêu cầu hủy
+                            @break
+
+                            @default
+                                Không xác định
+                        @endswitch
                     </p>
 
                 </div>
-<form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
-    @csrf
-    <div class="row align-items-end">
-        <div class="col-md-4">
-            <label for="order_status" class="form-label">Thay đổi trạng thái đơn hàng:</label>
-            <select name="order_status" id="order_status" class="form-select"
-                @disabled(in_array($order->order_status, ['cancel_requested', 'cancelled', 'delivered']))>
+                <form method="POST" action="{{ route('admin.orders.updateStatus', $order->id) }}" class="mb-4">
+                    @csrf
+                    <div class="row align-items-end">
+                        <div class="col-md-4">
+                            <label for="order_status" class="form-label">Thay đổi trạng thái đơn hàng:</label>
+                            <select name="order_status" id="order_status" class="form-select" @disabled(in_array($order->order_status, ['cancel_requested', 'cancelled', 'delivered']))>
 
-                @php
-                    $current = $order->order_status;
-                    $statusOptions = [
-                        'pending' => ['processing', 'cancelled'],
-                        'processing' => ['delivering'],
-                        'delivering' => ['shipped'],
-                        'shipped' => ['delivered'],
-                    ];
+                                @php
+                                    $current = $order->order_status;
+                                    $statusOptions = [
+                                        'pending' => ['processing', 'cancelled'],
+                                        'processing' => ['delivering'],
+                                        'delivering' => ['shipped'],
+                                        'shipped' => ['delivered'],
+                                    ];
 
-                    $statusLabels = [
-                        'pending' => 'Chờ xử lý',
-                        'processing' => 'Đang xử lý đơn hàng',
-                        'delivering' => 'Đang giao hàng',
-                        'shipped' => 'Đã giao hàng',
-                        'delivered' => 'Hoàn tất',
-                        'cancelled' => 'Hủy đơn hàng',
-                        'cancel_requested' => 'Yêu cầu hủy',
-                    ];
-                @endphp
+                                    $statusLabels = [
+                                        'pending' => 'Chờ xử lý',
+                                        'processing' => 'Đang xử lý đơn hàng',
+                                        'delivering' => 'Đang giao hàng',
+                                        'shipped' => 'Đã giao hàng',
+                                        'delivered' => 'Hoàn tất',
+                                        'cancelled' => 'Hủy đơn hàng',
+                                        'cancel_requested' => 'Yêu cầu hủy',
+                                    ];
+                                @endphp
 
-                <option value="{{ $current }}" selected disabled> {{ $statusLabels[$current] ?? $current }}</option>
+                                <option value="{{ $current }}" selected disabled>
+                                    {{ $statusLabels[$current] ?? $current }}</option>
 
-                @foreach ($statusOptions[$current] ?? [] as $status)
-                    <option value="{{ $status }}">{{ $statusLabels[$status] ?? ucfirst($status) }}</option>
-                @endforeach
-            </select>
+                                @foreach ($statusOptions[$current] ?? [] as $status)
+                                    <option value="{{ $status }}">{{ $statusLabels[$status] ?? ucfirst($status) }}
+                                    </option>
+                                @endforeach
+                            </select>
 
-            @if ($order->order_status == 'cancel_requested')
-                <small class="text-warning">Khách đã yêu cầu hủy - Không thể thay đổi trạng thái</small>
-            @endif
-        </div>
+                            @if ($order->order_status == 'cancel_requested')
+                                <small class="text-warning">Khách đã yêu cầu hủy - Không thể thay đổi trạng thái</small>
+                            @endif
+                        </div>
 
-        <div class="col-md-2">
-            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled', 'delivered']))
-                <button type="submit" class="btn btn-primary mt-3">Cập nhật trạng thái</button>
-            @endif
-        </div>
-    </div>
-</form>
+                        <div class="col-md-2">
+                            @if (!in_array($order->order_status, ['cancel_requested', 'cancelled', 'delivered']))
+                                <button type="submit" class="btn btn-primary mt-3">Cập nhật trạng thái</button>
+                            @endif
+                        </div>
+                    </div>
+                </form>
 
 
-                
+
 
                 <h4 class="mb-3">🛒 Sản phẩm đã đặt</h4>
                 <div class="table-responsive">
                     <table class="table table-bordered align-middle text-center">
                         <thead class="table-light">
                             <tr>
-                                <th>Sản phẩm</th>
+                                <th>Ảnh sản phẩm</th>
+                                <th>Tên sản phẩm</th>
                                 <th>Thông số sản phẩm</th>
                                 <th>Số lượng</th>
                                 <th>Giá</th>
-                                <th>Tổng</th>
+                                <th>Số tiền</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($order->orderDetail as $item)
                                 <tr>
+                                    <td>
+                                        <img
+                                            src="{{ asset('storage/' . ($item->variant->image_variant ?? 'default.png')) }}" width="50px">
+                                    </td>
                                     <td>{{ $item->product->name ?? 'N/A' }}</td>
                                     <td>
                                         @if ($item->variant && $item->variant->attributeValues)
@@ -104,11 +132,32 @@
                                     </td>
                                     <td>{{ $item->quantity }}</td>
                                     <td>{{ number_format($item->price) }}đ</td>
+
                                     <td>{{ number_format($item->total) }}đ</td>
                                 </tr>
                             @endforeach
+
+                            @if ($order->coupon_code)
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Mã giảm giá áp dụng:</td>
+                                    <td colspan="2" class="text-start text-success">
+                                        {{ $order->coupon_code }}
+                                        @if ($order->discount_amount > 0)
+                                            - Giảm {{ number_format($order->discount_amount) }}đ
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endif
+
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Tổng tiền sau giảm:</td>
+                                <td colspan="2" class="text-start fw-bold text-primary">
+                                    {{ number_format($order->total_amount) }}đ
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

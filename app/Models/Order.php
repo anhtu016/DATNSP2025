@@ -5,8 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 use App\Models\OrderDetail;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
 class Order extends Model
 {
+      use SoftDeletes;
         protected $table = 'order';
 
         protected $fillable = [
@@ -61,9 +64,8 @@ public function getStatusBadgeClass()
 }
 public function coupon()
 {
-    return $this->belongsTo(Coupon::class);
+    return $this->belongsTo(Coupon::class, 'coupon_code', 'code');
 }
-
 
     
 }

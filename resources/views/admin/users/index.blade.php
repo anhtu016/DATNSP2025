@@ -86,8 +86,9 @@
                         <th>Email</th>
                         <th>Quyền</th>
                         <th>Ngày tạo</th>
-                        <th>Hành động</th>
+                        <th>Phân quyền</th>
                         <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -163,6 +164,8 @@
                                     <span class="text-danger">Đã khóa</span>
                                 @endif
 
+                            </td>
+                            <td class="text-center">
                                 <form action="{{ route('users.toggleStatus', $user->id) }}" method="POST"
                                     style="display:inline;">
                                     @csrf
@@ -175,7 +178,6 @@
 
 
                                 </form>
-
                             </td>
                         </tr>
                     @endforeach

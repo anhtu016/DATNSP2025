@@ -18,14 +18,15 @@
                 Thông tin đơn hàng
             </div>
             <div class="card-body">
-                <p><strong>🗓 Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
-                <p><strong>💳 Thanh toán:</strong> {{ $paymentMethods[$order->payment_methods_id] ?? 'Không xác định' }}</p>
-                <p><strong>🚚 Vận chuyển:</strong> {{ $shippingMethods[$order->shipping_method_id] ?? 'Không xác định' }}</p>
-                <p><strong>📍 Địa chỉ:</strong> {{ $order->shipping_address }}</p>
-                <p><strong>🕒 Cập nhật:</strong> <span
-                        id="updated-at">{{ \Carbon\Carbon::parse($order->updated_at)->format('d/m/Y H:i') }}</span></p>
+                <p><strong>Ngày đặt:</strong> {{ \Carbon\Carbon::parse($order->order_date)->format('d/m/Y H:i') }}</p>
+                <p><strong> Thanh toán:</strong> {{ $paymentMethods[$order->payment_methods_id] ?? 'Không xác định' }}</p>
+                <p><strong> Vận chuyển:</strong> {{ $shippingMethods[$order->shipping_method_id] ?? 'Không xác định' }}
+                </p>
+                <p><strong> Địa chỉ:</strong> {{ $order->shipping_address }}</p>
+                {{-- <p><strong> Cập nhật:</strong> <span
+                        id="updated-at">{{ \Carbon\Carbon::parse($order->updated_at)->format('d/m/Y H:i') }}</span></p> --}}
 
-                <p><strong>📌 Trạng thái:</strong>
+                <p><strong> Trạng thái:</strong>
                     <span class="badge bg-{{ $order->getStatusBadgeClass() }} fs-6" id="order-status"
                         data-order-id="{{ $order->id }}">
                         @switch($order->order_status)
@@ -73,36 +74,36 @@
         {{-- Nút hành động --}}
         <div class="mb-4">
             @if ($order->order_status === 'delivered' && !$order->is_confirmed)
-                <form id="confirm-order-form" action="{{ route('user.orders.confirm', $order->id) }}" method="POST" class="d-inline-block">
-    @csrf
-    @method('PUT')
-    <button type="button" id="confirm-order-btn"
-        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center gap-2">
-        <span>Xác nhận đã hoàn thành đơn hàng</span>
-    </button>
-</form>
-<script>
-    document.getElementById('confirm-order-btn').addEventListener('click', function (e) {
-        e.preventDefault();
+                <form id="confirm-order-form" action="{{ route('user.orders.confirm', $order->id) }}" method="POST"
+                    class="d-inline-block">
+                    @csrf
+                    @method('PUT')
+                    <button type="button" id="confirm-order-btn"
+                        class="bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-300 ease-in-out flex items-center gap-2">
+                        <span>Xác nhận đã hoàn thành đơn hàng</span>
+                    </button>
+                </form>
+                <script>
+                    document.getElementById('confirm-order-btn').addEventListener('click', function(e) {
+                        e.preventDefault();
 
-        Swal.fire({
-            title: 'Xác nhận hoàn tất đơn hàng?',
-            text: "Bạn sẽ không thể hoàn tác sau khi xác nhận!",
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonText: 'Có',
-            cancelButtonText: 'Không',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.isConfirmed) {
-                this.disabled = true;
-                this.innerHTML = '⏳ Đang xác nhận...';
-                document.getElementById('confirm-order-form').submit();
-            }
-        });
-    });
-</script>
-
+                        Swal.fire({
+                            title: 'Xác nhận hoàn tất đơn hàng?',
+                            text: "Bạn sẽ không thể hoàn tác sau khi xác nhận!",
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Có',
+                            cancelButtonText: 'Không',
+                            reverseButtons: true
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                this.disabled = true;
+                                this.innerHTML = '⏳ Đang xác nhận...';
+                                document.getElementById('confirm-order-form').submit();
+                            }
+                        });
+                    });
+                </script>
             @elseif ($order->is_confirmed)
                 <p class="text-success"><strong>✅ Đã xác nhận hoàn tất lúc
                         {{ \Carbon\Carbon::parse($order->confirmed_at)->format('d/m/Y H:i') }}</strong></p>
@@ -148,7 +149,7 @@
         {{-- Sản phẩm trong đơn hàng --}}
         <div class="card mb-4">
             <div class="card-header bg-secondary text-white">
-                🛍 Sản phẩm trong đơn hàng
+                Sản phẩm trong đơn hàng
             </div>
             <div class="card-body table-responsive">
                 <table class="table table-bordered text-center align-middle">
@@ -166,7 +167,7 @@
                         @foreach ($order->orderDetails as $item)
                             <tr>
                                 <td>
-                                    <img src="{{ asset('storage/' . ($item->product->thumbnail ?? 'default.png')) }}"
+                                    <img src="{{ asset('storage/' . ($item->variant->image_variant ?? 'default.png')) }}"
                                         width="80" alt="Ảnh sản phẩm">
                                 </td>
                                 <td>{{ $item->product->name ?? 'N/A' }}</td>
@@ -182,16 +183,68 @@
                                 </td>
                                 <td>{{ number_format($item->price) }}đ</td>
                                 <td>{{ $item->quantity }}</td>
+
                                 <td>{{ number_format($item->price * $item->quantity) }}đ</td>
                             </tr>
-                        @endforeach
+                            @endforeach @if ($order->coupon_code)
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Tổng tiền hàng</td>
+                                    <td colspan="2" class="text-start">
+                                        {{ number_format($order->orderDetails->sum('total')) }}đ
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Mã giảm giá áp dụng:</td>
+                                    <td colspan="2" class="text-start">
+                                        {{ $order->coupon_code }}
+
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="4" class="text-end fw-bold">Số tiền được giảm</td>
+                                    <td colspan="2" class="text-start text-danger">
+
+                                        @if ($order->discount_amount > 0)
+                                            {{ number_format($order->discount_amount) }}đ
+                                        @endif
+                                    </td>
+                                </tr>
+                            @endif
+
+                            <tr>
+                                <td colspan="4" class="text-end fw-bold">Tổng tiền thanh toán:</td>
+                                <td colspan="2" class="text-start fw-bold text-danger">
+                                    {{ number_format($order->total_amount) }}đ
+                                </td>
+                            </tr>
                     </tbody>
                 </table>
 
+                {{-- @if ($order->coupon)
+                    <tr>
+                        <td colspan="4" class="text-end fw-bold">Mã giảm giá áp dụng:</td>
+                        <td colspan="2" class="text-start text-success">
+                            <h6 class="text-center">
+                                <span class="text-success">{{ $order->coupon->code }}</span> -
+                                @if ($order->coupon->type === 'percentage')
+                                    {{ $order->coupon->value }}% (giảm
+                                    {{ number_format($order->discount_amount) }}đ)
+                                @else
+                                    {{ number_format($order->discount_amount) }}đ
+                                @endif
+                            </h6>
+                        </td>
+                    </tr>
+                @endif --}}
+
+
                 {{-- Tổng tiền --}}
-                <div class="d-flex justify-content-end mt-3">
-                    <h5><strong>Tổng thanh toán: {{ number_format($order->total_amount) }}đ</strong></h5>
-                </div>
+                {{-- <div class="d-flex justify-content-end mt-3">
+                    <div class="d-flex justify-content-end mt-3">
+                        <h5><strong>Tổng thanh toán: {{ number_format($order->total_amount) }}đ</strong></h5>
+                    </div>
+
+                </div> --}}
             </div>
         </div>
     </div>

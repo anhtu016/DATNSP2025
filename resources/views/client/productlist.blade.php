@@ -107,35 +107,38 @@
                                     </button>
                                 @endforeach
                             </div>
-                            <input type="hidden" name="size" id="selected-size" value="{{ request()->size }}">
+                          <input type="hidden" name="sizes[]" id="selected-size" value="{{ request()->size }}">
                         </div>
                         <hr class="custom-hr">
                         <!-- Khoảng giá -->
                         <!-- Khoảng giá -->
-<div class="mb-3 d-flex justify-content-between align-items-center">
-    <h5 class="m-0">Khoảng giá</h5>
-    <button type="button" class="btn btn-sm btn-toggle p-0" data-bs-toggle="collapse"
-        data-bs-target="#collapsePrice" aria-expanded="true" aria-controls="collapsePrice"
-        aria-label="Toggle Khoảng giá filter">
-        <svg class="icon-caret" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-            fill="currentColor" viewBox="0 0 16 16">
-            <path fill-rule="evenodd"
-                d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
-        </svg>
-    </button>
-</div>
-<div class="collapse show" id="collapsePrice">
-    <div class="d-flex gap-2">
-        <!-- input hiển thị định dạng số có dấu chấm -->
-        <input type="text" id="price_from_display" placeholder="Từ" class="form-control" 
-               value="{{ request()->price_from ? number_format(request()->price_from, 0, ',', '.') : '' }}" autocomplete="off">
-        <input type="hidden" name="price_from" id="price_from" value="{{ request()->price_from }}">
+                        <div class="mb-3 d-flex justify-content-between align-items-center">
+                            <h5 class="m-0">Khoảng giá</h5>
+                            <button type="button" class="btn btn-sm btn-toggle p-0" data-bs-toggle="collapse"
+                                data-bs-target="#collapsePrice" aria-expanded="true" aria-controls="collapsePrice"
+                                aria-label="Toggle Khoảng giá filter">
+                                <svg class="icon-caret" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                    fill="currentColor" viewBox="0 0 16 16">
+                                    <path fill-rule="evenodd"
+                                        d="M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="collapse show" id="collapsePrice">
+                            <div class="d-flex gap-2">
+                                <!-- input hiển thị định dạng số có dấu chấm -->
+                                <input type="text" id="price_from_display" placeholder="Từ" class="form-control"
+                                    value="{{ request()->price_from ? number_format(request()->price_from, 0, ',', '.') : '' }}"
+                                    autocomplete="off">
+                                <input type="hidden" name="price_from" id="price_from"
+                                    value="{{ request()->price_from }}">
 
-        <input type="text" id="price_to_display" placeholder="Đến" class="form-control" 
-               value="{{ request()->price_to ? number_format(request()->price_to, 0, ',', '.') : '' }}" autocomplete="off">
-        <input type="hidden" name="price_to" id="price_to" value="{{ request()->price_to }}">
-    </div>
-</div>
+                                <input type="text" id="price_to_display" placeholder="Đến" class="form-control"
+                                    value="{{ request()->price_to ? number_format(request()->price_to, 0, ',', '.') : '' }}"
+                                    autocomplete="off">
+                                <input type="hidden" name="price_to" id="price_to" value="{{ request()->price_to }}">
+                            </div>
+                        </div>
 
 
                         <button type="submit" class="btn btn-primary w-100 mt-3">ÁP DỤNG</button>
@@ -186,30 +189,6 @@
         </div>
     </main>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const sizeButtons = document.querySelectorAll('.size-btn');
-            const selectedSizeInput = document.getElementById('selected-size');
-
-            sizeButtons.forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const size = btn.getAttribute('data-size');
-
-                    if (btn.classList.contains('active')) {
-                        // Nếu đang active, click lần nữa sẽ bỏ chọn
-                        btn.classList.remove('active');
-                        selectedSizeInput.value = ''; // clear giá trị size
-                    } else {
-                        // Nếu chưa active, bỏ active tất cả rồi active cái đang click
-                        sizeButtons.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        selectedSizeInput.value = size;
-                    }
-                });
-            });
-        });
-    </script>
-
     <style>
         .btn-toggle {
             border: none;
@@ -248,51 +227,72 @@
             margin: 1rem auto;
         }
     </style>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    function formatNumberWithDots(x) {
-        x = x.replace(/\D/g, '');
-        return x.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    }
+ <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // ==== SIZE BUTTON ====
+        const sizeButtons = document.querySelectorAll('.size-btn');
+        const selectedSizeInput = document.getElementById('selected-size');
 
-    function unformatNumber(x) {
-        return x.replace(/\./g, '');
-    }
+        sizeButtons.forEach(btn => {
+            btn.addEventListener('click', function () {
+                const size = this.getAttribute('data-size');
 
-    const form = document.querySelector('form[action="{{ route('product.filter') }}"]');
-    const priceFromDisplay = document.getElementById('price_from_display');
-    const priceToDisplay = document.getElementById('price_to_display');
-    const priceFrom = document.getElementById('price_from');
-    const priceTo = document.getElementById('price_to');
-
-    priceFromDisplay.addEventListener('input', function () {
-        this.value = formatNumberWithDots(this.value);
-        priceFrom.value = unformatNumber(this.value);
-    });
-
-    priceToDisplay.addEventListener('input', function () {
-        this.value = formatNumberWithDots(this.value);
-        priceTo.value = unformatNumber(this.value);
-    });
-
-    form.addEventListener('submit', function (e) {
-        const fromVal = parseInt(priceFrom.value) || 0;
-        const toVal = parseInt(priceTo.value) || 0;
-
-        if (toVal > 0 && toVal < fromVal) {
-            e.preventDefault();
-
-            Swal.fire({
-                icon: 'error',
-                title: 'Khoảng giá không hợp lệ',
-                text: 'Giá "Đến" phải lớn hơn hoặc bằng giá "Từ".',
-                confirmButtonText: 'Đã hiểu'
+                // Toggle: nếu đang active thì bỏ chọn, nếu không thì chọn
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    selectedSizeInput.value = '';
+                } else {
+                    sizeButtons.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    selectedSizeInput.value = size;
+                }
             });
+        });
 
-            priceToDisplay.focus();
+        // ==== PRICE INPUT FORMAT ====
+        function formatNumberWithDots(x) {
+            x = x.replace(/\D/g, '');
+            return x.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
         }
+
+        function unformatNumber(x) {
+            return x.replace(/\./g, '');
+        }
+
+        const form = document.querySelector('form[action="{{ route('product.filter') }}"]');
+        const priceFromDisplay = document.getElementById('price_from_display');
+        const priceToDisplay = document.getElementById('price_to_display');
+        const priceFrom = document.getElementById('price_from');
+        const priceTo = document.getElementById('price_to');
+
+        priceFromDisplay.addEventListener('input', function () {
+            this.value = formatNumberWithDots(this.value);
+            priceFrom.value = unformatNumber(this.value);
+        });
+
+        priceToDisplay.addEventListener('input', function () {
+            this.value = formatNumberWithDots(this.value);
+            priceTo.value = unformatNumber(this.value);
+        });
+
+        form.addEventListener('submit', function (e) {
+            const fromVal = parseInt(priceFrom.value) || 0;
+            const toVal = parseInt(priceTo.value) || 0;
+
+            if (toVal > 0 && toVal < fromVal) {
+                e.preventDefault();
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Khoảng giá không hợp lệ',
+                    text: 'Giá "Đến" phải lớn hơn hoặc bằng giá "Từ".',
+                    confirmButtonText: 'Đã hiểu'
+                });
+
+                priceToDisplay.focus();
+            }
+        });
     });
-});
 </script>
 
 

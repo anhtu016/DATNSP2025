@@ -28,7 +28,7 @@ public function create(Request $request, Order $order)
     $attributes = [];
 
     foreach ($order->orderDetails as $item) {
-        $rules["image.{$item->id}"] = 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048';
+        $rules["image.{$item->id}"] = 'required|image|mimes:jpeg,png,jpg,gif,svg,webp|max:2048';
         $rules["rating.{$item->id}"] = 'required|integer|min:1|max:5';
         $rules["description.{$item->id}"] = 'required|string';
 

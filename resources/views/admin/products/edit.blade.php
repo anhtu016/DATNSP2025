@@ -31,14 +31,14 @@
                     </div>
 
                     <div class="form-group">
-                        <label>Giá</label>
+                        <label>Giá sale</label>
                         <input type="text" name="price_display" id="price_display" class="form-control format-currency"
                             value="{{ number_format(old('price', $product->price), 0, ',', '.') }}">
                         <input type="hidden" name="price" id="price" value="{{ old('price', $product->price) }}">
                     </div>
 
                     <div class="form-group">
-                        <label>Giá sale</label>
+                        <label>Giá gốc</label>
                         <input type="text" name="sell_price_display" id="sell_price_display"
                             class="form-control format-currency"
                             value="{{ number_format(old('sell_price', $product->sell_price), 0, ',', '.') }}">

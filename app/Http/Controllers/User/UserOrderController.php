@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
@@ -19,19 +19,19 @@ class UserOrderController extends Controller
         return view('client.orders.index', compact('orders'));
     }
     public function show($id)
-{
-    $paymentMethods = [
-    1 => 'Thanh toán khi nhận hàng',
-    2 => 'Thanh toán online PayPal',
-];
+    {
+        $paymentMethods = [
+            1 => 'Thanh toán khi nhận hàng',
+            2 => 'Thanh toán online PayPal',
+        ];
         $shippingMethods = [
             1 => 'Giao hàng nhanh',
             2 => 'Giao hàng tiêu chuẩn',
         ];
-    $order = Order::where('id', $id)
-        ->where('customer_id', Auth::id())
-        ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod'])
-        ->firstOrFail();
+        $order = Order::where('id', $id)
+            ->where('customer_id', Auth::id())
+            ->with(['orderDetails.product', 'paymentMethod', 'shippingMethod','coupon'])
+            ->firstOrFail();
         // dd($order->orderDetails);
         if ($order->delivered_at) {
             $daysSinceDelivered = Carbon::parse($order->delivered_at)->diffInDays(Carbon::now());
@@ -39,54 +39,54 @@ class UserOrderController extends Controller
             $daysSinceDelivered = null;  // Nếu đơn hàng chưa giao
         }
 
-    return view('client.orders.show', compact('order','daysSinceDelivered', 'paymentMethods','shippingMethods'));
-}
-
-
-public function cancel(Order $order)
-{
-    // Đảm bảo chỉ user chính chủ mới hủy được đơn hàng của mình
-    if ($order->customer_id !== auth()->id()) {
-        abort(403, 'Bạn không có quyền hủy đơn hàng này.');
+        return view('client.orders.show', compact('order', 'daysSinceDelivered', 'paymentMethods', 'shippingMethods'));
     }
 
-    // Chỉ cho phép hủy khi đơn hàng đang ở trạng thái pending
-    if ($order->order_status !== 'pending') {
-        return back()->with('error', 'Không thể hủy đơn hàng đã được xử lý.');
+
+    public function cancel(Order $order)
+    {
+        // Đảm bảo chỉ user chính chủ mới hủy được đơn hàng của mình
+        if ($order->customer_id !== auth()->id()) {
+            abort(403, 'Bạn không có quyền hủy đơn hàng này.');
+        }
+
+        // Chỉ cho phép hủy khi đơn hàng đang ở trạng thái pending
+        if ($order->order_status !== 'pending') {
+            return back()->with('error', 'Không thể hủy đơn hàng đã được xử lý.');
+        }
+
+        $order->update([
+            'order_status' => 'cancelled',
+        ]);
+
+        return back()->with('success', 'Đơn hàng đã được hủy thành công.');
     }
 
-    $order->update([
-        'order_status' => 'cancelled',
-    ]);
+    public function confirm($id)
+    {
+        $order = Order::findOrFail($id);
 
-    return back()->with('success', 'Đơn hàng đã được hủy thành công.');
-}
+        if ($order->order_status === 'delivered' && !$order->is_confirmed) {
+            $order->is_confirmed = true;
+            $order->confirmed_at = now();
+            $order->save();
 
-public function confirm($id)
-{
-    $order = Order::findOrFail($id);
+            return redirect()->back()->with('success', 'Bạn đã xác nhận đơn hàng hoàn tất.');
+        }
 
-    if ($order->order_status === 'delivered' && !$order->is_confirmed) {
-        $order->is_confirmed = true;
-        $order->confirmed_at = now();
-        $order->save();
-
-        return redirect()->back()->with('success', 'Bạn đã xác nhận đơn hàng hoàn tất.');
+        return redirect()->back()->with('error', 'Không thể xác nhận đơn hàng này.');
     }
 
-    return redirect()->back()->with('error', 'Không thể xác nhận đơn hàng này.');
-}
+    public function statusPartial($id)
+    {
+        $order = Order::with(['paymentMethod', 'shippingMethod'])->findOrFail($id);
 
-public function statusPartial($id)
-{
-    $order = Order::with(['paymentMethod', 'shippingMethod'])->findOrFail($id);
+        $daysSinceDelivered = null;
+        if ($order->order_status === 'delivered' && $order->delivered_at) {
+            $daysSinceDelivered = \Carbon\Carbon::parse($order->delivered_at)->diffInDays(now());
+        }
 
-    $daysSinceDelivered = null;
-    if ($order->order_status === 'delivered' && $order->delivered_at) {
-        $daysSinceDelivered = \Carbon\Carbon::parse($order->delivered_at)->diffInDays(now());
+        return view('client.orders.order-status', compact('order', 'daysSinceDelivered'));
     }
-
-    return view('client.orders.order-status', compact('order', 'daysSinceDelivered'));
-}
 
 }

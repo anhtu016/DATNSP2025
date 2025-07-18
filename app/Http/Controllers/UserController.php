@@ -23,8 +23,8 @@ public function index(Request $request)
                 $q->where('permissions.id', $request->permission_id);
             });
         })
-        ->when($request->filled('status'), function ($query) use ($request) {
-            $query->where('status', $request->status); // nếu bạn có cột status (1: hoạt động, 0: khóa)
+        ->when($request->filled('is_active'), function ($query) use ($request) {
+            $query->where('is_active', $request->is_active); // nếu bạn có cột status (1: hoạt động, 0: khóa)
         })
         ->orderBy('created_at', 'asc')
         ->paginate(10);
@@ -100,16 +100,16 @@ public function update(Request $request, $id)
 
     // Validate dữ liệu nhập vào
     $validated = $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|email|unique:users,email,' . $id,
+        // 'name' => 'required|string|max:255',
+        // 'email' => 'required|email|unique:users,email,' . $id,
         'permissions' => 'array|nullable',
     ]);
 
     // Cập nhật thông tin người dùng
-    $user->update([
-        'name' => $validated['name'],
-        'email' => $validated['email'],
-    ]);
+    // $user->update([
+    //     'name' => $validated['name'],
+    //     'email' => $validated['email'],
+    // ]);
 
     // Cập nhật quyền nếu có
     if (isset($validated['permissions'])) {

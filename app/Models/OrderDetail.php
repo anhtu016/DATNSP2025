@@ -7,9 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\AttributeValue;
+use Illuminate\Database\Eloquent\SoftDeletes;
 class OrderDetail extends Model
 {
     use HasFactory;
+      use SoftDeletes;
 
     protected $table = 'order_detail';  // Đảm bảo tên bảng chính xác
     protected $fillable = [

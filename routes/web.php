@@ -41,19 +41,13 @@ use App\Http\Controllers\PaypalController;
 */
 
 
-Route::get('/', [HomeController::class, 'index'])->name('home');
 
-  Route::get('/admin', [HomeController::class, 'index1'])->name('admin.index');
-// Home Admin route yêu cầu đăng nhập
-
-
-// đăng nhập , đăng xuất , đăng ký
+Route::get('/admin', [HomeController::class, 'index1'])->name('admin.index');
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
-
 // xử lý quên mật khẩu 
 Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
 Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
@@ -61,25 +55,32 @@ Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkE
 Route::get('reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
 
-// Route::get('/',[CategoryController::class,'index']);
-// Route::get('abc',[CategoryController::class,'list_category']);
-
-// hiện sản phẩm theo danh mục
-// routes/web.php
-Route::get('/danh-muc/{slug}', [CategoriesController::class, 'showProducts'])->name('categories.products');
 
 
 
-// chi tiết sản phẩm 
-Route::get('client-detail/{id}', [App\Http\Controllers\Client\ProductDetailController::class, 'index'])
-    ->name('detail.index');
 
-// quản lý reviews
+
+Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::middleware(['auth', 'check_active'])->group(function () {
+    Route::get('/danh-muc/{slug}', [CategoriesController::class, 'showProducts'])->name('categories.products');
+    // Route::get('client-detail/{id}', [App\Http\Controllers\Client\ProductDetailController::class, 'index'])->name('detail.index');
+    // Sản phẩm - Chi tiết sản phẩm
+    Route::get('client-detail/{id}', [App\Http\Controllers\CuaHangController::class, 'index'])->name('detail.index');
+    // giỏ hàng
+    Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
+    // thêm sản phẩm vào giỏ hàng
+    Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
+    //xóa sản phẩm khỏi giỏ hàng
+    Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
+    //cập nhật số lượng sản phẩm trong rỏ hàng
+    Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
+});
+
 
 
 
 // Quản lý đơn hàng
-Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
+Route::prefix('admin')->middleware(['auth', 'check_active', 'is_admin'])->group(function () {
     Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
@@ -92,7 +93,7 @@ Route::prefix('admin')->middleware(['auth', 'is_admin'])->group(function () {
 });
 
 // theo dõi đơn hàng
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'check_active'])->group(function () {
     Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
     Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('user.orders.show');
     Route::put('/orders/{order}/cancel', [UserOrderController::class, 'cancel'])->name('user.orders.cancel');
@@ -108,91 +109,39 @@ Route::put('/user/orders/{order}/confirm', [UserOrderController::class, 'confirm
 
 
 //route mã giảm giá
-Route::prefix('admin')->name('admin.')->middleware(['auth', 'is_admin'])->group(function () {
-
-  
-
-
-
+Route::prefix('admin')->name('admin.')->middleware(['auth', 'check_active', 'is_admin'])->group(function () {
     Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
-
     // Hiển thị form tạo mới mã giảm giá
     Route::get('coupons/create', [CouponController::class, 'create'])->name('coupons.create');
-
     // Lưu mã giảm giá mới
     Route::post('coupons', [CouponController::class, 'store'])->name('coupons.store');
-
     // Hiển thị form chỉnh sửa mã giảm giá
     Route::get('coupons/{coupon}/edit', [CouponController::class, 'edit'])->name('coupons.edit');
-
     // Cập nhật mã giảm giá
     Route::put('coupons/{coupon}', [CouponController::class, 'update'])->name('coupons.update');
     Route::post('coupons/updateUsage', [CouponController::class, 'updateUsage'])->name('coupons.updateUsage');
-
     // Xóa mã giảm giá
     Route::delete('coupons/{coupon}', [CouponController::class, 'destroy'])->name('coupons.destroy');
     Route::patch('coupons/{coupon}', [CouponController::class, 'toggleStatus'])->name('coupons.toggle');
-
-
-
 });
-
-
-
-
-
-
-// Auth: Đăng nhập / Đăng ký / Đăng xuất
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
-Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
-
-
-// Quên mật khẩu / Đặt lại mật khẩu
-Route::get('/forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
-Route::get('/reset-password/{token}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
-Route::post('/reset-password', [ForgotPasswordController::class, 'resetPassword'])->name('password.update');
-
-
-// Category
-
-
-
-
-// Sản phẩm - Chi tiết sản phẩm
-Route::get('client-detail/{id}', [App\Http\Controllers\CuaHangController::class, 'index'])->name('detail.index');
-
 
 // // Thuộc tính sản phẩm (attributes)
 // Route::get('/attributes', [AttributeController::class, 'index'])->name('attributes');
 // Route::group(['prefix' => 'admin'], function () {
 //     Route::resource('attributes', AttributeController::class);
 // });
-
-
-
-
 //giở hàng
-Route::get('/cart', [CartController::class, 'viewCart'])->name('cart.view');
-// thêm sản phẩm vào giỏ hàng
-Route::post('/add-to-cart/{id}', [CartController::class, 'addToCart'])->name('cart.add');
-//xóa sản phẩm khỏi giỏ hàng
-Route::delete('/cart/remove/{id}', [CartController::class, 'removeFromCart'])->name('cart.remove');
-//cập nhật số lượng sản phẩm trong rỏ hàng
-Route::patch('/cart/update/{id}', [CartController::class, 'update'])->name('cart.update');
 
 
-Route::middleware('auth')->group(function () {
+
+Route::middleware(['auth', 'check_active'])->group(function () {
     Route::get('/checkout', [OrderController::class, 'create'])->name('checkout.form');
     Route::post('/checkout', [OrderController::class, 'store'])->name('checkout.store');
 });
 
 // admin
-Route::prefix('admin')->middleware(['auth', 'check.permission:admin'])->group(function () {
-      Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
+Route::prefix('admin')->middleware(['auth', 'check_active', 'check.permission:admin'])->group(function () {
+    Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
     // quản lý sản phẩm
     Route::get('/products', [ProductController::class, 'index1'])->name('products.index');
     Route::get('/products/create', [ProductController::class, 'create'])->name('products.create');
@@ -271,26 +220,22 @@ Route::prefix('admin')->middleware(['auth', 'check.permission:admin'])->group(fu
 
 
 });
-
-
-
-
 // kế toán
 
-Route::prefix('admin')->middleware(['auth', 'check.permission:accountant'])->group(function () {
-      Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
+Route::prefix('admin')->middleware(['auth', 'check_active', 'check.permission:accountant'])->group(function () {
+    Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
     Route::get('/turnover', [turnoverController::class, 'index'])->name('admin.turnover.index');
     Route::get('/turnover/filter', [turnoverController::class, 'filter'])->name('admin.turnover.filter');
 });
 //nhân viên kho
-Route::prefix('admin')->middleware(['auth', 'check.permission:staff'])->group(function () {
-      Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
+Route::prefix('admin')->middleware(['auth', 'check_active', 'check.permission:staff'])->group(function () {
+    Route::get('homeadmin', [HomeController::class, 'index1'])->name('homeadmin');
     // Route mã giảm giá, đơn hàng, đánh giá
-        // quản lý đánh giá 
+    // quản lý đánh giá 
     Route::get('/list-reviews', [ReviewController::class, 'index'])->name('admin.reviews.index');
     Route::get('/reviews-presently/{id}', [ReviewController::class, 'presently'])->name('admin.reviews.presently');
     Route::get('/load-reviews/{id}', [ReviewController::class, 'loadReview'])->name('admin.reviews.loadReview');
-        // Quản lý đơn hàng 
+    // Quản lý đơn hàng 
     Route::get('/orders', [OrderController::class, 'index'])->name('admin.orders.index');
     Route::get('/orders/{order}', [OrderController::class, 'show'])->name('admin.orders.show');
     Route::post('/orders/{order}/status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
@@ -302,7 +247,7 @@ Route::prefix('admin')->middleware(['auth', 'check.permission:staff'])->group(fu
     Route::post('/admin/orders/{order}/reject-cancel', [OrderController::class, 'rejectCancel'])->name('admin.orders.rejectCancel');
     // Route cập nhật trạng thái "Đang giao hàng"
     Route::put('/orders/{order}/delivering', [OrderController::class, 'updateStatusToDelivering'])->name('admin.orders.delivering');
-        //Quản lý mã giảm giá
+    //Quản lý mã giảm giá
     Route::get('coupons', [CouponController::class, 'index'])->name('coupons.index');
     Route::get('coupons/create', [CouponController::class, 'create'])->name('coupons.create');
     Route::post('coupons', [CouponController::class, 'store'])->name('coupons.store');
@@ -313,20 +258,6 @@ Route::prefix('admin')->middleware(['auth', 'check.permission:staff'])->group(fu
     Route::patch('coupons/{coupon}', [CouponController::class, 'toggleStatus'])->name('coupons.toggle');
 });
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // đánh giá sản phẩm người dùng
 Route::get('product-review/{id}', [\App\Http\Controllers\Client\ReviewController::class, 'show'])
     ->name('orders.review');
@@ -335,7 +266,7 @@ Route::get('product-review/{id}', [\App\Http\Controllers\Client\ReviewController
 // tạo đánh giá
 Route::post('orders/{order}/reviews', [\App\Http\Controllers\Client\ReviewController::class, 'create'])->name('orders.reviews.create');
 // theo dõi đơn hàng người dùng
-Route::middleware(['auth'])->group(function () {
+Route::middleware(['auth', 'check_active'])->group(function () {
     Route::get('/orders', [UserOrderController::class, 'index'])->name('user.orders.index');
     Route::get('/orders/{id}', [UserOrderController::class, 'show'])->name('user.orders.show');
     Route::put('/orders/{order}/cancel', [UserOrderController::class, 'cancel'])->name('user.orders.cancel');

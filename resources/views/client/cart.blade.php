@@ -1,13 +1,12 @@
 @extends('client.layout.default')
-
 @section('content')
     @if (session('error'))
         <div class="alert alert-danger">{{ session('error') }}</div>
     @endif
-
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
     @endif
+
     <div class="" style="height: 120vh;">
         @if (count($cart) > 0)
             <div class="container mt-4">
@@ -44,12 +43,10 @@
                                 $discount = 0;
                                 $total = 0;
                             @endphp
-
                             @foreach ($cart as $id => $item)
                                 @php
                                     $itemTotal = $item['price'] * $item['quantity'];
                                     $subtotal += $itemTotal;
-
                                     $itemDiscount = 0;
                                     if ($hasValidCoupon && $selectedCount > 0 && in_array($id, $selectedItems)) {
                                         if ($coupon['type'] === 'fixed') {
@@ -64,17 +61,14 @@
                                             }
                                         }
                                     }
-
                                     $discount += $itemDiscount;
                                     $finalItemTotal = max($itemTotal - $itemDiscount, 0);
                                     $total += $finalItemTotal;
                                 @endphp
-
                                 <tr id="cart-item-{{ $id }}" class="text-center" data-id="{{ $id }}">
                                     @php
                                         $checkedItems = old('selected_items', session('coupon.selected_items', []));
                                     @endphp
-
                                     <td>
                                         <input type="checkbox" name="selected_items[]" value="{{ $id }}"
                                             class="cart-item-checkbox" data-price="{{ $item['price'] }}"
@@ -82,20 +76,14 @@
                                             data-max="{{ $item['quantity_variant'] ?? 99 }}"
                                             {{ in_array($id, $checkedItems) ? 'checked' : '' }}>
                                     </td>
-
-
-
                                     <td class="align-middle">
                                         <img src="{{ asset('storage/' . ($item['variant_image'] ?? $item['thumbnail'])) }}"
                                             alt="{{ $item['name'] }}" class="img-thumbnail" width="70">
                                     </td>
-
                                     <td class="align-middle">{{ $item['name'] }}</td>
-
                                     <td class="align-middle unit-price" data-price="{{ $item['price'] }}">
                                         {{ number_format($item['price']) }} VNĐ
                                     </td>
-
                                     <td class="text-center align-middle">
                                         <form action="{{ route('cart.update', $id) }}" method="POST"
                                             id="update-form-{{ $id }}">
@@ -111,7 +99,7 @@
                                                 <input type="text" name="quantity"
                                                     class="form-control form-control-sm text-center quantity-input"
                                                     style="width: 50px;" value="{{ $item['quantity'] }}"
-                                                      data-max="{{ $item['quantity_variant'] ?? 99 }}"
+                                                    data-max="{{ $item['quantity_variant'] ?? 99 }}"
                                                     data-id="{{ $id }}" min="1">
                                                 <button type="button"
                                                     class="btn btn-light border btn-sm px-2 btn-increase mb-2"
@@ -121,14 +109,12 @@
                                             </div>
                                         </form>
                                     </td>
-
                                     <td class="align-middle">{{ $item['Size'] ?? 'Không chọn' }}</td>
                                     <td class="align-middle">{{ $item['Color'] ?? 'Không chọn' }}</td>
 
                                     <td class="align-middle item-total">
                                         {{ number_format($finalItemTotal) }} VNĐ
                                     </td>
-
                                     <td class="align-middle">
                                         <form action="{{ route('cart.remove', $id) }}" method="POST" class="d-inline">
                                             @csrf
@@ -138,204 +124,20 @@
                                     </td>
                                 </tr>
                             @endforeach
-
-                            {{-- KHỐI 2: MÃ GIẢM GIÁ --}}
-                            {{-- <tr class="table"></tr>
-                            <tr>
-                                <td colspan="9">
-                                    <div class="d-flex gap-2">
-                                        <style>
-                                            .coupon-box {
-                                                position: absolute;
-                                                top: 100%;
-                                                left: 0;
-                                                width: 100%;
-                                                max-width: 480px;
-                                                background: white;
-                                                border: 1px solid #ddd;
-                                                border-radius: 8px;
-                                                box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
-                                                padding: 15px;
-                                                display: none;
-                                                z-index: 9999;
-                                                animation: fadeInUp 0.3s ease-out;
-                                            }
-
-                                            .coupon-box p {
-                                                font-size: 13px;
-                                                margin-bottom: 10px;
-                                            }
-
-                                            .coupon-box .coupon-image {
-                                                width: 60px;
-                                            }
-
-                                            .coupon-box .coupon-item {
-                                                padding: 8px 10px;
-                                                font-size: 13px;
-                                            }
-
-                                            .coupon-box .coupon-item strong {
-                                                font-size: 14px;
-                                            }
-
-
-                                            .coupon-box.active {
-                                                display: block;
-                                            }
-
-                                            .coupon-box p {
-                                                font-size: 14px;
-                                            }
-
-                                            @keyframes fadeInUp {
-                                                0% {
-                                                    opacity: 0;
-                                                    transform: translateY(20px);
-                                                }
-
-                                                100% {
-                                                    opacity: 1;
-                                                    transform: translateY(0);
-                                                }
-                                            }
-                                        </style>
-                        
-                                        <div class="position-relative text-end" style="display: inline-block;">
-                                            <div class="m-4 text-end">
-                                                <a class="btn btn-outline-primary" id="toggle-coupon">🎁 Ưu đãi dành cho bạn ! xem thêm voucher !</a>
-                                            </div>
-
-                                            <!-- Hộp thoại voucher -->
-                                            <div class="coupon-box" id="coupon-box" style="display:none;">
-                                                <p class="small">✨ Ưu đãi cho bạn:</p>
-
-                                                <!-- Form áp dụng mã giảm giá -->
-                                                <form action="{{ route('cart.applyCoupon', $id ?? 0) }}" method="POST"
-                                                    id="coupon-form">
-                                                    @csrf
-                                                    <div class="d-flex mb-2">
-                                                        <input type="text" name="coupon_code" class="form-control"
-                                                            placeholder="Nhập mã giảm giá của shop" style="flex: 1;">
-                                                        <button class="btn btn-sm btn-primary ms-2 m-0" type="submit"
-                                                            id="apply-coupon-btn" disabled style="font-size: 12px;">
-                                                            Áp dụng
-                                                        </button>
-                                                    </div>
-
-                                                    <!-- Mã giảm giá gợi ý -->
-                                                    @if ($coupons->count())
-                                                        <div class="mt-3">
-                                                            @foreach ($coupons->take(3) as $coupon)
-                                                                @php $isExpired = \Carbon\Carbon::parse($coupon->end_date)->isPast(); @endphp
-                                                                <div
-                                                                    class="border rounded p-2 mb-2 bg-light position-relative d-flex align-items-center">
-                                                                    <div class="me-3" style="width: 105px;">
-                                                                        <img src="{{ asset('client/img/coupon2.jpg') }}"
-                                                                            alt="Coupon Image" class="img-fluid" />
-                                                                    </div>
-                                                                    <div class="flex-grow-1 small text-start"
-                                                                        style="font-size: 0.85rem;">
-                                                                        <div>
-                                                                            <strong>{{ $coupon->code }}</strong> -
-                                                                            {{ $coupon->type === 'percentage' ? $coupon->value . '%' : number_format($coupon->value, 0, ',', '.') . '₫' }}
-                                                                            @if ($isExpired)
-                                                                                <span class="text-danger">(Hết hạn)</span>
-                                                                            @endif
-                                                                        </div>
-                                                                        @if ($coupon->min_order_value)
-                                                                            <div>🛒 Đơn tối thiểu:
-                                                                                {{ number_format($coupon->min_order_value, 0, ',', '.') }}₫
-                                                                            </div>
-                                                                        @endif
-                                                                        @if ($coupon->max_discount_value)
-                                                                            <div>💸 Giảm tối đa:
-                                                                                {{ number_format($coupon->max_discount_value, 0, ',', '.') }}₫
-                                                                            </div>
-                                                                        @endif
-                                                                        <div>📅 HSD:
-                                                                            {{ \Carbon\Carbon::parse($coupon->end_date)->format('d/m/Y') }}
-                                                                        </div>
-                                                                    </div>
-                                                                    @if (!$isExpired)
-                                                                        <div class="ms-3">
-                                                                            <input type="radio" name="suggested_coupons[]"
-                                                                                value="{{ $coupon->code }}"
-                                                                                @if (session()->has('coupon') && session('coupon')['code'] === $coupon->code) checked @endif
-                                                                                disabled>
-                                                                        </div>
-                                                                    @endif
-                                                                </div>
-                                                            @endforeach
-                                                        </div>
-                                                    @endif
-                                                </form>
-
-                                                <!-- Hiển thị mã giảm giá đang áp dụng -->
-                                                @if (session()->has('coupon'))
-                                                    <div class="mt-3">
-                                                        <div class="border rounded p-2 mb-2 bg-light position-relative">
-                                                            <div class="d-flex align-items-center">
-                                                                <div class="me-3" style="width: 105px;">
-                                                                    <img src="{{ asset('client/img/coupon2.jpg') }}"
-                                                                        alt="Coupon Image" class="img-fluid" />
-                                                                </div>
-
-                                                                <div class="flex-grow-1 small text-start"
-                                                                    style="font-size: 0.85rem;">
-                                                                    <strong>{{ session('coupon')['code'] }}</strong> -
-                                                                    @if (session('coupon')['type'] === 'percentage')
-                                                                        {{ session('coupon')['value'] }}%
-                                                                    @else
-                                                                        {{ number_format(session('coupon')['value'], 0, ',', '.') }}₫
-                                                                    @endif
-                                                                </div>
-                                                                <div class="ms-3">
-                                                                    <form action="{{ route('coupon.remove') }}"
-                                                                        method="POST" style="margin:0;">
-                                                                        @csrf
-                                                                        <button type="submit"
-                                                                            class="btn btn-sm btn-danger">Hủy</button>
-                                                                    </form>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                @endif
-
-                                            </div>
-                                        </div>
-
-
-
-
-
-
-
-                                </td>
-                            </tr> --}}
-                            {{-- KHỐI 3: TỔNG TIỀN & THANH TOÁN --}}
                             <tr class="table"></tr>
                             <td colspan="8" class="text-end align-bottom">Tạm tính:</td>
                             <td colspan="2" id="subtotal" class="align-bottom">{{ number_format($subtotal) }} VNĐ
                             </td>
-
                             </tr>
-
-
-
                             <tr id="total-row" style="display: none;"> <!-- <== thêm id và ẩn -->
                                 <td colspan="8" class="text-end align-bottom fw-bold">Tổng cộng:</td>
                                 <td colspan="2" class="fw-bold text-danger align-bottom" id="total">0 VNĐ</td>
                             </tr>
-
-
                             <tr>
                                 <td colspan="8" class="text-end align-bottom">
                                 <td colspan="2" class="fw-bold text-danger align-bottom" id="total"><button
                                         type="submit" class="btn btn-success" style="" colspan="2">Tiến hành
                                         thanh toán</button></td>
-
                                 </td>
                             </tr>
                             </tr>
@@ -363,26 +165,21 @@
                                         if (data.success) {
                                             const row = document.querySelector(`#cart-item-${id}`);
                                             row.querySelector('.quantity-input').value = newQuantity;
-
                                             // Cập nhật lại data-quantity của checkbox để tính tổng
                                             const checkbox = row.querySelector('.cart-item-checkbox');
                                             if (checkbox) {
                                                 checkbox.dataset.quantity = newQuantity;
                                             }
-
                                             // ✅ Cập nhật lại cột Số tiền của từng dòng
                                             const price = parseFloat(row.querySelector('.unit-price').dataset.price);
                                             const itemTotal = row.querySelector('.item-total');
                                             itemTotal.textContent = formatCurrency(price * newQuantity);
-
                                             calculateTotal(); // Gọi lại tính tổng khi cập nhật số lượng
                                         }
                                     });
                             };
-
                             // --------- Định dạng tiền tệ ----------
                             const formatCurrency = (amount) => amount.toLocaleString('vi-VN') + ' VNĐ';
-
                             // --------- Xử lý tăng giảm số lượng ----------
                             document.querySelectorAll('.btn-increase').forEach(button => {
                                 button.addEventListener('click', function() {
@@ -404,23 +201,19 @@
                                             stopOnFocus: true,
                                         }).showToast();
                                     }
-
                                 });
                             });
-
                             document.querySelectorAll('.btn-decrease').forEach(button => {
                                 button.addEventListener('click', function() {
                                     const id = this.dataset.id;
                                     const input = document.querySelector(`#cart-item-${id} .quantity-input`);
                                     let quantity = parseInt(input.value) || 1;
-
                                     if (quantity > 1) {
                                         input.value = quantity - 1;
                                         updateQuantity(id, quantity - 1);
                                     }
                                 });
                             });
-
                             document.querySelectorAll('.quantity-input').forEach(input => {
                                 input.addEventListener('change', function() {
                                     const id = this.dataset.id;
@@ -440,11 +233,9 @@
                                         }).showToast();
                                         newQuantity = max;
                                     }
-
                                     this.value = newQuantity;
                                     updateQuantity(id, newQuantity);
                                 });
-
                                 // Tùy chọn: khóa không cho nhập thủ công (chỉ dùng nút tăng giảm)
                                 input.addEventListener('keydown', function(e) {
                                     // Chặn nhập chữ, chỉ cho phép các phím số, backspace, delete, mũi tên, tab
@@ -455,8 +246,6 @@
                                     }
                                 });
                             });
-
-
                             // --------- Tính tổng đơn hàng khi chọn sản phẩm ----------
                             const checkboxes = document.querySelectorAll('.cart-item-checkbox');
                             const subtotalEl = document.querySelector('#subtotal');
@@ -468,11 +257,9 @@
                             const couponValue = {{ $coupon['value'] ?? 0 }};
                             const maxDiscountValue = {{ $coupon['max_discount_value'] ?? 'null' }};
                             const minOrderValue = {{ $coupon['min_order_value'] ?? 0 }};
-
                             // Hàm tính tổng
                             function calculateTotal() {
                                 let subtotal = 0;
-
                                 checkboxes.forEach(cb => {
                                     if (cb.checked) {
                                         const price = parseFloat(cb.dataset.price);
@@ -480,7 +267,6 @@
                                         subtotal += price * quantity;
                                     }
                                 });
-
                                 let discount = 0;
 
                                 if (hasCoupon && subtotal >= minOrderValue) {
@@ -492,16 +278,12 @@
                                             discount = maxDiscountValue;
                                         }
                                     }
-
                                     if (discount > subtotal) discount = subtotal;
                                 }
-
                                 const total = subtotal - discount;
-
                                 subtotalEl.innerText = formatCurrency(subtotal);
                                 discountEl.innerText = formatCurrency(discount);
                                 totalEl.innerText = formatCurrency(total);
-
                                 const totalRow = document.getElementById('total-row');
                                 if (hasCoupon && discount > 0) {
                                     totalRow.style.display = 'table-row';
@@ -509,8 +291,6 @@
                                     totalRow.style.display = 'none';
                                 }
                             }
-
-
                             // --------- Chọn tất cả sản phẩm ----------
                             const selectAllCheckbox = document.getElementById('select-all');
                             selectAllCheckbox.addEventListener('change', function() {
@@ -520,7 +300,6 @@
                                 });
                                 calculateTotal(); // Cập nhật tổng khi thay đổi trạng thái checkbox
                             });
-
                             // Cập nhật trạng thái "Chọn tất cả" nếu người dùng chọn/deselect một checkbox sản phẩm
                             checkboxes.forEach(cb => {
                                 cb.addEventListener('change', function() {
@@ -554,12 +333,27 @@
                                     });
                                 }
                             });
-
                             calculateTotal(); // Chạy lúc đầu
                         });
                     </script>
+                    @if ($relatedProducts->isNotEmpty())
+                        <div class="mt-5">
+                            <h4>Sản phẩm gợi ý</h4>
+                            <div class="row">
+                                @foreach ($relatedProducts as $product)
+                                    <div class="col-md-2 text-center mb-3">
+                                        <a href="{{ route('product.show', $product->id) }}">
+                                            <img src="{{ asset('storage/' . $product->thumbnail) }}" class="img-fluid"
+                                                alt="{{ $product->name }}">
+                                            <p class="mt-2">{{ $product->name }}</p>
+                                            <p class="text-danger">{{ number_format($product->price) }} VNĐ</p>
+                                        </a>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endif
                 </form>
-
             </div>
         @else
             <div class="text-center fs-4 mt-5">
@@ -586,7 +380,6 @@
             padding: 0;
         }
     </style>
-
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const toggleBtn = document.getElementById('toggle-coupon');
@@ -687,10 +480,6 @@
             });
         });
     </script>
-
-
-
-
 
 
 @endsection

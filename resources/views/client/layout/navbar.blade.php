@@ -26,10 +26,10 @@
                         </div>
                         <ul>
                             <li>
-                                <a href="{{ route('home') }}" class="show-submenu">Trang chủ</a>
+                                <a href="{{ route('home') }}" class="show-submenu link-hover">Trang chủ</a>
                             </li>
                             <li>
-                                <a href="{{ route('productlist') }}" class="show-submenu">sản phẩm</a>
+                                <a href="{{ route('productlist') }}" class="show-submenu link-hover">sản phẩm</a>
                             </li>
                             <li class="submenu">
                                 <a href="javascript:void(0);" class="show-submenu">Danh mục</a>
@@ -63,10 +63,10 @@
                                 </ul>
                             </li>
                             <li>
-                                <a href="{{ route('promotions.index') }}" class="show-submenu">Ưu đãi</a>
+                                <a href="{{ route('promotions.index') }}" class="show-submenu link-hover">Ưu đãi</a>
                             </li>
                             <li>
-                                <a href="{{ route('order.policy') }}" class="show-submenu">Chính sách đổi trả</a>
+                                <a href="{{ route('order.policy') }}" class="show-submenu link-hover">Chính sách đổi trả</a>
                             </li>
                             {{-- <li>
                                 <a href="blog.html">Blog</a>
@@ -144,3 +144,34 @@
     </div>
     <!-- /main_header -->
 </header>
+<style>
+    .link-hover {
+    position: relative;
+    display: inline-block;
+    padding-bottom: 4px !important; /* ghi đè để sát */
+    text-decoration: none;
+    color: inherit;
+}
+
+.link-hover::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: 0; /* ngay sát đáy chữ */
+    height: 2px;
+    width: 0;
+    background-color: #007BFF;
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease-in-out;
+}
+
+.link-hover:hover::after,
+.link-hover.active::after {
+    transform: scaleX(1);
+    width: 100%;
+    
+}
+
+</style>
+
